@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Care Coordinator</string>
     <string name="action_settings">Settings</string>
+    <string name="None">No Info</string>
+    <string name="Suggestion">Suggestion</string>
 </resources>

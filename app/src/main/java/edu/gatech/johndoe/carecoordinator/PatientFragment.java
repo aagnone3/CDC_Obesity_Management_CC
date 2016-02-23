@@ -55,9 +55,9 @@ public class PatientFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_patient, container, false);
+        View view = inflater.inflate(R.layout.fragment_referral, container, false);
         TextView exampleLabel = (TextView) view.findViewById(R.id.exampleLabel);
-//        exampleLabel.setText(mExampleParam);
+        exampleLabel.setText(mExampleParam);
         return view;
     }
 
