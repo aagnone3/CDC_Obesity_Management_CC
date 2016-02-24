@@ -1,8 +1,11 @@
-package edu.gatech.johndoe.carecoordinator;
+package edu.gatech.johndoe.carecoordinator.patient;
+
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.Date;
 
-public class EHR {
+public class EHR implements Parcelable{
     private boolean isPending;
     private Date issueDate;
     private Date dateOfimport;
@@ -23,6 +26,12 @@ public class EHR {
         this.issueDate = issueDate;
         this.isPending = isPending;
         this.dateOfimport = new Date();
+    }
+
+    private EHR(Parcel in) {
+        isPending = in.readByte() != 0;
+        issueDate = new Date(in.readLong());
+        dateOfimport = new Date(in.readLong());
     }
 
     public boolean isPending() {
@@ -61,4 +70,27 @@ public class EHR {
     public String toString() {
         return isPending ? "Pending" : "Closed";
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (isPending ? 1 : 0));
+        dest.writeLong(issueDate.getTime());
+        dest.writeLong(dateOfimport.getTime());
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public EHR createFromParcel(Parcel in) {
+            return new EHR(in);
+        }
+
+        public EHR[] newArray(int size) {
+            return new EHR[size];
+        }
+    };
+
 }
