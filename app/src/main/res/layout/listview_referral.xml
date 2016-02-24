@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginTop="15dp"
+    android:layout_marginBottom="15dp"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/patientname"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="11dp"
+        android:textColor="#747474"
+        android:layout_gravity="center_vertical|center_horizontal|left"/>
+    <!--android:layout_weight="1"-->
+
+    <TextView
+        android:id="@+id/referralsummary"
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="11dp"
+        android:textColor="#747474"
+        android:layout_gravity="center_vertical|center_horizontal|left"/>
+    <!--android:layout_weight="1"-->
+
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="26dp"
+        android:id="@+id/clickfavourite"
+        android:layout_gravity="center_vertical|center_horizontal|right"
+        android:layout_weight="0.16"
+        android:layout_marginLeft="70dp"
+        android:background="@drawable/unfavourite"
+        android:clickable="true"/>
+    <!--android:layout_weight="1"-->
+
+</LinearLayout>

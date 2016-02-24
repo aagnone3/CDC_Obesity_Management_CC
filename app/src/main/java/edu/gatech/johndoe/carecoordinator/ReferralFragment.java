@@ -28,6 +28,7 @@ import java.util.List;
 public class ReferralFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    // Update
     private static final String EXAMPLE_ARG_PARAM = "param";
     private ListView listviewReferral;
     private ArrayAdapter<String> adapter;
