@@ -2,8 +2,8 @@ package edu.gatech.johndoe.carecoordinator.patient_fragments;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import edu.gatech.johndoe.carecoordinator.Patient;
 import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.patient.Patient;
 
 public class PatientAdapter extends ArrayAdapter<Patient> {
 
@@ -44,10 +44,12 @@ public class PatientAdapter extends ArrayAdapter<Patient> {
 
             patient_name.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    //test
-                    Log.v("TAG", "CLICKED row number: " + position);
+                    PatientInfoFragment pif = new PatientInfoFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("PIF", p);
+                    pif.setArguments(bundle);
                     FragmentTransaction ft = fragment_manager.beginTransaction();
-                    ft.replace(R.id.patient_container, new PatientInfoFragment());
+                    ft.replace(R.id.patient_container, pif);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     ft.addToBackStack(null);
                     ft.commit();

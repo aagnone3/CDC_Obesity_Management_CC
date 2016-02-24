@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 
 import edu.gatech.johndoe.carecoordinator.R;
 
-public class PatientBaseFragment extends Fragment {
+public class PatientFragment extends Fragment {
 
-    private static final String TAG = "PatientBaseFragment";
+    private static final String TAG = "PatientFragment";
 
-    public static PatientBaseFragment newInstance(String param) {
-        PatientBaseFragment fragment = new PatientBaseFragment();
+    public static PatientFragment newInstance(String param) {
+        PatientFragment fragment = new PatientFragment();
         Bundle args = new Bundle();
         args.putString(TAG, param);
         fragment.setArguments(args);
@@ -23,7 +23,7 @@ public class PatientBaseFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.patient_fragment_base, container, false);
+        View view = inflater.inflate(R.layout.patient_fragment, container, false);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.patient_container, new PatientListFragment());
         transaction.commit();

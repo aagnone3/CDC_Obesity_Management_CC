@@ -11,13 +11,13 @@
         android:padding="5dip" >
 
         <TextView
-            android:text="Name: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="@string/id" />
 
         <TextView
-            android:id="@+id/patient_name"
-            android:text="TEST"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:id="@+id/patient_id"
+            android:text="@string/none"
+            android:layout_weight="0.5"/>
+
     </TableRow>
 
     <TableRow
@@ -27,13 +27,12 @@
         android:padding="5dip" >
 
         <TextView
-            android:text="Address: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="@string/name" />
 
         <TextView
-            android:id="@+id/extra_info0"
-            android:text="None"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:id="@+id/patient_name"
+            android:text="@string/none" />
+
     </TableRow>
 
     <TableRow
@@ -43,13 +42,73 @@
         android:padding="5dip" >
 
         <TextView
-            android:text="Extra Info: "
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:text="@string/type" />
 
         <TextView
-            android:id="@+id/extra_info1"
-            android:text="None"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:id="@+id/patient_type"
+            android:text="@string/none"
+            android:layout_weight="1"/>
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/info_row_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip" >
+
+        <TextView
+            android:text="@string/gender" />
+
+        <TextView
+            android:id="@+id/patient_gender"
+            android:text="@string/none" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/info_row_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip" >
+
+        <TextView
+            android:text="@string/age" />
+
+        <TextView
+            android:id="@+id/patient_age"
+            android:text="@string/none"
+            android:layout_weight="1"/>
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/info_row_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip" >
+        <TextView
+            android:text="@string/birth_date" />
+
+        <TextView
+            android:id="@+id/patient_birth_date"
+            android:text="@string/none"
+            android:layout_weight="0.5"/>
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/info_row_6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip">
+
+        <TextView
+            android:text="@string/address" />
+
+        <TextView
+            android:id="@+id/patient_address"
+            android:text="@string/none"/>
     </TableRow>
 
     <View

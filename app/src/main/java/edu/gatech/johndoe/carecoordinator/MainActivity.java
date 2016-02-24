@@ -2,6 +2,7 @@ package edu.gatech.johndoe.carecoordinator;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -15,7 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientBaseFragment;
+import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientFragment;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
@@ -37,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -62,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         });
 
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -104,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 case 1:
                     return ReferralFragment.newInstance("Referral Fragment");
                 case 2:
-                    return PatientBaseFragment.newInstance("Patient Base Fragment");
+                    return PatientFragment.newInstance("Patient Fragment");
                 case 3:
                     return CommunityFragment.newInstance("Community Fragment");
             }
@@ -139,6 +143,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public void onReferralFragmentInteraction(Uri uri) {
+        // TODO
+    }
+
+    @Override
+    public void onPatientFragmentInteraction(Uri uri) {
         // TODO
     }
 
