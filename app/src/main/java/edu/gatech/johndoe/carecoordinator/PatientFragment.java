@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 
 /**
- * Community fragment.
+ * Patient fragment.
  */
-public class CommunityFragment extends Fragment {
+public class PatientFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String EXAMPLE_ARG_PARAM = "param";
@@ -23,7 +23,7 @@ public class CommunityFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public CommunityFragment() {
+    public PatientFragment() {
         // Required empty public constructor
     }
 
@@ -32,11 +32,11 @@ public class CommunityFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param exampleParam Example parameter.
-     * @return A new instance of fragment CommunityFragment.
+     * @return A new instance of fragment PatientFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static CommunityFragment newInstance(String exampleParam) {
-        CommunityFragment fragment = new CommunityFragment();
+    public static PatientFragment newInstance(String exampleParam) {
+        PatientFragment fragment = new PatientFragment();
         Bundle args = new Bundle();
         args.putString(EXAMPLE_ARG_PARAM, exampleParam);
         fragment.setArguments(args);
@@ -55,16 +55,16 @@ public class CommunityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_community, container, false);
+        View view = inflater.inflate(R.layout.fragment_referral, container, false);
         TextView exampleLabel = (TextView) view.findViewById(R.id.exampleLabel);
-//        exampleLabel.setText(mExampleParam);
+        exampleLabel.setText(mExampleParam);
         return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
-            mListener.onCommunityFragmentInteraction(uri);
+            mListener.onPatientFragmentInteraction(uri);
         }
     }
 
