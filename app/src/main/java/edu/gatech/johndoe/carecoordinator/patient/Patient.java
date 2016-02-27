@@ -14,6 +14,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import ca.uhn.fhir.model.dstu2.composite.AddressDt;
+import ca.uhn.fhir.model.dstu2.composite.HumanNameDt;
+import ca.uhn.fhir.model.dstu2.valueset.AddressUseEnum;
+
 public class Patient implements Parcelable{
     private String id;
     private String type;
@@ -21,13 +25,33 @@ public class Patient implements Parcelable{
     private String last_name;
     private String gender;
     private Date birth_date;
-    private Address address;
+    private AddressDt address;
     private String email;
     private boolean isActive;
     private Date lastUpdated;
     private List<EHR> ehr;
     private boolean sortedByImport;
 
+    // Note patient may have multiple names in the server, implementation currently selects the
+    // first name in the list returned by getName()
+    // TODO verify that this is ok
+    public Patient(ca.uhn.fhir.model.dstu2.resource.Patient patient) {
+        id = patient.getId().getIdPart();
+        type = patient.getResourceName();
+        first_name = patient.getNameFirstRep().getGivenAsSingleString();
+        last_name = patient.getNameFirstRep().getFamilyAsSingleString();
+        gender = patient.getGender();
+        birth_date = patient.getBirthDate();
+        address = patient.getAddressFirstRep();
+        // TODO get patient email from our database
+        email = "Need Email from Database";
+        isActive = patient.getActive();
+        lastUpdated = (Date) patient.getResourceMetadata().get("lastUpdated");
+        ehr = new ArrayList<>();
+        sortedByImport = true;
+    }
+
+    /*
     public Patient(JSONObject json) {
         try {
             JSONObject resource = new JSONObject(json.getJSONArray("entry").get(0).toString()).getJSONObject("resource");
@@ -51,6 +75,7 @@ public class Patient implements Parcelable{
             e.printStackTrace();
         }
     }
+    */
 
     private Patient(Parcel in) {
         id = in.readString();
@@ -59,7 +84,12 @@ public class Patient implements Parcelable{
         last_name = in.readString();
         gender = in.readString();
         birth_date = new Date(in.readLong());
-        address = new Address(in.readString(), in.readString(), in.readString(), in.readString(), in.readString());
+        address = new AddressDt();
+        address.setUse(AddressUseEnum.valueOf(in.readString()));
+        address.setText(in.readString());
+        address.setCity(in.readString());
+        address.setState(in.readString());
+        address.setPostalCode(in.readString());
 //        address = (Address) in.readTypedObject(Address.CREATOR);
         email = in.readString();
         isActive = in.readByte() != 0;
@@ -130,11 +160,11 @@ public class Patient implements Parcelable{
         return age;
     }
 
-    public Address getAddress() {
+    public AddressDt getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(AddressDt address) {
         this.address = address;
     }
 
@@ -234,10 +264,10 @@ public class Patient implements Parcelable{
         dest.writeString(gender);
         dest.writeLong(birth_date.getTime());
         dest.writeString(address.getUse());
-        dest.writeString(address.getAddress());
+        dest.writeString(address.getText());
         dest.writeString(address.getCity());
         dest.writeString(address.getState());
-        dest.writeString(address.getZipcode());
+        dest.writeString(address.getPostalCode());
         dest.writeString(email);
 //        dest.writeTypedObject(address, 0);
         dest.writeByte((byte) (isActive ? 1 : 0));
