@@ -11,7 +11,7 @@ public class EHR implements Parcelable{
     private Date dateOfimport;
 
     public EHR() {
-        this(null, true);
+        this(new Date(), true);
     }
 
     public EHR(Date issueDate) {
@@ -19,7 +19,7 @@ public class EHR implements Parcelable{
     }
 
     public EHR(boolean isPending) {
-        this(null, isPending);
+        this(new Date(), isPending);
     }
 
     public EHR(Date issueDate, boolean isPending) {
