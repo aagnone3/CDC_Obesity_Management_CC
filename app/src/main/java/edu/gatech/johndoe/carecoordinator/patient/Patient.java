@@ -22,6 +22,7 @@ public class Patient implements Parcelable{
     private String gender;
     private Date birth_date;
     private Address address;
+    private String email;
     private boolean isActive;
     private Date lastUpdated;
     private List<EHR> ehr;
@@ -39,6 +40,8 @@ public class Patient implements Parcelable{
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
             birth_date = format.parse(resource.getString("birthDate"));
             address = new Address(new JSONObject(resource.getJSONArray("address").get(0).toString()));
+            // TODO get email from database
+            email = "anthonyagnone@gmail.com";
             isActive = resource.getBoolean("active");
             format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZZ", Locale.US);
             lastUpdated = format.parse(json.getJSONObject("meta").getString("lastUpdated"));
@@ -58,6 +61,7 @@ public class Patient implements Parcelable{
         birth_date = new Date(in.readLong());
         address = new Address(in.readString(), in.readString(), in.readString(), in.readString(), in.readString());
 //        address = (Address) in.readTypedObject(Address.CREATOR);
+        email = in.readString();
         isActive = in.readByte() != 0;
         lastUpdated = new Date(in.readLong());
         in.readTypedList(ehr, EHR.CREATOR);
@@ -133,6 +137,10 @@ public class Patient implements Parcelable{
     public void setAddress(Address address) {
         this.address = address;
     }
+
+    public String getEmail() {return email;}
+
+    public void setEmail(String email) {this.email = email;}
 
     public boolean isActive() {
         return isActive;
@@ -230,6 +238,7 @@ public class Patient implements Parcelable{
         dest.writeString(address.getCity());
         dest.writeString(address.getState());
         dest.writeString(address.getZipcode());
+        dest.writeString(email);
 //        dest.writeTypedObject(address, 0);
         dest.writeByte((byte) (isActive ? 1 : 0));
         dest.writeLong(lastUpdated.getTime());

@@ -5,6 +5,20 @@
     android:layout_height="fill_parent" >
 
     <TableRow
+        android:id="@+id/patient_email_row"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip" >
+
+        <Button
+            android:id="@+id/patient_email_button"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/patient_email_button"
+            android:gravity="end" />
+    </TableRow>
+
+    <TableRow
         android:id="@+id/info_row_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +31,6 @@
             android:id="@+id/patient_id"
             android:text="@string/none"
             android:layout_weight="0.5"/>
-
     </TableRow>
 
     <TableRow
@@ -108,6 +121,20 @@
 
         <TextView
             android:id="@+id/patient_address"
+            android:text="@string/none"/>
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/info_row_7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip">
+
+        <TextView
+            android:text="@string/email" />
+
+        <TextView
+            android:id="@+id/patient_email"
             android:text="@string/none"/>
     </TableRow>
 
