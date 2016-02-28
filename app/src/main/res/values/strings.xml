@@ -14,4 +14,10 @@
 
     <string name="patient_email_button">Email Patient</string>
     <string name="patient_count">"%1d patients"</string>
+    <string name="community_image_description">Community Image</string>
+    <string name="name_label">Name:</string>
+    <string name="patient_count_label">Number of Patients:</string>
+    <string name="address_label">Address:</string>
+    <string name="phone_number_label">Phone Number:</string>
+    <string name="email_label">Email:</string>
 </resources>

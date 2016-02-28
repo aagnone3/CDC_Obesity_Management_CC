@@ -29,7 +29,14 @@ public class CommunityListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_community_list, container, false);
 
-        List<Community> communities = Arrays.asList(new Community("YMCA", 120), new Community("Farmer's Market", 54));
+        List<Community> communities = Arrays.asList(
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54)
+        );  // FIXME: replace with real data
+
         final CommunityAdapter communityAdapter = new CommunityAdapter(getContext(), communities);
         ListView communityList = (ListView) view.findViewById(R.id.communityList);
         communityList.setAdapter(communityAdapter);
