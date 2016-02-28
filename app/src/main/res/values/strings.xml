@@ -20,4 +20,7 @@
     <string name="address_label">Address:</string>
     <string name="phone_number_label">Phone Number:</string>
     <string name="email_label">Email:</string>
+
+    <string name="search_title">Search Community</string>
+    <string name="search_hint">Search communities</string>
 </resources>

@@ -1,5 +1,8 @@
 package edu.gatech.johndoe.carecoordinator;
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -9,12 +12,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientFragment;
 
@@ -35,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
      */
     private ViewPager mViewPager;
 
+    private Menu mOptionsMenu;
+
+    private CommunityListFragment currentFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +62,20 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                if (mOptionsMenu == null) return;
+
+                MenuItem searchMenuItem = mOptionsMenu.findItem(R.id.search);
+
+                if (position != 3) {
+                    MenuItemCompat.collapseActionView(searchMenuItem);
+                }
+
+                searchMenuItem.setVisible(position == 3);
+            }
+        });
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -69,9 +92,53 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            if (currentFragment != null) {
+                currentFragment.updateList(query);
+            }
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        mOptionsMenu = menu;
+        MenuItem searchMenuItem = menu.findItem(R.id.search);
+
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) searchMenuItem.getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+
+        searchMenuItem.setVisible(mViewPager.getCurrentItem() == 3);
+
+        MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                if (currentFragment != null) {
+                    currentFragment.updateList(((SearchView) item.getActionView()).getQuery());
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                if (currentFragment != null) {
+                    currentFragment.updateList("");
+                }
+                return true;
+            }
+        });
+
         return true;
     }
 
@@ -152,8 +219,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     @Override
-    public void onCommunityFragmentInteraction(Uri uri) {
-        // TODO
+    public void onCommunityFragmentInteraction(CommunityListFragment fragment) {
+        currentFragment = fragment;
     }
 
     @Override

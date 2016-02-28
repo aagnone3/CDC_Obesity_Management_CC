@@ -5,16 +5,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-class CommunityAdapter extends ArrayAdapter<Community> {
+class CommunityAdapter extends ArrayAdapter<Community> implements Filterable {
+
+    private List<Community> communities;
 
     public CommunityAdapter(Context context, List<Community> communities) {
         super(context, R.layout.community_list_item, communities);
+        this.communities = new ArrayList<>(communities);
     }
 
     @Override
@@ -39,6 +45,38 @@ class CommunityAdapter extends ArrayAdapter<Community> {
         viewHolder.patientCount.setText(getContext().getString(R.string.patient_count, community.patientCount));
 
         return convertView;
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                ArrayList<Community> filtered = new ArrayList<>();
+
+                constraint = constraint.toString().toLowerCase().trim();
+                for (Community community : communities) {
+                    if (community.name.toLowerCase().startsWith(constraint.toString())) {
+                        filtered.add(community);
+                    }
+                }
+
+                results.count = filtered.size();
+                results.values = filtered;
+
+                return results;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                notifyDataSetChanged();
+                clear();
+                addAll((ArrayList<Community>) results.values);
+                notifyDataSetInvalidated();
+            }
+        };
     }
 
     private class ViewHolder {

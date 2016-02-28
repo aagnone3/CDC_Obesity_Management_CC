@@ -1,7 +1,6 @@
 package edu.gatech.johndoe.carecoordinator;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,13 +10,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 public class CommunityListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private CommunityAdapter communityAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,15 +29,15 @@ public class CommunityListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_community_list, container, false);
 
-        List<Community> communities = Arrays.asList(
+        ArrayList<Community> communities = new ArrayList<>(Arrays.asList(
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54)
-        );  // FIXME: replace with real data
+        ));  // FIXME: replace with real data
 
-        final CommunityAdapter communityAdapter = new CommunityAdapter(getContext(), communities);
+        communityAdapter = new CommunityAdapter(getContext(), communities);
         ListView communityList = (ListView) view.findViewById(R.id.communityList);
         communityList.setAdapter(communityAdapter);
         communityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -55,11 +55,8 @@ public class CommunityListFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onCommunityFragmentInteraction(uri);
-        }
+    public void updateList(CharSequence query) {
+        communityAdapter.getFilter().filter(query);
     }
 
     @Override
@@ -67,6 +64,7 @@ public class CommunityListFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
+            mListener.onCommunityFragmentInteraction(this);
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
