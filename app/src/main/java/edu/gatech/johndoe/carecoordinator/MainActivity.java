@@ -110,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 case 2:
                     return PatientFragment.newInstance("Patient Fragment");
                 case 3:
-                    return CommunityFragment.newInstance("Community Fragment");
+                    return new CommunityFragment();
             }
             return null;
         }
@@ -153,6 +153,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public void onCommunityFragmentInteraction(Uri uri) {
+        // TODO
+    }
+
+    @Override
+    public void onCommunityDetailFragmentInteraction(Uri uri) {
         // TODO
     }
 

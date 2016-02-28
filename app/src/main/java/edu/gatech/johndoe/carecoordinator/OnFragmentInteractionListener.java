@@ -7,4 +7,5 @@ public interface OnFragmentInteractionListener {
     void onReferralFragmentInteraction(Uri uri);
     void onPatientFragmentInteraction(Uri uri);
     void onCommunityFragmentInteraction(Uri uri);
+    void onCommunityDetailFragmentInteraction(Uri uri);
 }
