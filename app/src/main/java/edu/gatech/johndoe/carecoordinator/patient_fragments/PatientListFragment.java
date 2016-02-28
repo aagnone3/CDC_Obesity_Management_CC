@@ -28,13 +28,13 @@ public class PatientListFragment extends Fragment {
     public PatientListFragment() {
         if (patients == null) {
             patients = new ArrayList<>();
-            for (int i = 1; i <= 21; i++) {
+            for (int i = 1; i <= 1; i++) {
                 patients.add(new Patient(Utility.get_patient_info_by_id(i)));
                 for (int j = 0; j < 1 + (int) (Math.random() * 10); j++) {
                     patients.get(i - 1).addEHR(new EHR());
                 }
             }
-            dummy_cnt = 22;
+            dummy_cnt = 2;
         }
 
     }
