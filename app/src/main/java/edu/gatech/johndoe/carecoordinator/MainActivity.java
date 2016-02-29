@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 }
 
                 searchMenuItem.setVisible(position == 3);
+                mOptionsMenu.findItem(R.id.sort).setVisible(mViewPager.getCurrentItem() == 3);
             }
         });
 
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             if (currentFragment != null) {
-                currentFragment.updateList(query);
+                currentFragment.filterList(query);
             }
         }
     }
@@ -120,12 +121,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 searchManager.getSearchableInfo(getComponentName()));
 
         searchMenuItem.setVisible(mViewPager.getCurrentItem() == 3);
+        menu.findItem(R.id.sort).setVisible(mViewPager.getCurrentItem() == 3);
 
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
                 if (currentFragment != null) {
-                    currentFragment.updateList(((SearchView) item.getActionView()).getQuery());
+                    currentFragment.filterList(((SearchView) item.getActionView()).getQuery());
                 }
                 return true;
             }
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 if (currentFragment != null) {
-                    currentFragment.updateList("");
+                    currentFragment.filterList("");
                 }
                 return true;
             }
@@ -144,14 +146,18 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                return true;
+            case R.id.menuSortName:
+                sortCommunityList(CommunityAdapter.SortType.NAME);
+                return true;
+            case R.id.menuSortPopularity:
+                sortCommunityList(CommunityAdapter.SortType.POPULARITY);
+                return true;
+            case R.id.menuSortDistance:
+                sortCommunityList(CommunityAdapter.SortType.DISTANCE);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -226,6 +232,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     public void onCommunityDetailFragmentInteraction(Uri uri) {
         // TODO
+    }
+
+    private void sortCommunityList(CommunityAdapter.SortType type) {
+        if (currentFragment != null) {
+            currentFragment.sortList(type);
+        }
     }
 
 }

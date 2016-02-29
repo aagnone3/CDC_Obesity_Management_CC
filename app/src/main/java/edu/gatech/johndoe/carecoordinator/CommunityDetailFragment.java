@@ -1,7 +1,6 @@
 package edu.gatech.johndoe.carecoordinator;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -71,13 +70,6 @@ public class CommunityDetailFragment extends Fragment {
                 "This is a random description of a random community resource.");    // FIXME: replace with real data
 
         return view;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onCommunityDetailFragmentInteraction(uri);
-        }
     }
 
     @Override

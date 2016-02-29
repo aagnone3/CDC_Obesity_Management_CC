@@ -3,12 +3,11 @@ package edu.gatech.johndoe.carecoordinator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,26 +36,20 @@ public class CommunityListFragment extends Fragment {
                 new Community("YMCA", 120), new Community("Farmer's Market", 54)
         ));  // FIXME: replace with real data
 
-        communityAdapter = new CommunityAdapter(getContext(), communities);
-        ListView communityList = (ListView) view.findViewById(R.id.communityList);
+        communityAdapter = new CommunityAdapter(communities);
+        RecyclerView communityList = (RecyclerView) view.findViewById(R.id.communityList);
+        communityList.setLayoutManager(new LinearLayoutManager(getContext()));
         communityList.setAdapter(communityAdapter);
-        communityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Fragment detailFragment = CommunityDetailFragment.newInstance(communityAdapter.getItem(position));
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.community_content, detailFragment, "detail");
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
 
         return view;
     }
 
-    public void updateList(CharSequence query) {
+    public void filterList(CharSequence query) {
         communityAdapter.getFilter().filter(query);
+    }
+
+    public void sortList(CommunityAdapter.SortType type) {
+        communityAdapter.sort(type);
     }
 
     @Override

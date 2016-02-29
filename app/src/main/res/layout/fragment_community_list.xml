@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     tools:context="edu.gatech.johndoe.carecoordinator.CommunityListFragment">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="45dp"
+        android:layout_height="match_parent"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:id="@+id/communityList" />
 
 </FrameLayout>

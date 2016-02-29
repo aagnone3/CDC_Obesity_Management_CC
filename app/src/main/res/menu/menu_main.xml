@@ -15,4 +15,23 @@
         app:showAsAction="collapseActionView|ifRoom"
         app:actionViewClass="android.widget.SearchView"
         android:visible="false" />
+
+    <item
+        android:id="@+id/sort"
+        android:title="@string/sort_title"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        app:showAsAction="collapseActionView|ifRoom"
+        android:visible="true">
+        <menu>
+            <item
+                android:id="@+id/menuSortName"
+                android:title="@string/sort_menu_name" />
+            <item
+                android:id="@+id/menuSortPopularity"
+                android:title="@string/sort_menu_popularity" />
+            <item
+                android:id="@+id/menuSortDistance"
+                android:title="@string/sort_menu_distance" />
+        </menu>
+    </item>
 </menu>

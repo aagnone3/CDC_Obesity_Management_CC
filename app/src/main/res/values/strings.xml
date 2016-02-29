@@ -23,4 +23,8 @@
 
     <string name="search_title">Search Community</string>
     <string name="search_hint">Search communities</string>
+    <string name="sort_title">Sort Community</string>
+    <string name="sort_menu_name">Sort by name</string>
+    <string name="sort_menu_popularity">Sort by popularity</string>
+    <string name="sort_menu_distance">Sort by distance</string>
 </resources>
