@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
+import com.firebase.client.Firebase;
+
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientFragment;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

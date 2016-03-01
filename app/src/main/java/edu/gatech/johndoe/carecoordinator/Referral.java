@@ -5,10 +5,14 @@ package edu.gatech.johndoe.carecoordinator;
  */
 public class Referral {
 
-    private boolean clicked = false;
+
     private String name;
     private String detail;
+    private boolean clicked = false;
     //push?
+
+    public Referral () {
+    }
 
     public Referral (String name) {
         this.name = name;
@@ -18,6 +22,12 @@ public class Referral {
     public Referral (String name, String detail) {
         this.name = name;
         this.detail = detail;
+    }
+
+    public Referral (String name, String detail, boolean clicked) {
+        this.name = name;
+        this.detail = detail;
+        this.clicked = clicked;
     }
 
     public String getName() {
