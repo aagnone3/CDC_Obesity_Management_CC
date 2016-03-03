@@ -22,5 +22,4 @@ public class EHRInfoFragment extends Fragment {
         temp.setText("EHR " + pos);
         return view;
     }
-
 }

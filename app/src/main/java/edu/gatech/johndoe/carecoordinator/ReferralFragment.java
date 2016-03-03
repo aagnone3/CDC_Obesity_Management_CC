@@ -128,7 +128,7 @@ public class ReferralFragment extends Fragment {
                     listviewReferral.setSelection(lastClicked);
                 }
 
-                Firebase myFirebaseRef = new Firebase("https://cdccoordinator.firebaseio.com/referral");
+                Firebase myFirebaseRef = new Firebase("https://cdccoordinator2.firebaseio.com/referral");
 //                myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
                 System.out.println("Button clicked");
 
@@ -219,7 +219,7 @@ public class ReferralFragment extends Fragment {
     }
 
     public void retrieveReferral() {
-        Firebase ref = new Firebase("https://cdccoordinator.firebaseio.com/referral");
+        Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/referral");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
