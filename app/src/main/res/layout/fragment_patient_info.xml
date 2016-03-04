@@ -138,6 +138,20 @@
             android:text="@string/none"/>
     </TableRow>
 
+    <TableRow
+        android:id="@+id/info_row_8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dip">
+
+        <TextView
+            android:text="@string/phone" />
+
+        <TextView
+            android:id="@+id/patient_phone"
+            android:text="@string/none"/>
+    </TableRow>
+
     <View
         android:layout_height="2dip"
         android:background="#000000" />

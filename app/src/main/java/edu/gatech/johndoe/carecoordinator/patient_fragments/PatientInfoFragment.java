@@ -35,6 +35,7 @@ public class PatientInfoFragment extends Fragment {
         TextView patient_age = (TextView) view.findViewById(R.id.patient_age);
         TextView patient_address = (TextView) view.findViewById(R.id.patient_address);
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email);
+        TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
         if (patient_name != null)
             patient_name.setText(p.getName_first());
         if (patient_id != null)
@@ -48,9 +49,11 @@ public class PatientInfoFragment extends Fragment {
         if (patient_birth_date != null)
             patient_birth_date.setText(p.getBirthDate());
         if (patient_address != null)
-            patient_address.setText(" " + p.getAddress().toString());
+            patient_address.setText(" " + p.getAddress().getText());
         if (patient_email != null)
             patient_email.setText(" " + p.getEmail());
+        if (patient_phone != null)
+            patient_phone.setText(" " + p.getPhoneNumber().replace('.', '-'));
 
         // Option to email the patient
         final Button button = (Button) view.findViewById(R.id.patient_email_button);
