@@ -41,15 +41,14 @@ public class PatientListFragment extends Fragment {
     public PatientListFragment() {
         if (patients == null) {
             patients = new ArrayList<>();
-            for (int i = 1; i <= 1; i++) {
+            for (int i = 1; i <= 10; i++) {
                 patients.add(new Patient(Utility.get_patient_info_by_id(i)));
                 for (int j = 0; j < 1 + (int) (Math.random() * 10); j++) {
                     patients.get(i - 1).addEHR(new EHR());
                 }
+                dummy_cnt++;
             }
-            dummy_cnt = 2;
         }
-
     }
 
 
@@ -99,10 +98,11 @@ public class PatientListFragment extends Fragment {
         protected String doInBackground(String... params) {
             for (int i = 0; i < 5; i++) {
                 patients.add(new Patient(Utility.get_patient_info_by_id(dummy_cnt + i)));
-                for (int j = 0; j < (int) (Math.random() * 10); j++)
+                for (int j = 0; j < (int) (Math.random() * 10); j++) {
                     patients.get(dummy_cnt + i - 1).addEHR(new EHR());
+                }
+                dummy_cnt++;
             }
-            dummy_cnt += 5;
             return null;
         }
 
