@@ -153,13 +153,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             case R.id.action_settings:
                 return true;
             case R.id.menuSortName:
-                sortCommunityList(CommunityAdapter.SortType.NAME);
+                sortCommunityList(CommunityListFragment.SortType.NAME);
                 return true;
             case R.id.menuSortPopularity:
-                sortCommunityList(CommunityAdapter.SortType.POPULARITY);
+                sortCommunityList(CommunityListFragment.SortType.POPULARITY);
                 return true;
             case R.id.menuSortDistance:
-                sortCommunityList(CommunityAdapter.SortType.DISTANCE);
+                sortCommunityList(CommunityListFragment.SortType.DISTANCE);
                 return true;
         }
 
@@ -237,7 +237,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         // TODO
     }
 
-    private void sortCommunityList(CommunityAdapter.SortType type) {
+    private void sortCommunityList(CommunityListFragment.SortType type) {
         if (currentFragment != null) {
             currentFragment.sortList(type);
         }

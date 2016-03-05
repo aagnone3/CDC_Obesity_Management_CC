@@ -129,22 +129,10 @@ public class ReferralFragment extends Fragment {
                 }
 
                 Firebase myFirebaseRef = new Firebase("https://cdccoordinator2.firebaseio.com/referral");
-//                myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
                 System.out.println("Button clicked");
 
                 myFirebaseRef.child(ref.getName()).setValue(ref);
                 retrieveReferral();
-
-//                if (!rec) {
-//                    rec = true;
-//                    recreation.setImageResource(R.drawable.recreation_selected);
-//                    foo = false;
-//                    food.setImageResource(R.drawable.food);
-//                    stu = false;
-//                    study.setImageResource(R.drawable.study);
-//                    ViewRec();
-//                }
-//                displayListView();
             }
         });;
         return view;
@@ -184,7 +172,6 @@ public class ReferralFragment extends Fragment {
 
         @Override
         public View getView(final int position, View view, ViewGroup parent) {
-            ViewHolder holder = new ViewHolder();
             View vi = view;
             if (vi == null) {
 
@@ -209,12 +196,6 @@ public class ReferralFragment extends Fragment {
                 }
             });
             return vi;
-        }
-
-        class ViewHolder{
-            TextView textOne;
-            TextView textTwo;
-            ImageView imageView;
         }
     }
 
