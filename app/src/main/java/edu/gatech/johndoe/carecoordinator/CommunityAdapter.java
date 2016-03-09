@@ -3,6 +3,7 @@ package edu.gatech.johndoe.carecoordinator;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -136,17 +137,17 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
             communityImageView.setImageResource(R.mipmap.ic_launcher);   // FIXME: set to an actual image
             communityNameTextView.setText(community.name);
             patientCountTextView.setText(context.getString(R.string.patient_count, community.patientCount));
-
         }
 
         @Override
         public void onClick(View v) {
             if (community != null) {
                 Fragment detailFragment = CommunityDetailFragment.newInstance(community);
-                FragmentTransaction transaction = ((FragmentActivity) v.getContext()).getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.community_content, detailFragment, "detail");
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                transaction.addToBackStack(null);
+                FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                fragmentManager.popBackStackImmediate();
+                transaction.replace(R.id.detailFragment, detailFragment, "detail").addToBackStack(null);
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
                 transaction.commit();
             }
         }
