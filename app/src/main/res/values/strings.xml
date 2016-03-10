@@ -27,4 +27,7 @@
     <string name="sort_menu_name">Sort by name</string>
     <string name="sort_menu_popularity">Sort by popularity</string>
     <string name="sort_menu_distance">Sort by distance</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
