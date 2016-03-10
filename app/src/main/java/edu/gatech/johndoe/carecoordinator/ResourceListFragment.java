@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +28,16 @@ public class ResourceListFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
 //        ArrayList<Community> communities = new ArrayList<>(Arrays.asList(
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+//                new Community("YMCA", 120), new Community("Farmer's Market", 54),
 //                new Community("YMCA", 120), new Community("Farmer's Market", 54),
 //                new Community("YMCA", 120), new Community("Farmer's Market", 54),
 //                new Community("YMCA", 120), new Community("Farmer's Market", 54),
@@ -61,6 +70,16 @@ public class ResourceListFragment extends Fragment {
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54)
         ));  // FIXME: replace with real data
 
@@ -68,6 +87,7 @@ public class ResourceListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_list, container, false);
         RecyclerView communityList = (RecyclerView) view.findViewById(R.id.list);
+        communityList.addItemDecoration(new ListDividerItemDecoration(getContext()));
         communityList.setLayoutManager(new LinearLayoutManager(getContext()));
         communityList.setAdapter(communityAdapter);
 

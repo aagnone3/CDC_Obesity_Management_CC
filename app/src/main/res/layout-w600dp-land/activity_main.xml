@@ -41,6 +41,11 @@
                 android:id="@+id/listFragment"
                 class="edu.gatech.johndoe.carecoordinator.ResourceListFragment" />
 
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray"/>
+
             <fragment
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
