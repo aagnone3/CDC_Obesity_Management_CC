@@ -5,35 +5,43 @@
     android:layout_width="match_parent"
     android:layout_height="80dp"
     android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp"
-    android:gravity="center_vertical">
+    android:layout_marginBottom="5dp">
 
     <ImageView
-        android:layout_gravity="start"
+        android:id="@+id/communityImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/community_image_description"
         app:layout_heightPercent="90%"
         app:layout_aspectRatio="100%"
-        app:layout_marginStartPercent="5%"
-        android:id="@+id/communityImage"
-        android:contentDescription="@string/community_image_description" />
+        app:layout_marginStartPercent="5%" />
 
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
-        app:layout_heightPercent="40%"
-        app:layout_marginStartPercent="4%"
-        app:layout_marginEndPercent="5%"
-        android:id="@+id/communityName"
+        android:layout_height="0dp"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/communityImage"
-        android:layout_alignTop="@id/communityImage"
-        android:textStyle="bold" />
+        app:layout_heightPercent="85%"
+        app:layout_marginStartPercent="5%"
+        app:layout_marginEndPercent="5%">
 
-    <TextView
-        android:layout_width="wrap_content"
-        app:layout_heightPercent="40%"
-        android:id="@+id/patientCount"
-        android:layout_alignStart="@id/communityName"
-        android:layout_below="@id/communityName"
-        app:layout_marginEndPercent="5%"
-        app:layout_marginTopPercent="5%" />
+        <TextView
+            android:id="@+id/communityName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/patientCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textSize="24sp" />
+
+    </RelativeLayout>
 
 </android.support.percent.PercentRelativeLayout>
 

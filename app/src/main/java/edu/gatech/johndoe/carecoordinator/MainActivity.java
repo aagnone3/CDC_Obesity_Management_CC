@@ -26,6 +26,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     private CommunityListFragment currentFragment;
 
+    private boolean expanded;
+
+    private ActionBarDrawerToggle toggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,15 +50,26 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             }
         });
 
-        if (findViewById(R.id.drawer_layout) != null) {
-            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        if (findViewById(R.id.expanded_layout) != null) {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_locked);
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            drawer.setScrimColor(0);
+            expanded = true;
+        } else {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_unlocked);
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-            drawer.setDrawerListener(toggle);
+            drawer.addDrawerListener(toggle);
             toggle.syncState();
+            expanded = false;
+        }
 
-            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-            navigationView.setNavigationItemSelectedListener(this);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        if (savedInstanceState == null) {
+            navigationView.getMenu().getItem(0).setChecked(true);
         }
     }
 
@@ -162,6 +177,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        return false;
+        return true;
     }
 }
