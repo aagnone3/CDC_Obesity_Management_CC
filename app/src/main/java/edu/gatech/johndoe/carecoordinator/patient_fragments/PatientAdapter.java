@@ -19,11 +19,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import edu.gatech.johndoe.carecoordinator.DataRecyclable;
+import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.Restorable;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 
-public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientHolder> implements Filterable, DataRecyclable {
+public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientHolder> implements Filterable, Restorable {
 
     private static final Comparator<Patient> FIRST_NAME_COMPARATOR = new Comparator<Patient>() {
         @Override
@@ -47,20 +48,26 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         }
     };
 
+    public int selectedPosition;
+
     private Context context;
     private List<Patient> patients;
     private List<Patient> filteredPatients;
 
-    public PatientAdapter(List<Patient> patients) {
+    public PatientAdapter(List<Patient> patients, int selected) {
         this.patients = patients;
         this.filteredPatients = new ArrayList<>(patients);
+        this.selectedPosition = selected;
+    }
+
+    public PatientAdapter(List<Patient> patients) {
+        this(patients, -1);
     }
 
     @Override
     public PatientHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View view;
-        view = LayoutInflater.from(context).inflate(R.layout.patient_list_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.patient_list_item, parent, false);
         return new PatientHolder(view);
     }
 
@@ -69,6 +76,10 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
     public void onBindViewHolder(PatientHolder holder, int position) {
         Patient patient = filteredPatients.get(position);
         holder.bindPatient(context, patient);
+
+        if (MainActivity.isInExpandedMode) {
+            holder.itemView.setSelected(position == selectedPosition);
+        }
     }
 
     @Override
@@ -127,12 +138,16 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         return patients;
     }
 
-    public static class PatientHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public class PatientHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView patientStatusImage;
         private final TextView patientNameTextView;
         private final TextView patientStatusTextView;
         private Patient patient;
-
 
         public PatientHolder(View itemView) {
             super(itemView);
@@ -156,15 +171,22 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                if (((FragmentActivity) v.getContext()).findViewById(R.id.expanded_layout) == null) {
+                if (MainActivity.isInExpandedMode) {
+                    //noinspection ResourceType
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
+                } else {
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     transaction.replace(R.id.contentContainer, detailFragment).addToBackStack(null);
-                } else {
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-                    transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
                 }
 
                 transaction.commit();
+
+                if (MainActivity.isInExpandedMode) {
+                    notifyItemChanged(selectedPosition);
+                    selectedPosition = getLayoutPosition();
+                    notifyItemChanged(selectedPosition);
+                }
             }
         }
     }
