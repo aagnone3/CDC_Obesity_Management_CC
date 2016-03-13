@@ -9,9 +9,6 @@ import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -24,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
+import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
@@ -194,7 +192,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (id == R.id.nav_referrals) {
             contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities())); // FIXME: replace with the referral adapter/data
         } else if (id == R.id.nav_patients) {
-            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities())); // FIXME: replace with the patient adapter/data
+            contentListFragment.setAdapter(new PatientAdapter(Utility.getPatients()));
         } else if (id == R.id.nav_communities) {
             contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()));
         } else if (id == R.id.nav_account) {

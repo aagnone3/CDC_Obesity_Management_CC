@@ -17,7 +17,6 @@ public class ListDividerItemDecoration extends RecyclerView.ItemDecoration {
         } else {
             mDivider = ResourcesCompat.getDrawable(context.getResources(), R.drawable.line_divider, null);
         }
-
     }
 
     @Override
