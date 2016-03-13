@@ -1,63 +1,198 @@
 package edu.gatech.johndoe.carecoordinator.patient_fragments;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.Restorable;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 
-public class PatientAdapter extends ArrayAdapter<Patient> {
+public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientHolder> implements Filterable, Restorable {
 
-    private android.support.v4.app.FragmentManager fragment_manager;
+    private static final Comparator<Patient> FIRST_NAME_COMPARATOR = new Comparator<Patient>() {
+        @Override
+        public int compare(Patient lhs, Patient rhs) {
+            return lhs.getFirst_name().compareTo(rhs.getFirst_name());
+        }
+    };
 
-    public PatientAdapter(Context context, int resource, List<Patient> patients, android.support.v4.app.FragmentManager fragment_manager) {
-        super(context, resource, patients);
-        this.fragment_manager = fragment_manager;
+    private static final Comparator<Patient> LAST_NAME_COMPARATOR = new Comparator<Patient>() {
+        @Override
+        public int compare(Patient lhs, Patient rhs) {
+            return lhs.getLast_name().compareTo(rhs.getLast_name());
+        }
+    };
+
+    private static final Comparator<Patient> LATEST_IMPORT_DATE_COMPARATOR = new Comparator<Patient>() {
+        @Override
+        public int compare(Patient lhs, Patient rhs) {
+//            return lhs.getDateOfimport().compareTo(rhs.getDateOfimport());
+            return 0;
+        }
+    };
+
+    public int selectedPosition;
+
+    private Context context;
+    private List<Patient> patients;
+    private List<Patient> filteredPatients;
+
+    public PatientAdapter(List<Patient> patients, int selected) {
+        this.patients = patients;
+        this.filteredPatients = new ArrayList<>(patients);
+        this.selectedPosition = selected;
+    }
+
+    public PatientAdapter(List<Patient> patients) {
+        this(patients, -1);
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        View v = convertView;
+    public PatientHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        context = parent.getContext();
+        View view = LayoutInflater.from(context).inflate(R.layout.patient_list_item, parent, false);
+        return new PatientHolder(view);
+    }
 
-        if (v == null) {
-            LayoutInflater vi;
-            vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.patient_listview_row, null);
-            v.setClickable(false);
-            v.setBackgroundColor(Color.parseColor("#ffffff"));
+
+    @Override
+    public void onBindViewHolder(PatientHolder holder, int position) {
+        Patient patient = filteredPatients.get(position);
+        holder.bindPatient(context, patient);
+
+        if (MainActivity.isInExpandedMode) {
+            holder.itemView.setSelected(position == selectedPosition);
         }
-        final Patient p = getItem(position);
+    }
 
-        if (p != null) {
-            final TextView patient_name = (TextView) v.findViewById(R.id.patient_name);
-            final TextView patient_status = (TextView) v.findViewById(R.id.patient_status);
-            patient_name.setText(p.getName_first());
+    @Override
+    public int getItemCount() {
+        return filteredPatients.size();
+    }
 
-            patient_name.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    PatientInfoFragment pif = new PatientInfoFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("PIF", p);
-                    pif.setArguments(bundle);
-                    FragmentTransaction ft = fragment_manager.beginTransaction();
-                    ft.replace(R.id.patient_container, pif);
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ft.addToBackStack(null);
-                    ft.commit();
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                FilterResults results = new FilterResults();
+                ArrayList<Patient> filtered = new ArrayList<>();
+
+                constraint = constraint.toString().toLowerCase().trim();
+                for (Patient patient : patients) {
+                    if (patient.getName_first().toLowerCase().startsWith(constraint.toString())) {
+                        filtered.add(patient);
+                    }
                 }
-            });
-            patient_status.setText(p.isPending() ? "Pending" : "Closed");
+
+                results.count = filtered.size();
+                results.values = filtered;
+
+                return results;
+            }
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredPatients.clear();
+                filteredPatients.addAll((ArrayList<Patient>) results.values);
+                notifyDataSetChanged();
+            }
+        };
+    }
+
+    public void sort(SortType type) {
+        switch(type) {
+            case FIRST_NAME:
+                Collections.sort(filteredPatients, FIRST_NAME_COMPARATOR);
+                break;
+            case LAST_NAME:
+                Collections.sort(filteredPatients, LAST_NAME_COMPARATOR);
+                break;
+            case LATEST_IMPORT_DATE:
+                Collections.sort(filteredPatients, LATEST_IMPORT_DATE_COMPARATOR);
+                break;
         }
-        return v;
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public List<Patient> getDataSet() {
+        return patients;
+    }
+
+    @Override
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public class PatientHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final ImageView patientStatusImage;
+        private final TextView patientNameTextView;
+        private final TextView patientStatusTextView;
+        private Patient patient;
+
+        public PatientHolder(View itemView) {
+            super(itemView);
+            patientStatusImage = (ImageView) itemView.findViewById(R.id.patientStatusImage);
+            patientNameTextView = (TextView) itemView.findViewById(R.id.patient_name);
+            patientStatusTextView = (TextView) itemView.findViewById(R.id.patient_status);
+            itemView.setOnClickListener(this);
+        }
+
+        public void bindPatient(Context context, Patient patient) {
+            this.patient = patient;
+            patientStatusImage.setImageResource(R.mipmap.ic_launcher);   // FIXME: set to an actual image
+            patientNameTextView.setText(patient.getName_first());
+            patientStatusTextView.setText(patient.isPending() ? R.string.pending : R.string.closed);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (patient != null) {
+                Fragment detailFragment = PatientDetailFragment.newInstance(patient);
+                FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+                if (MainActivity.isInExpandedMode) {
+                    //noinspection ResourceType
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
+                } else {
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    transaction.replace(R.id.contentContainer, detailFragment).addToBackStack(null);
+                }
+
+                transaction.commit();
+
+                if (MainActivity.isInExpandedMode) {
+                    notifyItemChanged(selectedPosition);
+                    selectedPosition = getLayoutPosition();
+                    notifyItemChanged(selectedPosition);
+                }
+            }
+        }
+    }
+
+    public enum SortType {
+        FIRST_NAME, LAST_NAME, LATEST_IMPORT_DATE
     }
 
 }

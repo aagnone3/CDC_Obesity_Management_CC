@@ -58,9 +58,9 @@ public class PatientListFragment extends Fragment {
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) { }
         });
-        adapter = new PatientAdapter(getActivity(), R.id.patient_list_view_row,
-                patients, getActivity().getSupportFragmentManager());
-        list.setAdapter(adapter);
+//        adapter = new PatientAdapter(getActivity(), R.id.patient_list_view_row,
+//                patients, getActivity().getSupportFragmentManager());
+//        list.setAdapter(adapter);
         return view;
     }
 

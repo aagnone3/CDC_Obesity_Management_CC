@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
+import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
@@ -201,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (id == R.id.nav_referrals) {
             contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
         } else if (id == R.id.nav_patients) {
-            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Patient); // FIXME: replace with the patient adapter/data
+            contentListFragment.setAdapter(new PatientAdapter(Utility.getPatients()), ContentListFragment.ContentType.Patient);
         } else if (id == R.id.nav_communities) {
             contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Community);
         } else if (id == R.id.nav_account) {
