@@ -5,6 +5,7 @@
 
     <string name="suggestion">Suggestion</string>
     <string name="pending">Pending</string>
+    <string name="progress">In-Progress</string>
     <string name="closed">Closed</string>
     <string name="patient_gender">Gender:</string>
     <string name="patient_dob">DOB:</string>

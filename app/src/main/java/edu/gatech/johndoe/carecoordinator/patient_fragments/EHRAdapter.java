@@ -2,7 +2,6 @@ package edu.gatech.johndoe.carecoordinator.patient_fragments;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,11 +45,11 @@ public class EHRAdapter extends ArrayAdapter<EHR> {
             ehr_title.setText("EHR" + position);
             ehr_title.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    EHRInfoFragment ehr = new EHRInfoFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("EHR", e);
-                    bundle.putInt("EHR_NUM", position);
-                    ehr.setArguments(bundle);
+                    EHRDetailFragment ehr = new EHRDetailFragment();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putParcelable("EHR", e);
+//                    bundle.putInt("EHR_NUM", position);
+//                    ehr.setArguments(bundle);
                     FragmentTransaction ft = fragment_manager.beginTransaction();
                     ft.replace(R.id.patient_container, ehr);
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

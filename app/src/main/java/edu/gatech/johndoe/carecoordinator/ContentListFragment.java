@@ -17,6 +17,9 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import edu.gatech.johndoe.carecoordinator.patient.Patient;
+import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
+
 
 public class ContentListFragment extends Fragment {
 
@@ -44,10 +47,9 @@ public class ContentListFragment extends Fragment {
                     adapter = new CommunityAdapter(data, selectedPosition);
                     break;
                 case Patient:
-                    // TODO: change to Patient type
-                    listType = new TypeToken<List<Community>>(){}.getType();
+                    listType = new TypeToken<List<Patient>>(){}.getType();
                     data = new Gson().fromJson(savedInstanceState.getString("data"), listType);
-                    adapter = new CommunityAdapter(data, selectedPosition);
+                    adapter = new PatientAdapter(data, selectedPosition);
                     break;
                 case Community:
                     listType = new TypeToken<List<Community>>(){}.getType();

@@ -36,8 +36,9 @@ public class Utility {
 
     public static ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> getPatients() {
         ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> patients = new ArrayList<>();
-        ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(1);
-        for (int i = 1; i <= 30; i++) {
+
+        for (int i = 1; i <= 20; i++) {
+            ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
             patients.add(new edu.gatech.johndoe.carecoordinator.patient.Patient(p));
         }
         return patients;

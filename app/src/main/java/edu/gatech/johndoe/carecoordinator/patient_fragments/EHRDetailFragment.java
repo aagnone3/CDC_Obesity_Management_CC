@@ -10,7 +10,7 @@ import android.widget.TextView;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
 
-public class EHRInfoFragment extends Fragment {
+public class EHRDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

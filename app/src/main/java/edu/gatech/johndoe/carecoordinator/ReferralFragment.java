@@ -1,6 +1,5 @@
 package edu.gatech.johndoe.carecoordinator;
 
-import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,10 +14,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.location.LocationListener;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -37,9 +39,10 @@ public class ReferralFragment extends Fragment {
     private TextView listName, listDetails, name, date, details;
     private Button reviewedButton;
     private int lastClicked = -1;
+    private Referral ref;
 
 
-    // TODO: Rename and change types of parameters
+    // TODO: Rename and change types of parameters update
     private String mExampleParam;
 
     private OnFragmentInteractionListener mListener;
@@ -84,6 +87,7 @@ public class ReferralFragment extends Fragment {
         dummyList.add("David");
         dummyList.add("Kesha");
         dummyList.add("Tom");
+
         adapter = new ReferralListAdapter(getActivity(), R.layout.listview_referral, dummyList);
         listviewReferral = (ListView) getView().findViewById(R.id.listviewreferral);
         listviewReferral.setAdapter(adapter);
@@ -92,7 +96,7 @@ public class ReferralFragment extends Fragment {
                                     long id) {
                 Log.d("ID", Integer.toString(position));
                 lastClicked = position;
-                Referral ref = referralPatientsName.get(position);
+                ref = referralPatientsName.get(position);
                 name.setText("Name: " +ref.getName());
                 date.setText("Date: " + "2015/1/2");
                 details.setText("Details: " + ref.getDetail());
@@ -107,6 +111,8 @@ public class ReferralFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_referral, container, false);
+//        TextView exampleLabel = (TextView) view.findViewById(R.id.exampleLabel);
+//        exampleLabel.setText(mExampleParam);
         name = (TextView) view.findViewById(R.id.textviewname);
         date = (TextView) view.findViewById(R.id.textviewdate);
         details = (TextView) view.findViewById(R.id.textviewdetails);
@@ -118,6 +124,12 @@ public class ReferralFragment extends Fragment {
                     listviewReferral.setSelection(lastClicked);
                 }
 
+                Firebase myFirebaseRef = new Firebase("https://cdccoordinator2.firebaseio.com/referral");
+//                myFirebaseRef.child("message").setValue("Do you have data? You'll love Firebase.");
+                System.out.println("Button clicked");
+
+                myFirebaseRef.child(ref.getName()).setValue(ref);
+                retrieveReferral();
 
 //                if (!rec) {
 //                    rec = true;
@@ -200,6 +212,26 @@ public class ReferralFragment extends Fragment {
             TextView textTwo;
             ImageView imageView;
         }
+    }
+
+    public void retrieveReferral() {
+        Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/referral");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println("There are " + snapshot.getChildrenCount() + " referral posts");
+                for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                    System.out.println(postSnapshot.getValue());
+//                    Referral referral = postSnapshot.getValue(Referral.class);
+                    Referral refe = postSnapshot.getValue(Referral.class);
+                    System.out.println(refe.getName() + " is " + refe.getDetail());
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
 }
