@@ -27,9 +27,10 @@ import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
 
+    public static boolean isInExpandedMode;
+
     private Menu mOptionsMenu;
     private CommunityListFragment currentFragment;
-    private boolean drawerLocked;
     private int currentNavigationItemId;
 
     @Override
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_locked);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
             drawer.setScrimColor(0);
-            drawerLocked = true;
+            isInExpandedMode = true;
         } else {
             // collapsed (navigation drawer) layout mode
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_unlocked);
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
             toggle.syncState();
-            drawerLocked = false;
+            isInExpandedMode = false;
         }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             return false;
         }
 
-        if (drawerLocked) {
+        if (isInExpandedMode) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.detailFragmentContainer, new UnselectedFragment(), "detail");
             transaction.commit();
