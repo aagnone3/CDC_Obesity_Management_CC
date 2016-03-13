@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,17 +53,36 @@ public class PatientDetailFragment extends Fragment {
         TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender);
         TextView patient_birth_date = (TextView) view.findViewById(R.id.patient_dob);
         TextView patient_age = (TextView) view.findViewById(R.id.patient_age);
-        TextView patient_address = (TextView) view.findViewById(R.id.patient_address);
+        TextView patient_address_first = (TextView) view.findViewById(R.id.patient_address_first_line);
+        TextView patient_address_second = (TextView) view.findViewById(R.id.patient_address_second_line);
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email);
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
         patient_name.setText(patient.getName_first());
         patient_id.setText(patient.getId());
-        patient_type.setText(patient.getType().toUpperCase().charAt(0) + patient.getType().substring(1));
-        patient_gender.setText(patient.getGender().toUpperCase().charAt(0) + patient.getGender().substring(1));
+        patient_type.setText(patient.getType());
+        patient_gender.setText(patient.getGender());
         patient_age.setText(String.valueOf(patient.getAge()));
         patient_birth_date.setText(patient.getBirthDate());
-        patient_address.setText(patient.getAddress().toString());
+        patient_address_first.setText(patient.getAddressFirstLine());
+        patient_address_second.setText(patient.getAddressSecondLine());
         patient_email.setText(patient.getEmail());
+        patient_email.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(android.R.drawable.ic_dialog_email)
+                        .setTitle(patient.getEmail())
+                        .setMessage("Do you want to send an email to " + patient.getName_first() + "?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sendPatientEmail();
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
         patient_phone.setText(patient.getPhoneNumber());
         patient_phone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,14 +100,6 @@ public class PatientDetailFragment extends Fragment {
                         })
                         .setNegativeButton("No", null)
                         .show();
-            }
-        });
-
-        // Option to email the patient
-        final Button button = (Button) view.findViewById(R.id.patient_email_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                sendPatientEmail();
             }
         });
 

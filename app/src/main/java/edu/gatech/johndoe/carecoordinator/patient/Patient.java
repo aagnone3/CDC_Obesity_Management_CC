@@ -81,7 +81,7 @@ public class Patient {
     }
 
     public String getType() {
-        return type;
+        return type.toUpperCase().charAt(0) + type.substring(1);
     }
 
     public void setType(String type) {
@@ -113,7 +113,7 @@ public class Patient {
     }
 
     public String getGender() {
-        return gender;
+        return gender.toUpperCase().charAt(0) + gender.substring(1);
     }
 
     public void setGender(String gender) {
@@ -132,6 +132,15 @@ public class Patient {
         if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR))
             age--;
         return age;
+    }
+
+    public String getAddressFirstLine() {
+        return address.getLineFirstRep().toString().toUpperCase();
+    }
+
+    public String getAddressSecondLine() {
+        return address.getCity().toUpperCase() + ", " +
+                address.getState().toUpperCase() + " " + address.getPostalCode();
     }
 
     public AddressDt getAddress() {
