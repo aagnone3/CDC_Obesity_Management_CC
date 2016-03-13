@@ -29,7 +29,7 @@ public class ContentListFragment extends Fragment {
         if (savedInstanceState != null) {
             Type listType = new TypeToken<List<Community>>(){}.getType();
             List<Community> data = new Gson().fromJson(savedInstanceState.getString("data"), listType);
-            adapter = new CommunityAdapter(data);
+            adapter = new CommunityAdapter(data, savedInstanceState.getInt("selectedPosition"));
             setAdapter(adapter);
         }
     }
@@ -46,6 +46,7 @@ public class ContentListFragment extends Fragment {
         RecyclerView contentList = (RecyclerView) view.findViewById(R.id.list);
         contentList.addItemDecoration(new ListDividerItemDecoration(getContext()));
         contentList.setLayoutManager(new LinearLayoutManager(getContext()));
+        contentList.setItemAnimator(null);
 
         return view;
     }
@@ -71,8 +72,9 @@ public class ContentListFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        if (adapter instanceof DataRecyclable) {
-            outState.putString("data", new Gson().toJson(((DataRecyclable) adapter).getDataSet()));
+        if (adapter instanceof Restorable) {
+            outState.putString("data", new Gson().toJson(((Restorable) adapter).getDataSet()));
+            outState.putInt("selectedPosition", ((Restorable) adapter).getSelectedPosition());
         }
     }
 

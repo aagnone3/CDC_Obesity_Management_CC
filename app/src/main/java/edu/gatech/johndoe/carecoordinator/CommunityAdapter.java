@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, DataRecyclable {
+public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, Restorable {
 
     private static final Comparator<Community> NAME_COMPARATOR = new Comparator<Community>() {
         @Override
@@ -44,13 +44,20 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
         }
     };
 
+    public int selectedPosition;
+
     private Context context;
     private List<Community> communities;
     private List<Community> filteredCommunities;
 
-    public CommunityAdapter(List<Community> communities) {
+    public CommunityAdapter(List<Community> communities, int selected) {
         this.communities = communities;
         this.filteredCommunities = new ArrayList<>(communities);
+        this.selectedPosition = selected;
+    }
+
+    public CommunityAdapter(List<Community> communities) {
+        this(communities, -1);
     }
 
     @Override
@@ -64,6 +71,10 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
     public void onBindViewHolder(CommunityHolder holder, int position) {
         Community community = filteredCommunities.get(position);
         holder.bindCommunity(context, community);
+
+        if (MainActivity.isInExpandedMode) {
+            holder.itemView.setSelected(position == selectedPosition);
+        }
     }
 
     @Override
@@ -122,7 +133,12 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
         return communities;
     }
 
-    public static class CommunityHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    @Override
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public class CommunityHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView communityImageView;
         private final TextView communityNameTextView;
         private final TextView patientCountTextView;
@@ -151,15 +167,21 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                if (((FragmentActivity) v.getContext()).findViewById(R.id.expanded_layout) == null) {
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    transaction.replace(R.id.contentContainer, detailFragment).addToBackStack(null);
-                } else {
+                if (MainActivity.isInExpandedMode) {
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
                     transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
+                } else {
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    transaction.replace(R.id.contentContainer, detailFragment).addToBackStack(null);
                 }
 
                 transaction.commit();
+
+                if (MainActivity.isInExpandedMode) {
+                    notifyItemChanged(selectedPosition);
+                    selectedPosition = getLayoutPosition();
+                    notifyItemChanged(selectedPosition);
+                }
             }
         }
     }
