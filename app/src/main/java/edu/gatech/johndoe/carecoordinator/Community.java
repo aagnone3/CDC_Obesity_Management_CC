@@ -1,6 +1,6 @@
 package edu.gatech.johndoe.carecoordinator;
 
-class Community {
+public class Community {
     public String name;
     public int patientCount;
 

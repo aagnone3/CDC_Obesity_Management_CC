@@ -107,8 +107,6 @@ public class ReferralFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_referral, container, false);
-        TextView exampleLabel = (TextView) view.findViewById(R.id.exampleLabel);
-//        exampleLabel.setText(mExampleParam);
         name = (TextView) view.findViewById(R.id.textviewname);
         date = (TextView) view.findViewById(R.id.textviewdate);
         details = (TextView) view.findViewById(R.id.textviewdetails);

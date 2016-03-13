@@ -34,8 +34,20 @@ public class CommunityDetailFragment extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            if (community == null) {
+                community = new Gson().fromJson(savedInstanceState.getString("community"), Community.class);
+            }
+        }
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (getArguments() != null) {
             community = new Gson().fromJson(getArguments().getString(ARG_COMMUNITY), Community.class);
         }
@@ -87,5 +99,12 @@ public class CommunityDetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("community", new Gson().toJson(community));
     }
 }

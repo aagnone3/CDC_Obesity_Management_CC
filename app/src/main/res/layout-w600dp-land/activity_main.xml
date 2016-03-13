@@ -46,29 +46,28 @@
                     android:id="@+id/nav_view"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1.5"
+                    android:layout_weight="2"
                     android:layout_gravity="start"
                     app:headerLayout="@layout/nav_header_main"
                     app:menu="@menu/activity_main_drawer" />
 
                 <fragment
+                    android:id="@+id/contentListFragment"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:id="@+id/listFragment"
-                    class="edu.gatech.johndoe.carecoordinator.ResourceListFragment" />
+                    android:layout_weight="3"
+                    class="edu.gatech.johndoe.carecoordinator.ContentListFragment" />
 
                 <View
                     android:layout_width="2dp"
                     android:layout_height="match_parent"
                     android:background="@color/light_gray"/>
 
-                <fragment
+                <FrameLayout
+                    android:id="@+id/detailFragmentContainer"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:id="@+id/detailFragment"
-                    class="edu.gatech.johndoe.carecoordinator.SummaryFragment" />
+                    android:layout_weight="4" />
 
             </LinearLayout>
 

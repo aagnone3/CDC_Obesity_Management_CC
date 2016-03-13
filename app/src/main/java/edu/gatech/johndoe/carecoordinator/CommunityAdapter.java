@@ -20,7 +20,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable {
+public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, DataRecyclable {
 
     private static final Comparator<Community> NAME_COMPARATOR = new Comparator<Community>() {
         @Override
@@ -117,6 +117,11 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
         notifyDataSetChanged();
     }
 
+    @Override
+    public List<Community> getDataSet() {
+        return communities;
+    }
+
     public static class CommunityHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView communityImageView;
         private final TextView communityNameTextView;
@@ -145,9 +150,15 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                 Fragment detailFragment = CommunityDetailFragment.newInstance(community);
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
-                fragmentManager.popBackStackImmediate();
-                transaction.replace(R.id.detailFragment, detailFragment, "detail").addToBackStack(null);
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+
+                if (((FragmentActivity) v.getContext()).findViewById(R.id.expanded_layout) == null) {
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    transaction.replace(R.id.contentContainer, detailFragment).addToBackStack(null);
+                } else {
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                    transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
+                }
+
                 transaction.commit();
             }
         }

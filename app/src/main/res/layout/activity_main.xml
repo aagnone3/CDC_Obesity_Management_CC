@@ -38,7 +38,8 @@
 
             </android.support.design.widget.AppBarLayout>
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/contentContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -47,10 +48,10 @@
                 <fragment
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/listFragment"
-                    class="edu.gatech.johndoe.carecoordinator.ResourceListFragment" />
+                    android:id="@+id/contentListFragment"
+                    class="edu.gatech.johndoe.carecoordinator.ContentListFragment" />
 
-            </LinearLayout>
+            </FrameLayout>
 
         </LinearLayout>
 

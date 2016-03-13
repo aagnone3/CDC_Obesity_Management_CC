@@ -9,6 +9,11 @@ import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,16 +24,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
+import edu.gatech.johndoe.carecoordinator.util.Utility;
+
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
 
     private Menu mOptionsMenu;
-
     private CommunityListFragment currentFragment;
-
-    private boolean expanded;
-
-    private ActionBarDrawerToggle toggle;
+    private boolean drawerLocked;
+    private int currentNavigationItemId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,25 +55,27 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         });
 
         if (findViewById(R.id.expanded_layout) != null) {
+            // expanded layout mode
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_locked);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
             drawer.setScrimColor(0);
-            expanded = true;
+            drawerLocked = true;
         } else {
+            // collapsed (navigation drawer) layout mode
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_unlocked);
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            toggle = new ActionBarDrawerToggle(
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                     this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
             toggle.syncState();
-            expanded = false;
+            drawerLocked = false;
         }
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
-            navigationView.getMenu().getItem(0).setChecked(true);
+            onNavigationItemSelected(navigationView.getMenu().getItem(0).setChecked(true));
         }
     }
 
@@ -177,6 +183,39 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == currentNavigationItemId) {
+            return true;
+        }
+
+        ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+
+        if (id == R.id.nav_referrals) {
+            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities())); // FIXME: replace with the referral adapter/data
+        } else if (id == R.id.nav_patients) {
+            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities())); // FIXME: replace with the patient adapter/data
+        } else if (id == R.id.nav_communities) {
+            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()));
+        } else if (id == R.id.nav_account) {
+            // TODO
+        } else if (id == R.id.nav_settings) {
+            // TODO
+        } else {
+            return false;
+        }
+
+        if (drawerLocked) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.detailFragmentContainer, new UnselectedFragment(), "detail");
+            transaction.commit();
+        } else {
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_unlocked);
+            drawer.closeDrawer(GravityCompat.START);
+        }
+
+        currentNavigationItemId = id;
+
         return true;
     }
 }

@@ -9,6 +9,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import edu.gatech.johndoe.carecoordinator.Community;
 
 public class Utility {
     private static final String GET_PATIENT_INFO =
@@ -44,5 +48,27 @@ public class Utility {
             }
         }
         return object;
+    }
+
+    public static ArrayList<Community> getCommunities() {
+        ArrayList<Community> communities = new ArrayList<>(Arrays.asList(
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA", 120), new Community("Farmer's Market", 54)
+        ));  // FIXME: replace with real data
+
+        return communities;
     }
 }
