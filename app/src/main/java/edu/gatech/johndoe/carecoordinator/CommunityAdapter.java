@@ -44,16 +44,15 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
         }
     };
 
-    public int selectedPosition;
-
     private Context context;
     private List<Community> communities;
     private List<Community> filteredCommunities;
+    private int selectedPosition;
 
-    public CommunityAdapter(List<Community> communities, int selected) {
+    public CommunityAdapter(List<Community> communities, int selectedPosition) {
         this.communities = communities;
         this.filteredCommunities = new ArrayList<>(communities);
-        this.selectedPosition = selected;
+        this.selectedPosition = selectedPosition;
     }
 
     public CommunityAdapter(List<Community> communities) {
@@ -173,7 +172,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                     transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
                 } else {
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    transaction.replace(R.id.contentContainer, detailFragment).addToBackStack(null);
+                    transaction.replace(R.id.contentContainer, detailFragment, "detail").addToBackStack(null);
                 }
 
                 transaction.commit();
@@ -182,6 +181,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                     notifyItemChanged(selectedPosition);
                     selectedPosition = getLayoutPosition();
                     notifyItemChanged(selectedPosition);
+                } else {
+                    selectedPosition = getLayoutPosition();
                 }
             }
         }

@@ -9,6 +9,7 @@ import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -173,6 +174,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         // TODO
     }
 
+    @Override
+    public void onShouldUpdateDetail(Object content) {
+        if (content instanceof Community) {
+            Fragment detailFragment = CommunityDetailFragment.newInstance((Community) content);
+            getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
+        }
+    }
+
     private void sortCommunityList(CommunityAdapter.SortType type) {
         if (currentFragment != null) {
             currentFragment.sortList(type);
@@ -190,11 +199,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
 
         if (id == R.id.nav_referrals) {
-            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities())); // FIXME: replace with the referral adapter/data
+            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
         } else if (id == R.id.nav_patients) {
-            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities())); // FIXME: replace with the patient adapter/data
+            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Patient); // FIXME: replace with the patient adapter/data
         } else if (id == R.id.nav_communities) {
-            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()));
+            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Community);
         } else if (id == R.id.nav_account) {
             // TODO
         } else if (id == R.id.nav_settings) {

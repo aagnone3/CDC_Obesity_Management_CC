@@ -8,4 +8,5 @@ public interface OnFragmentInteractionListener {
     void onPatientFragmentInteraction(Uri uri);
     void onCommunityFragmentInteraction(CommunityListFragment fragment);
     void onCommunityDetailFragmentInteraction(Uri uri);
+    void onShouldUpdateDetail(Object content);
 }
