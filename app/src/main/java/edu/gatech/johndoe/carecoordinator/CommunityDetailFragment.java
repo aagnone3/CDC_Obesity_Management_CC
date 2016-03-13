@@ -1,8 +1,12 @@
 package edu.gatech.johndoe.carecoordinator;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +75,26 @@ public class CommunityDetailFragment extends Fragment {
         address.setText("450 Madison Court, Decatur, GA 30030");    // FIXME: replace with real data
 
         TextView phoneNumber = (TextView) view.findViewById(R.id.phoneNumber);
-        phoneNumber.setText("(678) 148 - 4606");    // FIXME: replace with real data
+        final String fake_phoneNumber = "(678) 148 - 4606";
+        phoneNumber.setText(fake_phoneNumber);    // FIXME: replace with real data
+        phoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(android.R.drawable.ic_menu_call)
+                        .setTitle(fake_phoneNumber)
+                        .setMessage("Do you want to call this number? ")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Intent in = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fake_phoneNumber));
+                                startActivity(in);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
 
         TextView email = (TextView) view.findViewById(R.id.email);
         email.setText("johndoe@gmail.com"); // FIXME: replace with real data

@@ -197,6 +197,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/patient_phone"
+            android:textColor="#003bfc"
             android:textSize="15sp"
             android:layout_toEndOf="@id/patient_phone_label"
             android:layout_marginStart="10dp"

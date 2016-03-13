@@ -8,11 +8,14 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.Community;
+import edu.gatech.johndoe.carecoordinator.patient.EHR;
 
 
 public class Utility {
     private static final String SERVER_BASE = "http://52.72.172.54:8080/fhir/baseDstu2";
     private static final FhirContext ctx = FhirContext.forDstu2();
+
+    private static ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> dummy_patients;
 
     public static ca.uhn.fhir.model.dstu2.resource.Patient get_patient_info_by_id(int id) {
         // Create the client for interacting with the FHIR server
@@ -35,13 +38,19 @@ public class Utility {
     }
 
     public static ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> getPatients() {
-        ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> patients = new ArrayList<>();
+        if (dummy_patients == null) {
+//        ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> patients = new ArrayList<>();
+            dummy_patients = new ArrayList<>();
+            for (int i = 1; i <= 20; i++) {
+                ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
 
-        for (int i = 1; i <= 20; i++) {
-            ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
-            patients.add(new edu.gatech.johndoe.carecoordinator.patient.Patient(p));
+                dummy_patients.add(new edu.gatech.johndoe.carecoordinator.patient.Patient(p));
+                for (int j = 0; j < (int) (Math.random() * 2); j++) {
+                    dummy_patients.get(i - 1).addEHR(new EHR());
+                }
+            }
         }
-        return patients;
+        return dummy_patients;
     }
 
     public static ArrayList<Community> getCommunities() {

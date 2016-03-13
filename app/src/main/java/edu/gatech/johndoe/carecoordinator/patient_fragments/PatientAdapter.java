@@ -159,7 +159,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
         public void bindPatient(Context context, Patient patient) {
             this.patient = patient;
-            patientStatusImage.setImageResource(R.mipmap.ic_launcher);   // FIXME: set to an actual image
+            patientStatusImage.setImageResource(patient.isPending() ? R.drawable.pending : R.drawable.closed);
             patientNameTextView.setText(patient.getName_first());
             patientStatusTextView.setText(patient.isPending() ? R.string.pending : R.string.closed);
         }
@@ -186,6 +186,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                     notifyItemChanged(selectedPosition);
                     selectedPosition = getLayoutPosition();
                     notifyItemChanged(selectedPosition);
+                } else {
+                    selectedPosition = getLayoutPosition();
                 }
             }
         }
