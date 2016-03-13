@@ -168,7 +168,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
                 if (MainActivity.isInExpandedMode) {
-                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
+                    //noinspection ResourceType
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                     transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
                 } else {
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
