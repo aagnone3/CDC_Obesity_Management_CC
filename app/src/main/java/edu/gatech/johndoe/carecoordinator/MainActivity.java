@@ -76,8 +76,16 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                try {
+                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                    emailIntent.setData(Uri.parse("mailto:"));
+                    emailIntent.setType("message/rfc822");
+                    startActivity(Intent.createChooser(emailIntent, "Send Email"));
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Snackbar.make(view, "There is no email client installed.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+
             }
         });
 
@@ -215,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             currentFragment.sortList(type);
         }
     }
+
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {

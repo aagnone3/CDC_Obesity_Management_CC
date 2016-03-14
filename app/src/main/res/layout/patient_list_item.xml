@@ -12,8 +12,9 @@
 
     <ImageView
         android:id="@+id/patientStatusImage"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
+        android:layout_gravity="center"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="16dp" />
 
     <RelativeLayout

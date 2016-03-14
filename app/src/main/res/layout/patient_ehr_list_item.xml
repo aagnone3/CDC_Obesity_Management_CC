@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/patient_ehr_list_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="1dp"
+    android:paddingBottom="1dp"
+    android:paddingStart="1dp"
+    android:paddingEnd="1dp"
+    android:orientation="horizontal"
+    android:background="?android:colorBackground">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp">
+
+
+        <ImageView
+            android:id="@+id/ehr_title_image"
+            android:background="@drawable/document"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="5dp"
+            android:layout_marginStart="20sp" />
+
+        <TextView
+            android:id="@+id/ehr_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/ehr_title_image"
+            android:textSize="20sp"
+            android:text="@string/none" />
+
+        <TextView
+            android:id="@+id/ehr_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="20sp"
+            android:textSize="20sp"
+            android:text="@string/pending"/>
+
+        <ImageView
+            android:id="@+id/ehr_status_image"
+            android:layout_width="20sp"
+            android:layout_height="20sp"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/ehr_status"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/pending"/>
+    </RelativeLayout>
+
+</LinearLayout>
+

@@ -103,8 +103,8 @@ public class PatientDetailFragment extends Fragment {
             }
         });
 
-        ListView list = (ListView) view.findViewById(R.id.listView_ehr);
-        EHRAdapter adapter = new EHRAdapter(getActivity(), R.id.ehr_list_view_row, patient, getActivity().getSupportFragmentManager());
+        ListView list = (ListView) view.findViewById(R.id.patient_ehr_list);
+        EHRAdapter adapter = new EHRAdapter(getActivity(), R.id.patient_ehr_list_item, patient, getActivity().getSupportFragmentManager());
         list.setAdapter(adapter);
         return view;
     }

@@ -41,11 +41,11 @@ public class Utility {
         if (dummy_patients == null) {
 //        ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> patients = new ArrayList<>();
             dummy_patients = new ArrayList<>();
-            for (int i = 1; i <= 20; i++) {
+            for (int i = 1; i <= 12; i++) {
                 ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
 
                 dummy_patients.add(new edu.gatech.johndoe.carecoordinator.patient.Patient(p));
-                for (int j = 0; j < (int) (Math.random() * 2); j++) {
+                for (int j = 0; j < (int) (Math.random() * 10); j++) {
                     dummy_patients.get(i - 1).addEHR(new EHR());
                 }
             }

@@ -43,8 +43,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
     private static final Comparator<Patient> LATEST_IMPORT_DATE_COMPARATOR = new Comparator<Patient>() {
         @Override
         public int compare(Patient lhs, Patient rhs) {
-//            return lhs.getDateOfimport().compareTo(rhs.getDateOfimport());
-            return 0;
+            return lhs.getDateOfimport().compareTo(rhs.getDateOfimport());
         }
     };
 
