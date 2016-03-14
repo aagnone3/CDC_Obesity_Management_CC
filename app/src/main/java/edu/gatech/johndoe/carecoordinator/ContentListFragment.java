@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,7 +83,6 @@ public class ContentListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("ContentListFragment", "onCreateView");
         View view = inflater.inflate(R.layout.fragment_content_list, container, false);
         contentList = (RecyclerView) view.findViewById(R.id.list);
         contentList.addItemDecoration(new ListDividerItemDecoration(getContext()));
