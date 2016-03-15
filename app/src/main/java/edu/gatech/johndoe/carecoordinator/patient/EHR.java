@@ -1,52 +1,58 @@
 package edu.gatech.johndoe.carecoordinator.patient;
 
-import android.os.Parcel;
-
 import java.util.Date;
 
 public class EHR {
-    private boolean isPending;
+    private String id;
+    private String patientID;
+    private String title;
+    private String detail;
+    private boolean pending;
     private Date issueDate;
     private Date dateOfimport;
 
-    public EHR() {
-        this(new Date(), true);
-    }
+    public EHR() {}
 
-    public EHR(Date issueDate) {
-        this(issueDate, true);
-    }
-
-    public EHR(boolean isPending) {
-        this(new Date(), isPending);
-    }
-
-    public EHR(Date issueDate, boolean isPending) {
+    public EHR(String id, String patientID, String title, String detail, boolean pending, Date issueDate) {
+        this.id = id;
+        this.patientID = patientID;
+        this.title = title;
+        this.detail = detail;
+        this.pending = pending;
         this.issueDate = issueDate;
-        this.isPending = isPending;
         this.dateOfimport = new Date();
     }
 
-    private EHR(Parcel in) {
-        isPending = in.readByte() != 0;
-        issueDate = new Date(in.readLong());
-        dateOfimport = new Date(in.readLong());
+    public String getId() {
+        return id;
     }
 
-    public boolean isPending() {
-        return isPending;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public boolean isClosed() {
-        return !isPending;
+    public String getPatientID() {
+        return patientID;
     }
 
-    public void setPending() {
-        isPending = true;
+    public void setPatientID(String patientID) {
+        this.patientID = patientID;
     }
 
-    public void setClosed() {
-        isPending = false;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDetail() {
+        return detail;
+    }
+
+    public void setDetail(String detail) {
+        this.detail = detail;
     }
 
     public Date getIssueDate() {
@@ -65,9 +71,25 @@ public class EHR {
         this.dateOfimport = dateOfimport;
     }
 
-    @Override
-    public String toString() {
-        return isPending ? "Pending" : "Closed";
+    public boolean isPending() {
+        return pending;
     }
 
+    public void setPending(boolean pending) {
+        this.pending = pending;
+    }
+
+    @Override
+    public String toString() {
+        return "EHR{" +
+                "id='" + id + '\'' +
+                ", patientID='" + patientID + '\'' +
+                ", title='" + title + '\'' +
+                ", detail='" + detail + '\'' +
+                ", pending=" + pending +
+                ", issueDate=" + issueDate +
+                ", dateOfimport=" + dateOfimport +
+                '}';
+    }
 }
+

@@ -22,7 +22,9 @@ import java.util.List;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.Restorable;
+import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
+import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientHolder> implements Filterable, Restorable {
 
@@ -47,11 +49,10 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         }
     };
 
-    public int selectedPosition;
-
     private Context context;
     private List<Patient> patients;
     private List<Patient> filteredPatients;
+    private int selectedPosition;
 
     public PatientAdapter(List<Patient> patients, int selected) {
         this.patients = patients;
@@ -69,7 +70,6 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         View view = LayoutInflater.from(context).inflate(R.layout.patient_list_item, parent, false);
         return new PatientHolder(view);
     }
-
 
     @Override
     public void onBindViewHolder(PatientHolder holder, int position) {
@@ -96,7 +96,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
                 constraint = constraint.toString().toLowerCase().trim();
                 for (Patient patient : patients) {
-                    if (patient.getName_first().toLowerCase().startsWith(constraint.toString())) {
+                    if (patient.getFull_name_first().toLowerCase().startsWith(constraint.toString())) {
                         filtered.add(patient);
                     }
                 }
@@ -142,11 +142,14 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         return selectedPosition;
     }
 
+
+
     public class PatientHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView patientStatusImage;
         private final TextView patientNameTextView;
         private final TextView patientStatusTextView;
         private Patient patient;
+        private List<EHR> referralList;
 
         public PatientHolder(View itemView) {
             super(itemView);
@@ -158,15 +161,29 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
         public void bindPatient(Context context, Patient patient) {
             this.patient = patient;
-            patientStatusImage.setImageResource(patient.isPending() ? R.drawable.pending : R.drawable.closed);
-            patientNameTextView.setText(patient.getName_first());
-            patientStatusTextView.setText(patient.isPending() ? R.string.pending : R.string.closed);
+            this.referralList = Utility.getAllRelatedReferrals(patient.getEhrList());
+            boolean isPending = false;
+            for (EHR referral : referralList) {
+                if (referral.isPending()) {
+                    isPending = true;
+                    break;
+                }
+            }
+            patientNameTextView.setText(patient.getFull_name_first());
+            if (isPending) {
+                patientStatusImage.setImageResource(R.drawable.pending);
+                patientStatusTextView.setText(R.string.pending);
+            } else {
+                patientStatusImage.setImageResource(R.drawable.closed);
+                patientStatusTextView.setText(R.string.closed);
+            }
         }
 
         @Override
         public void onClick(View v) {
             if (patient != null) {
-                Fragment detailFragment = PatientDetailFragment.newInstance(patient);
+
+                Fragment detailFragment = PatientDetailFragment.newInstance(patient, referralList);
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
