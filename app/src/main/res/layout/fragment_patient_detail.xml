@@ -220,6 +220,15 @@
             android:layout_alignStart="@id/patient_ehr_label"
             android:layout_marginTop="12dp"
             android:id="@+id/patient_ehr_list" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@android:drawable/ic_dialog_email" />
     </RelativeLayout>
 
 

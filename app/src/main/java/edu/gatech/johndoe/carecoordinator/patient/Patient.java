@@ -11,12 +11,16 @@ import java.util.List;
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.AddressDt;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
+import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.resource.Practitioner;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
+import ca.uhn.fhir.model.dstu2.valueset.PractitionerRoleEnum;
 import ca.uhn.fhir.model.primitive.InstantDt;
 
 public class Patient {
     private String id;
+    private List<ResourceReferenceDt> careProviders;
     private String type;
     private String first_name;
     private String last_name;
@@ -36,6 +40,7 @@ public class Patient {
     // TODO verify that this is ok
     public Patient(ca.uhn.fhir.model.dstu2.resource.Patient patient) {
         id = patient.getId().getIdPart();
+        careProviders = patient.getCareProvider();
         type = patient.getResourceName();
         first_name = patient.getNameFirstRep().getGivenAsSingleString();
         last_name = patient.getNameFirstRep().getFamilyAsSingleString();
@@ -48,6 +53,23 @@ public class Patient {
         lastUpdated = ((InstantDt) patient.getResourceMetadata().get(ResourceMetadataKeyEnum.UPDATED)).getValue();
         ehr = new ArrayList<>();
         dateOfimport = new Date();
+    }
+
+    public Practitioner getPCP() {
+        // Pull in all care providers. Look for the PCP, and return its handle if found
+        List<ResourceReferenceDt> careProviders = getCareProviders();
+        Practitioner pcp = null;
+        for (ResourceReferenceDt res : careProviders) {
+            Practitioner provider = (Practitioner) res.getResource();
+            List<Practitioner.PractitionerRole> roles = provider.getPractitionerRole();
+            for (Practitioner.PractitionerRole role : roles) {
+                if (role.getRole().getValueAsEnum().contains(PractitionerRoleEnum.DOCTOR)) {
+                    // This provider is a PCP (via many simplifying assumptions)
+                    pcp = provider;
+                }
+            }
+        }
+        return pcp;
     }
 
     private String getEmailFromTelecom(List<ContactPointDt> contactPoints) {
@@ -78,6 +100,14 @@ public class Patient {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<ResourceReferenceDt> getCareProviders() {
+        return careProviders;
+    }
+
+    public void setCareProviders(List<ResourceReferenceDt> careProviders) {
+        this.careProviders = careProviders;
     }
 
     public String getType() {

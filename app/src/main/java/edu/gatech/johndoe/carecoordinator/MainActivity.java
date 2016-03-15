@@ -26,6 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 
+import com.firebase.client.Firebase;
+
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
@@ -42,6 +44,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Set Context for Firebase
+        Firebase.setAndroidContext(this);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -71,23 +76,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    Intent emailIntent = new Intent(Intent.ACTION_SEND);
-                    emailIntent.setData(Uri.parse("mailto:"));
-                    emailIntent.setType("message/rfc822");
-                    startActivity(Intent.createChooser(emailIntent, "Send Email"));
-                } catch (android.content.ActivityNotFoundException ex) {
-                    Snackbar.make(view, "There is no email client installed.", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-                }
-
-            }
-        });
 
         if (findViewById(R.id.expanded_layout) != null) {
             // expanded layout mode
