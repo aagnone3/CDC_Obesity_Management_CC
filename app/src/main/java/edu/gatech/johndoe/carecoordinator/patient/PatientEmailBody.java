@@ -1,7 +1,6 @@
 package edu.gatech.johndoe.carecoordinator.patient;
 
 import ca.uhn.fhir.model.dstu2.resource.Practitioner;
-import edu.gatech.johndoe.carecoordinator.util.DatabaseCallback;
 
 /**
  * Created by aagnone3 on 3/14/2016.
@@ -26,7 +25,7 @@ public class PatientEmailBody {
         this.providerName = (provider == null ? "" :
                 provider.getName().getGivenAsSingleString() + " " +
                         provider.getName().getFamilyAsSingleString());
-        this.patientCity = patient.getAddress().getCity();
+        this.patientCity = patient.getAddress_second().split(",")[0];
         // TODO have global access to coordinator's name after login functionality is finalized
         this.coordinatorName = "Sally Coordy";
         formEmailBody();

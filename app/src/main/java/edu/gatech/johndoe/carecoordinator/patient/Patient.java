@@ -1,5 +1,7 @@
 package edu.gatech.johndoe.carecoordinator.patient;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,6 +41,7 @@ public class Patient {
     private List<String> ehrList;
     private List<String> communityList;
 
+
     public Patient() {}
 
     // Note patient may have multiple names in the server, implementation currently selects the
@@ -47,6 +50,7 @@ public class Patient {
     public Patient(ca.uhn.fhir.model.dstu2.resource.Patient patient) {
         try {
             id = patient.getId().getIdPart();
+            careProviders = patient.getCareProvider();
             type = patient.getResourceName();
             first_name = patient.getNameFirstRep().getGivenAsSingleString();
             last_name = patient.getNameFirstRep().getFamilyAsSingleString();
@@ -73,17 +77,21 @@ public class Patient {
 
     public Practitioner getPCP() {
         // Pull in all care providers. Look for the PCP, and return its handle if found
-        List<ResourceReferenceDt> careProviders = getCareProviders();
+        List<ResourceReferenceDt> careProviders = this.careProviders;
         Practitioner pcp = null;
-        for (ResourceReferenceDt res : careProviders) {
-            Practitioner provider = (Practitioner) res.getResource();
-            List<Practitioner.PractitionerRole> roles = provider.getPractitionerRole();
-            for (Practitioner.PractitionerRole role : roles) {
-                if (role.getRole().getValueAsEnum().contains(PractitionerRoleEnum.DOCTOR)) {
-                    // This provider is a PCP (via many simplifying assumptions)
-                    pcp = provider;
+        try {
+            for (ResourceReferenceDt res : careProviders) {
+                Practitioner provider = (Practitioner) res.getResource();
+                List<Practitioner.PractitionerRole> roles = provider.getPractitionerRole();
+                for (Practitioner.PractitionerRole role : roles) {
+                    if (role.getRole().getValueAsEnum().contains(PractitionerRoleEnum.DOCTOR)) {
+                        // This provider is a PCP (via many simplifying assumptions)
+                        pcp = provider;
+                    }
                 }
             }
+        } catch (Exception e) {
+            Log.e("Practitoner", e.getMessage());
         }
         return pcp;
     }
@@ -118,13 +126,6 @@ public class Patient {
         this.id = id;
     }
 
-    public List<ResourceReferenceDt> getCareProviders() {
-        return careProviders;
-    }
-
-    public void setCareProviders(List<ResourceReferenceDt> careProviders) {
-        this.careProviders = careProviders;
-    }
 
     public String getType() {
         return type.toUpperCase().charAt(0) + type.substring(1);
