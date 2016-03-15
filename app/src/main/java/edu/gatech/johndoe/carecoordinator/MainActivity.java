@@ -100,6 +100,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (savedInstanceState == null) {
             onNavigationItemSelected(navigationView.getMenu().getItem(0).setChecked(true));
         }
+
+        Utility.getAllReferrals();
+        Utility.getAllPatients();
+        Utility.getAllCommunities();
     }
 
     @Override
@@ -227,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (id == R.id.nav_referrals) {
             contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
         } else if (id == R.id.nav_patients) {
-            contentListFragment.setAdapter(new PatientAdapter(Utility.getPatients()), ContentListFragment.ContentType.Patient);
+            contentListFragment.setAdapter(new PatientAdapter(Utility.patient_list), ContentListFragment.ContentType.Patient);
         } else if (id == R.id.nav_communities) {
             contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Community);
         } else if (id == R.id.nav_account) {
@@ -251,4 +255,5 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         return true;
     }
+
 }

@@ -1,15 +1,13 @@
 package edu.gatech.johndoe.carecoordinator.patient;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
-import ca.uhn.fhir.model.dstu2.composite.AddressDt;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
 import ca.uhn.fhir.model.dstu2.resource.Practitioner;
@@ -17,6 +15,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.PractitionerRoleEnum;
 import ca.uhn.fhir.model.primitive.InstantDt;
+import edu.gatech.johndoe.carecoordinator.Community;
 
 public class Patient {
     private String id;
@@ -24,35 +23,52 @@ public class Patient {
     private String type;
     private String first_name;
     private String last_name;
+    private String full_name_first;
+    private String full_name_last;
     private String gender;
     private Date birth_date;
-    private AddressDt address;
+    private String formatted_birth_date;
+    private int age;
+    private String address_first;
+    private String address_second;
     private String email;
-    private boolean isActive;
+    private boolean active;
     private Date lastUpdated;
-    private boolean sortedByImport;
-    private List<EHR> ehr;
     private String phoneNumber;
     private Date dateOfimport;
+    private List<String> ehrList;
+    private List<String> communityList;
+
+    public Patient() {}
 
     // Note patient may have multiple names in the server, implementation currently selects the
     // first name in the list returned by getName()
     // TODO verify that this is ok
     public Patient(ca.uhn.fhir.model.dstu2.resource.Patient patient) {
-        id = patient.getId().getIdPart();
-        careProviders = patient.getCareProvider();
-        type = patient.getResourceName();
-        first_name = patient.getNameFirstRep().getGivenAsSingleString();
-        last_name = patient.getNameFirstRep().getFamilyAsSingleString();
-        gender = patient.getGender();
-        birth_date = patient.getBirthDate();
-        address = patient.getAddressFirstRep();
-        email = getEmailFromTelecom(patient.getTelecom());
-        phoneNumber = getPhoneFromTelecom(patient.getTelecom());
-        isActive = patient.getActive();
-        lastUpdated = ((InstantDt) patient.getResourceMetadata().get(ResourceMetadataKeyEnum.UPDATED)).getValue();
-        ehr = new ArrayList<>();
-        dateOfimport = new Date();
+        try {
+            id = patient.getId().getIdPart();
+            type = patient.getResourceName();
+            first_name = patient.getNameFirstRep().getGivenAsSingleString();
+            last_name = patient.getNameFirstRep().getFamilyAsSingleString();
+            full_name_first = first_name.concat(", " + last_name);
+            full_name_last = last_name.concat(", " + first_name);
+            gender = patient.getGender();
+            birth_date = patient.getBirthDate();
+            formatted_birth_date = new SimpleDateFormat(" MMM d, yyyy", Locale.US).format(birth_date);
+            age = getAge();
+            address_first = patient.getAddressFirstRep().getLineFirstRep().toString().toUpperCase();
+            address_second = patient.getAddressFirstRep().getCity().toUpperCase() + ", " +
+                    patient.getAddressFirstRep().getState().toUpperCase() + " " + patient.getAddressFirstRep().getPostalCode();
+            email = getEmailFromTelecom(patient.getTelecom());
+            phoneNumber = getPhoneFromTelecom(patient.getTelecom());
+            active = patient.getActive();
+            lastUpdated = ((InstantDt) patient.getResourceMetadata().get(ResourceMetadataKeyEnum.UPDATED)).getValue();
+            dateOfimport = new Date();
+            ehrList = new LinkedList<>();
+            communityList = new LinkedList<>();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Practitioner getPCP() {
@@ -90,8 +106,8 @@ public class Patient {
                 phoneNumber = contact.getValue();
             }
         }
+        return "(206) 123-4567";
 //        return phoneNumber;
-        return "(234) 567-8912";
     }
 
     public String getId() {
@@ -134,12 +150,20 @@ public class Patient {
         this.last_name = last_name;
     }
 
-    public String getName_first() {
-        return first_name.concat(" " + last_name);
+    public String getFull_name_first() {
+        return full_name_first;
     }
 
-    public String getName_last() {
-        return last_name.concat(", " + first_name);
+    public void setFull_name_first(String full_name_first) {
+        this.full_name_first = full_name_first;
+    }
+
+    public String getFull_name_last() {
+        return full_name_last;
+    }
+
+    public void setFull_name_last(String full_name_last) {
+        this.full_name_last = full_name_last;
     }
 
     public String getGender() {
@@ -150,8 +174,96 @@ public class Patient {
         this.gender = gender;
     }
 
-    public String getBirthDate() {
-        return new SimpleDateFormat(" MMM d, yyyy").format(birth_date);
+    public Date getBirth_date() {
+        return birth_date;
+    }
+
+    public void setBirth_date(Date birth_date) {
+        this.birth_date = birth_date;
+    }
+
+    public String getFormatted_birth_date() {
+        return formatted_birth_date;
+    }
+
+    public void setFormatted_birth_date(String formatted_birth_date) {
+        this.formatted_birth_date = formatted_birth_date;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getAddress_first() {
+        return address_first;
+    }
+
+    public void setAddress_first(String address_first) {
+        this.address_first = address_first;
+    }
+
+    public String getAddress_second() {
+        return address_second;
+    }
+
+    public void setAddress_second(String address_second) {
+        this.address_second = address_second;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Date getDateOfimport() {
+        return dateOfimport;
+    }
+
+    public void setDateOfimport(Date dateOfimport) {
+        this.dateOfimport = dateOfimport;
+    }
+
+    public List<String> getEhrList() {
+        return ehrList;
+    }
+
+    public void setEhrList(List<String> ehrList) {
+        this.ehrList = ehrList;
+    }
+
+    public List<String> getCommunityList() {
+        return communityList;
+    }
+
+    public void setCommunityList(List<String> communityList) {
+        this.communityList = communityList;
     }
 
     public int getAge() {
@@ -164,112 +276,45 @@ public class Patient {
         return age;
     }
 
-    public String getAddressFirstLine() {
-        return address.getLineFirstRep().toString().toUpperCase();
+    public void removeEHR(EHR e) {
+        ehrList.remove(e.getId());
     }
 
-    public String getAddressSecondLine() {
-        return address.getCity().toUpperCase() + ", " +
-                address.getState().toUpperCase() + " " + address.getPostalCode();
+    public void addEHR(EHR e) {
+        ehrList.add(e.getId());
     }
 
-    public AddressDt getAddress() {
-        return address;
+    public void removeCommunity(Community c) {
+        communityList.remove(c.getId());
     }
 
-    public void setAddress(AddressDt address) {
-        this.address = address;
-    }
-
-    public String getEmail() {return email;}
-
-    public void setEmail(String email) {this.email = email;}
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
-
-    public void setIsActive(boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public Date getDateOfimport() { return dateOfimport; }
-
-    public EHR getEHR(int index) {
-        return ehr.get(index);
-    }
-
-    public EHR removeEHR(int index) {
-        return ehr.remove(index);
-    }
-
-    public boolean isPending() {
-        for (EHR e : ehr) {
-            if (e.isPending()) {
-                return true;
-            }
-        }
-        return false;
-    }
-    public void addEHR(EHR ehr) {
-        if (this.ehr != null) {
-            this.ehr.add(ehr);
-            if (sortedByImport) {
-                Collections.sort(this.ehr, new ComparatorImport());
-            } else {
-                Collections.sort(this.ehr, new ComparatorIssue());
-            }
-        }
-    }
-
-    public List<EHR> getEHR_by_import() {
-        Collections.sort(ehr, new ComparatorImport());
-        sortedByImport = true;
-        return ehr;
-    }
-
-    public List<EHR> getEHR_by_issue() {
-        Collections.sort(ehr, new ComparatorIssue());
-        sortedByImport = false;
-        return ehr;
-    }
-
-    public class ComparatorImport implements Comparator<EHR> {
-        @Override
-        public int compare(EHR e1, EHR e2) {
-            return e1.getDateOfimport().compareTo(e2.getDateOfimport());
-        }
-    }
-
-    public class ComparatorIssue implements Comparator<EHR> {
-        @Override
-        public int compare(EHR e1, EHR e2) {
-            return e1.getIssueDate().compareTo(e2.getIssueDate());
-        }
+    public void addCommunity(Community c) {
+        communityList.add(c.getId());
     }
 
     @Override
     public String toString() {
-        return "ID: " + id + "\nTYPE: " + type + "\nName: " + first_name + " " + last_name +
-                "\nGender: " + gender + "\nBirth Date: " + birth_date + "\nAddress: " + address +
-                "\nisActive: " + isActive + "\nlastUpdated: " + lastUpdated + "\nehr: " + ehr +
-                "\nsortedByImport: " + sortedByImport;
+        return "Patient{" +
+                "id='" + id + '\'' +
+                ", type='" + type + '\'' +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
+                ", full_name_first='" + full_name_first + '\'' +
+                ", full_name_last='" + full_name_last + '\'' +
+                ", gender='" + gender + '\'' +
+                ", birth_date=" + birth_date +
+                ", formatted_birth_date='" + formatted_birth_date + '\'' +
+                ", age=" + age +
+                ", address_first='" + address_first + '\'' +
+                ", address_second='" + address_second + '\'' +
+                ", email='" + email + '\'' +
+                ", isActive=" + active +
+                ", lastUpdated=" + lastUpdated +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", dateOfimport=" + dateOfimport +
+                ", ehrList=" + ehrList +
+                ", communityList=" + communityList +
+                '}';
     }
 
 }

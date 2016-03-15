@@ -19,22 +19,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient.PatientEmail;
 
 
 public class PatientDetailFragment extends Fragment {
     private static final String ARG_PATIENT = "patient";
+    private static final String ARG_PATIENT_REFERRALS = "referralList_in_patient";
     private Patient patient;
+    private List<EHR> referralList;
     private OnFragmentInteractionListener mListener;
+    Type listType = new TypeToken<ArrayList<EHR>>() {}.getType();
 
-    public static PatientDetailFragment newInstance(Patient patient) {
+    public static PatientDetailFragment newInstance(Patient patient, List<EHR> referralList) {
         PatientDetailFragment fragment = new PatientDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PATIENT, new Gson().toJson(patient));
+        args.putString(ARG_PATIENT_REFERRALS, new Gson().toJson(referralList));
         fragment.setArguments(args);
         return fragment;
     }
@@ -44,6 +54,7 @@ public class PatientDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             patient = new Gson().fromJson(getArguments().getString(ARG_PATIENT), Patient.class);
+            referralList = new Gson().fromJson(getArguments().getString(ARG_PATIENT_REFERRALS), listType);
         }
     }
 
@@ -60,14 +71,14 @@ public class PatientDetailFragment extends Fragment {
         TextView patient_address_second = (TextView) view.findViewById(R.id.patient_address_second_line);
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email);
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
-        patient_name.setText(patient.getName_first());
+        patient_name.setText(patient.getFull_name_first());
         patient_id.setText(patient.getId());
         patient_type.setText(patient.getType());
         patient_gender.setText(patient.getGender());
         patient_age.setText(String.valueOf(patient.getAge()));
-        patient_birth_date.setText(patient.getBirthDate());
-        patient_address_first.setText(patient.getAddressFirstLine());
-        patient_address_second.setText(patient.getAddressSecondLine());
+        patient_birth_date.setText(patient.getFormatted_birth_date());
+        patient_address_first.setText(patient.getAddress_first());
+        patient_address_second.setText(patient.getAddress_second());
         patient_email.setText(patient.getEmail());
         patient_email.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +86,7 @@ public class PatientDetailFragment extends Fragment {
                 new AlertDialog.Builder(getActivity())
                         .setIcon(android.R.drawable.ic_dialog_email)
                         .setTitle(patient.getEmail())
-                        .setMessage("Do you want to send an email to " + patient.getName_first() + "?")
+                        .setMessage("Do you want to send an email to " + patient.getFull_name_first() + "?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -115,7 +126,8 @@ public class PatientDetailFragment extends Fragment {
         });
 
         ListView list = (ListView) view.findViewById(R.id.patient_ehr_list);
-        EHRAdapter adapter = new EHRAdapter(getActivity(), R.id.patient_ehr_list_item, patient, getActivity().getSupportFragmentManager());
+        InnerReferralAdapter adapter = new InnerReferralAdapter(getActivity(), R.id.patient_ehr_list_item,
+                referralList, getActivity().getSupportFragmentManager());
         list.setAdapter(adapter);
         return view;
     }

@@ -1,7 +1,22 @@
 package edu.gatech.johndoe.carecoordinator.util;
 
+import android.util.Log;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
+import com.firebase.client.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
@@ -14,8 +29,187 @@ import edu.gatech.johndoe.carecoordinator.patient.EHR;
 public class Utility {
     private static final String SERVER_BASE = "http://52.72.172.54:8080/fhir/baseDstu2";
     private static final FhirContext ctx = FhirContext.forDstu2();
+    public static final Firebase REFERRALS_REF =
+            new Firebase("https://cdccoordinator2.firebaseio.com/referrals");
+    public static final Firebase PATIENTS_REF =
+            new Firebase("https://cdccoordinator2.firebaseio.com/patients");
+    public static final Firebase COMMUNITES_REF =
+            new Firebase("https://cdccoordinator2.firebaseio.com/communities");
+    public static final Firebase INCOMING_REF =
+            new Firebase("https://cdccoordinator2.firebaseio.com/incoming");
+    public static List<EHR> referral_list = new ArrayList<>();
+    public static List<edu.gatech.johndoe.carecoordinator.patient.Patient> patient_list = new ArrayList<>();
+    public static List<Community> community_list = new ArrayList<>();
 
-    private static ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> dummy_patients;
+    public static void dummyDataGenerator () {
+        Random random = new Random();
+        // Generating Fake Communities
+        List<Community> communities = new ArrayList<>();
+        for (int i = 1; i <= 30; i++) {
+            communities.add(new Community(String.valueOf(i), "Community" + i, "450 Madison Court, Deactur, GA 30030", "(678) 148 - 4606", "johndoe@gmail.com", "No Information"));
+        }
+        // Generating Fake Patients and their Referrals
+        int j, ehrID = 1;
+        for (int i = 1; i < 50; i++) {
+            ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
+            if (p != null) {
+                edu.gatech.johndoe.carecoordinator.patient.Patient patient = new edu.gatech.johndoe.carecoordinator.patient.Patient(p);
+                for (j = ehrID; j <= ehrID + random.nextInt(15); j++) {
+                    EHR ehr = new EHR(String.valueOf(j), patient.getId(), "Referral " + j, "None", j % 2 == 0, new Date());
+                    patient.addEHR(ehr);
+                    saveReferral(ehr);
+                }
+                ehrID = j;
+                Community community = communities.get((int) (Math.random()* 10));
+                community.addPatient(patient);
+                patient.addCommunity(community);
+                savePatient(patient);
+            }
+        }
+        //Saving Fake Communities
+        for (Community c : communities)
+            saveCommunity(c);
+    }
+
+    public static void saveReferral(EHR ehr) {
+        Firebase ref = REFERRALS_REF.child(ehr.getId());
+        ref.setValue(ehr);
+    }
+
+    public static void savePatient(edu.gatech.johndoe.carecoordinator.patient.Patient p) {
+        Firebase ref = PATIENTS_REF.child(p.getId());
+        ref.setValue(p);
+    }
+    
+    public static void saveCommunity(Community community) {
+        Firebase ref = COMMUNITES_REF.child(community.getId());
+        ref.setValue(community);
+    }
+
+    public static void addReferral(final String id) {
+        Query queryRef = REFERRALS_REF.orderByChild("id").equalTo(id);
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                referral_list.add(dataSnapshot.child(id).getValue(EHR.class));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("ReferralByID", firebaseError.getMessage());
+            }
+        });
+    }
+
+    public static void getAllReferrals() {
+        Query queryRef = REFERRALS_REF.orderByChild("id");
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                    referral_list.add(ds
+                            .getValue(EHR.class));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("AllReferrals", firebaseError.getMessage());
+            }
+        });
+    }
+
+    public static void addPatient(final String id) {
+        Query queryRef = PATIENTS_REF.orderByChild("id").equalTo(id);
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                patient_list.add(dataSnapshot.child(id).getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("PatientByID", firebaseError.getMessage());
+            }
+        });
+    }
+
+    public static void getAllPatients() {
+        Query queryRef = PATIENTS_REF.orderByChild("id");
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                    patient_list.add(ds
+                            .getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("AllPatients", firebaseError.getMessage());
+            }
+        });
+    }
+
+    public static void addCommunity(final String id) {
+        Query queryRef = COMMUNITES_REF.orderByChild("id").equalTo(id);
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                community_list.add(dataSnapshot.child(id).getValue(Community.class));
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("CommunityID", firebaseError.getMessage());
+            }
+        });
+    }
+
+    public static void getAllCommunities() {
+        Query queryRef = COMMUNITES_REF.orderByChild("id");
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                    community_list.add(ds
+                            .getValue(Community.class));
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("AllCommunities", firebaseError.getMessage());
+            }
+        });
+    }
+
+    public static void updateReferralStatus(String id, boolean status) {
+        Map<String, Object> container = new HashMap<>();
+        container.put(id + "/pending", status);
+        REFERRALS_REF.updateChildren(container);
+        for (EHR referral : referral_list) {
+            if (referral.getId().equals(id)) {
+                referral.setPending(status);
+            }
+        }
+    }
+
+    public static List<EHR> getAllRelatedReferrals(List<String> referralIDs) {
+        List<EHR> result = new ArrayList<>();
+        for (EHR referral : referral_list) {
+            for (String id : referralIDs) {
+                if (id.equals(referral.getId())) {
+                    result.add(referral);
+                    break;
+                }
+            }
+        }
+        Collections.sort(result, new Comparator<EHR>() {
+            @Override
+            public int compare(EHR e1, EHR e2) {
+                return Integer.valueOf(e1.getId()) - Integer.valueOf(e2.getId());
+            }
+        });
+        return result;
+    }
 
     public static ca.uhn.fhir.model.dstu2.resource.Patient get_patient_info_by_id(int id) {
         // Create the client for interacting with the FHIR server
@@ -35,22 +229,6 @@ public class Utility {
             patient = (Patient) results.getEntry().get(0).getResource();
         }
         return patient;
-    }
-
-    public static ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> getPatients() {
-        if (dummy_patients == null) {
-//        ArrayList<edu.gatech.johndoe.carecoordinator.patient.Patient> patients = new ArrayList<>();
-            dummy_patients = new ArrayList<>();
-            for (int i = 1; i <= 12; i++) {
-                ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
-
-                dummy_patients.add(new edu.gatech.johndoe.carecoordinator.patient.Patient(p));
-                for (int j = 0; j < (int) (Math.random() * 10); j++) {
-                    dummy_patients.get(i - 1).addEHR(new EHR());
-                }
-            }
-        }
-        return dummy_patients;
     }
 
     public static ArrayList<Community> getCommunities() {
@@ -74,4 +252,6 @@ public class Utility {
 
         return communities;
     }
+
+
 }
