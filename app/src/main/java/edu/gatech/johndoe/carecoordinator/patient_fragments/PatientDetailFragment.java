@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +27,8 @@ import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
-import edu.gatech.johndoe.carecoordinator.patient.PatientEmail;
+import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
+import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
 
 
 public class PatientDetailFragment extends Fragment {
@@ -134,7 +133,9 @@ public class PatientDetailFragment extends Fragment {
 
     private void sendPatientEmail() {
         // Email intent
-        PatientEmail email = new PatientEmail(patient);
+        PatientEmail email = PatientEmailFactory.getEmailBody(
+                PatientEmailFactory.EMAIL_TYPE.FINAL_REFERRAL,
+                patient);
 
         try {
             startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
