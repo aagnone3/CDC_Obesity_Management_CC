@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_id": "earnest-airline-125321",
+    "project_number": "522085792970",
+    "name": "My Project"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:522085792970:android:f764bb89acf63281",
+        "client_id": "android:edu.gatech.johndoe.carecoordinator",
+        "client_type": 1,
+        "android_client_info": {
+          "package_name": "edu.gatech.johndoe.carecoordinator",
+          "certificate_hash": []
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "522085792970-guf0er4n3171miq5loe621vv8lhpdqnm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edu.gatech.johndoe.carecoordinator",
+            "certificate_hash": "973CFCB7863E6CBDA963751AC23531904B255F6C"
+          }
+        },
+        {
+          "client_id": "522085792970-66brvueao8jqre4ui0c32tsv4rt7369m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "cloud_messaging_service": {
+          "status": 1,
+          "apns_config": []
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "google_signin_service": {
+          "status": 2
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "client_info": [],
+  "ARTIFACT_VERSION": "1"
+}
