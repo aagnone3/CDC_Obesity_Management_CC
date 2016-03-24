@@ -91,7 +91,8 @@ public class Patient {
                 }
             }
         } catch (Exception e) {
-            Log.e("Practitioner", e.getMessage());
+            Log.e("Practitioner", "*** PCP Lookup failed");
+            pcp = new Practitioner();
         }
         return pcp;
     }

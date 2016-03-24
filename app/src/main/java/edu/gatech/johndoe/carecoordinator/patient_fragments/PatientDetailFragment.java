@@ -62,7 +62,6 @@ public class PatientDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_patient_detail, container, false);
         TextView patient_name = (TextView) view.findViewById(R.id.patient_name);
         TextView patient_id = (TextView) view.findViewById(R.id.patient_id);
-        TextView patient_type = (TextView) view.findViewById(R.id.patient_type);
         TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender);
         TextView patient_birth_date = (TextView) view.findViewById(R.id.patient_dob);
         TextView patient_age = (TextView) view.findViewById(R.id.patient_age);
@@ -72,7 +71,6 @@ public class PatientDetailFragment extends Fragment {
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
         patient_name.setText(patient.getFull_name_first());
         patient_id.setText(patient.getId());
-        patient_type.setText(patient.getType());
         patient_gender.setText(patient.getGender());
         patient_age.setText(String.valueOf(patient.getAge()));
         patient_birth_date.setText(patient.getFormatted_birth_date());

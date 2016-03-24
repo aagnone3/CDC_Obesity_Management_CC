@@ -9,7 +9,6 @@
     <string name="patient_dob">DOB:</string>
     <string name="patient_address">Address:</string>
     <string name="patient_id">ID:</string>
-    <string name="patient_type">Type:</string>
     <string name="patient_name">Name:</string>
     <string name="patient_age">Age:</string>
     <string name="patient_email">Email:</string>
@@ -40,13 +39,13 @@
     <!-- Default email for main nav view display -->
     <string name="coordinator_email">cdc_coordinator@gmail.com</string>
 
-    <string name="title_text">Google Sign-In\nQuickstart</string>
+    <string name="sign_in_text">Centers for Disease Control and Prevention</string>
 
     <!-- Sign-in status messages -->
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="signed_in">Signed in</string>
     <string name="signing_in">Signing in…</string>
-    <string name="signed_out">Signed out</string>
+    <string name="signed_out">Not signed in</string>
     <string name="signed_in_err">"Error: please check logs."</string>
     <string name="error_null_person">
         Error: Plus.PeopleApi.getCurrentPerson returned null. Ensure that the Google+ API is
