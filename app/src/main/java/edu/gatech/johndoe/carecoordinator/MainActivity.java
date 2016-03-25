@@ -145,13 +145,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         Bundle intentExtra = intent.getExtras();
         // Update the current user
         currentUserAccount = (GoogleSignInAccount) intentExtra.get("userAccount");
-        /*
         // Display the current user's email in the navigation header
         View inflatedView = getLayoutInflater().inflate(R.layout.nav_header_main, null);
-        TextView emailLabel = (TextView)inflatedView.findViewById(R.id.coordinator_email_label);
+
+        TextView emailLabel = (TextView) findViewById(R.id.coordinator_email);
         emailLabel.setText(currentUserAccount.getEmail());
         Log.d(TAG, "Updated user's email to " + emailLabel.getText());
-        */
+
     }
 
     @Override
