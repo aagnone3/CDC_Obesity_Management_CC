@@ -31,6 +31,7 @@ import edu.gatech.johndoe.carecoordinator.community.Restaurant;
 
 public class Utility {
     private static final String SERVER_BASE = "http://52.72.172.54:8080/fhir/baseDstu2";
+    private static final String MAPS_API_KEY = "AIzaSyADCKXv1I_2Z0zAQ8CPMs-32YmhKGtkYBY";
     private static final FhirContext ctx = FhirContext.forDstu2();
     public static final Firebase REFERRALS_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/referrals");
