@@ -24,6 +24,9 @@ import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.Community;
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
+import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
+import edu.gatech.johndoe.carecoordinator.community.Physical;
+import edu.gatech.johndoe.carecoordinator.community.Restaurant;
 
 
 public class Utility {
@@ -35,11 +38,14 @@ public class Utility {
             new Firebase("https://cdccoordinator2.firebaseio.com/patients");
     public static final Firebase COMMUNITES_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/communities");
+    public static final Firebase PHYSICAL_REF =
+            new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/physical");
     public static final Firebase INCOMING_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/incoming");
     public static List<EHR> referral_list = new ArrayList<>();
     public static List<edu.gatech.johndoe.carecoordinator.patient.Patient> patient_list = new ArrayList<>();
     public static List<Community> community_list = new ArrayList<>();
+    public static List<Physical> physical_list = new ArrayList<>();
 
     public static void dummyDataGenerator () {
         Random random = new Random();
@@ -169,14 +175,34 @@ public class Utility {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                    community_list.add(ds
-                            .getValue(Community.class));
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    community_list.add(ds.getValue(Community.class));
+                }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.e("AllCommunities", firebaseError.getMessage());
+            }
+        });
+
+        Query physRef = PHYSICAL_REF.orderByKey();
+        physRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    Physical testPhys = ds.getValue(Physical.class);
+                    Log.e("physical", "Name is: " + testPhys.getName());
+                    Log.e("physical", "Street address is: " + testPhys.getStreetAddress());
+                    Log.e("physical", "Type is: " + testPhys.getType());
+                    Log.e("physical", "Hours are: " + testPhys.getHours());
+                    Log.e("physical", "Description is: " + testPhys.getDescription());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("AllCommunities_Physical", firebaseError.getMessage());
             }
         });
     }
