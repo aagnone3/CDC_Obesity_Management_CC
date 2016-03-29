@@ -292,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         } else {
             DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout_unlocked);
             drawer.closeDrawer(GravityCompat.START);
+            contentListFragment.closeDetailView();
         }
 
         currentNavigationItemId = id;
