@@ -27,4 +27,5 @@ public class CommunityFragment extends Fragment {
         transaction.commit();
         return view;
     }
+
 }
