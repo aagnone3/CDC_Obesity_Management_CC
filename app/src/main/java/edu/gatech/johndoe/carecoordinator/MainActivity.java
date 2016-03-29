@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private int currentNavigationItemId;
     private Intent intent;
     private NavigationView navigationView;
+    private ContentListFragment contentListFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -157,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mOptionsMenu = menu;
+        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
         MenuItem searchMenuItem = menu.findItem(R.id.search);
 
         SearchManager searchManager =
@@ -194,6 +198,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
+                return true;
+            case R.id.refresh:
+                loadData();
                 return true;
             case R.id.menuSortName:
                 sortCommunityList(CommunityAdapter.SortType.NAME);
@@ -262,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             return true;
         }
 
-        ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+        contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
 
         if (id == R.id.nav_referrals) {
             contentListFragment.setAdapter(new ReferralListAdapter(Utility.referral_list), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
@@ -297,6 +304,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         currentNavigationItemId = id;
 
         return true;
+    }
+
+    public void loadData() {
+        Utility.update(contentListFragment, currentNavigationItemId);
+        Toast.makeText(getApplicationContext(), "Data Updated", Toast.LENGTH_LONG).show();
     }
 
 }

@@ -23,10 +23,14 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.Community;
+import edu.gatech.johndoe.carecoordinator.ContentListFragment;
+import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.ReferralListAdapter;
 import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
 import edu.gatech.johndoe.carecoordinator.community.Physical;
 import edu.gatech.johndoe.carecoordinator.community.Restaurant;
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
+import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 
 /*import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -282,6 +286,49 @@ public class Utility {
             }
         });
         return result;
+    }
+
+    public static void update(final ContentListFragment contentListFragment, final int id) {
+        Query queryRef = REFERRALS_REF.orderByChild("id");
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<EHR> updated = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                    updated.add(ds.getValue(EHR.class));
+                referral_list = updated;
+                if (id == R.id.nav_referrals) {
+                    contentListFragment.setAdapter(new ReferralListAdapter(Utility.referral_list), ContentListFragment.ContentType.Referral);
+                }
+                Log.i("Update Referrals", "Done with updating referrals.");
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("Update Referrals", firebaseError.getMessage());
+            }
+        });
+
+        queryRef = PATIENTS_REF.orderByChild("id");
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<edu.gatech.johndoe.carecoordinator.patient.Patient> updated = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                    updated.add(ds.getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class));
+                patient_list = updated;
+
+                if (id == R.id.nav_patients) {
+                    contentListFragment.setAdapter(new PatientAdapter(Utility.patient_list), ContentListFragment.ContentType.Patient);
+                } 
+                Log.i("Update Patients", "Done with updating patients.");
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("Update Patients", firebaseError.getMessage());
+            }
+        });
     }
 
     public static ca.uhn.fhir.model.dstu2.resource.Patient get_patient_info_by_id(int id) {
