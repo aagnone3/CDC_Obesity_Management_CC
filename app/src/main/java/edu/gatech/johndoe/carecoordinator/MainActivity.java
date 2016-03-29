@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
 
         if (id == R.id.nav_referrals) {
-            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
+            contentListFragment.setAdapter(new ReferralListAdapter(Utility.referral_list), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
         } else if (id == R.id.nav_patients) {
             contentListFragment.setAdapter(new PatientAdapter(Utility.patient_list), ContentListFragment.ContentType.Patient);
         } else if (id == R.id.nav_communities) {

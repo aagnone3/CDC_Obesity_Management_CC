@@ -43,7 +43,7 @@ public class ContentListFragment extends Fragment {
                     // TODO: change to Referral type
                     listType = new TypeToken<List<Community>>(){}.getType();
                     data = new Gson().fromJson(savedInstanceState.getString("data"), listType);
-                    adapter = new CommunityAdapter(data, selectedPosition);
+                    adapter = new ReferralListAdapter(data, selectedPosition);
                     break;
                 case Patient:
                     listType = new TypeToken<List<Patient>>(){}.getType();
