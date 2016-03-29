@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +27,8 @@ import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
-import edu.gatech.johndoe.carecoordinator.patient.PatientEmail;
+import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
+import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
 
 
 public class PatientDetailFragment extends Fragment {
@@ -60,26 +59,53 @@ public class PatientDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate view
         View view = inflater.inflate(R.layout.fragment_patient_detail, container, false);
+        // Set patient-specific information
         TextView patient_name = (TextView) view.findViewById(R.id.patient_name);
         TextView patient_id = (TextView) view.findViewById(R.id.patient_id);
-        TextView patient_type = (TextView) view.findViewById(R.id.patient_type);
         TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender);
         TextView patient_birth_date = (TextView) view.findViewById(R.id.patient_dob);
         TextView patient_age = (TextView) view.findViewById(R.id.patient_age);
-        TextView patient_address_first = (TextView) view.findViewById(R.id.patient_address_first_line);
-        TextView patient_address_second = (TextView) view.findViewById(R.id.patient_address_second_line);
+        final TextView patient_address_first = (TextView) view.findViewById(R.id.patient_address_first_line);
+        final TextView patient_address_second = (TextView) view.findViewById(R.id.patient_address_second_line);
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email);
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
         patient_name.setText(patient.getFull_name_first());
         patient_id.setText(patient.getId());
-        patient_type.setText(patient.getType());
         patient_gender.setText(patient.getGender());
         patient_age.setText(String.valueOf(patient.getAge()));
         patient_birth_date.setText(patient.getFormatted_birth_date());
         patient_address_first.setText(patient.getAddress_first());
         patient_address_second.setText(patient.getAddress_second());
         patient_email.setText(patient.getEmail());
+        patient_phone.setText(patient.getPhoneNumber());
+        // Set listeners for actionable patient information
+        View.OnClickListener addressClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(android.R.drawable.ic_dialog_map)
+                        .setTitle(patient.getAddress_first())
+                        .setMessage("Do you want to view address of "
+                                + patient.getFull_name_first() + "?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Uri mapsUri = Uri.parse("geo:33.771344,-84.5675555?q="
+                                        + Uri.encode(patient.getAddress_first() + ", "
+                                        + patient.getAddress_second()));
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, mapsUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        };
+        patient_address_first.setOnClickListener(addressClickListener);
+        patient_address_second.setOnClickListener(addressClickListener);
         patient_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +123,6 @@ public class PatientDetailFragment extends Fragment {
                         .show();
             }
         });
-        patient_phone.setText(patient.getPhoneNumber());
         patient_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +159,9 @@ public class PatientDetailFragment extends Fragment {
 
     private void sendPatientEmail() {
         // Email intent
-        PatientEmail email = new PatientEmail(patient);
+        PatientEmail email = PatientEmailFactory.getEmailBody(
+                PatientEmailFactory.EMAIL_TYPE.FINAL_REFERRAL,
+                patient);
 
         try {
             startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));

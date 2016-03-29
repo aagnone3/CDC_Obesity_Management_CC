@@ -21,12 +21,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.firebase.client.Firebase;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
@@ -35,16 +38,24 @@ import edu.gatech.johndoe.carecoordinator.util.Utility;
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener, NavigationView.OnNavigationItemSelectedListener {
 
     public static boolean isInExpandedMode;
+    public static GoogleSignInAccount currentUserAccount;
+    public static final String TAG = "MainActivity";
 
     private Menu mOptionsMenu;
     private CommunityListFragment currentFragment;
     private int currentNavigationItemId;
+    private Intent intent;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Store intent
+        intent = getIntent();
+        // Use the intent to populate current user information
+        handleIntent(intent);
+        // Set content view to main activity layout
         setContentView(R.layout.activity_main);
-
         // Set Context for Firebase
         Firebase.setAndroidContext(this);
 
@@ -94,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             isInExpandedMode = false;
         }
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
@@ -111,13 +122,36 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         handleIntent(intent);
     }
 
+    /**
+     * Handles the intent that was recently received
+     * @param intent Recently received intent
+     */
     private void handleIntent(Intent intent) {
+        // Update information for the current user
+        updateCurrentUserInfo(intent);
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             if (currentFragment != null) {
                 currentFragment.filterList(query);
             }
         }
+    }
+
+    /**
+     * Updates the current user account, and displays the user's email in the navigation header
+     * @param intent Intent which contains the current user
+     */
+    private void updateCurrentUserInfo(Intent intent) {
+        Bundle intentExtra = intent.getExtras();
+        // Update the current user
+        currentUserAccount = (GoogleSignInAccount) intentExtra.get("userAccount");
+        // Display the current user's email in the navigation header
+        View inflatedView = getLayoutInflater().inflate(R.layout.nav_header_main, null);
+
+        TextView emailLabel = (TextView) findViewById(R.id.coordinator_email);
+        emailLabel.setText(currentUserAccount.getEmail());
+        Log.d(TAG, "Updated user's email to " + emailLabel.getText());
+
     }
 
     @Override
@@ -238,6 +272,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             // TODO
         } else if (id == R.id.nav_settings) {
             // TODO
+        } else if (id == R.id.sign_out_button_main) {
+            Intent logoutIntent = new Intent(this, LoginActivity.class);
+            logoutIntent.putExtra("SIGN_OUT", true);
+            startActivity(logoutIntent);
+            //setResult(1);
+            finish();
         } else {
             return false;
         }
