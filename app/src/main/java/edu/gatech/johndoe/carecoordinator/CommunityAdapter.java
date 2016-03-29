@@ -172,7 +172,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                     transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
                 } else {
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    transaction.replace(R.id.contentContainer, detailFragment, "detail").addToBackStack(null);
+                    transaction.add(R.id.contentContainer, detailFragment, "detail").addToBackStack(null);
                 }
 
                 transaction.commit();

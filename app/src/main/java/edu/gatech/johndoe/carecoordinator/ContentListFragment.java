@@ -69,10 +69,7 @@ public class ContentListFragment extends Fragment {
                     contentList.scrollToPosition(selectedPosition);
                 }
             } else {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                if (fragmentManager.getBackStackEntryCount() != 0) {
-                    fragmentManager.popBackStackImmediate();
-                }
+                closeDetailView();
             }
         }
     }
@@ -148,6 +145,13 @@ public class ContentListFragment extends Fragment {
             contentList.setAdapter(adapter);
             this.adapter = adapter;
             this.contentType = contentType;
+        }
+    }
+
+    public void closeDetailView() {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() != 0) {
+            fragmentManager.popBackStackImmediate();
         }
     }
 
