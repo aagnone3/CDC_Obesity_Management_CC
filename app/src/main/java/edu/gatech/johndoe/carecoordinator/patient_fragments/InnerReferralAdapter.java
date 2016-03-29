@@ -65,8 +65,7 @@ public class InnerReferralAdapter extends ArrayAdapter<EHR> {
                     ContentListFragment contentListFragment =
                             (ContentListFragment) fragment_manager.findFragmentById(R.id.contentListFragment);
                     contentListFragment.updatePatientStatus(isClosed());
-
-//                    contentListFragment.getAdapter().notifyDataSetChanged();
+                    contentListFragment.getAdapter().notifyDataSetChanged();
                 }
             });
         }
