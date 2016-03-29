@@ -91,5 +91,20 @@ public class EHR {
                 ", dateOfimport=" + dateOfimport +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof EHR) {
+            if (hashCode() == o.hashCode()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.valueOf(id);
+    }
 }
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
@@ -17,10 +18,12 @@ import edu.gatech.johndoe.carecoordinator.util.Utility;
 public class InnerReferralAdapter extends ArrayAdapter<EHR> {
 
     private android.support.v4.app.FragmentManager fragment_manager;
+    private List<EHR> referralList;
 
     public InnerReferralAdapter(Context context, int resource, List<EHR> referralList, android.support.v4.app.FragmentManager fragment_manager) {
         super(context, resource, referralList);
         this.fragment_manager = fragment_manager;
+        this.referralList = referralList;
     }
 
     @Override
@@ -59,10 +62,24 @@ public class InnerReferralAdapter extends ArrayAdapter<EHR> {
                         e.setPending(true);
                     }
                     Utility.updateReferralStatus(e.getId(), e.isPending());
+                    ContentListFragment contentListFragment =
+                            (ContentListFragment) fragment_manager.findFragmentById(R.id.contentListFragment);
+                    contentListFragment.updatePatientStatus(isClosed());
+
+//                    contentListFragment.getAdapter().notifyDataSetChanged();
                 }
             });
         }
         return v;
+    }
+
+    private boolean isClosed() {
+        for (EHR e : referralList) {
+            if (e.isPending()) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

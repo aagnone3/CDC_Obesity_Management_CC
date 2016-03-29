@@ -9,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -119,6 +121,26 @@ public class ContentListFragment extends Fragment {
         }
 
         outState.putSerializable("contentType", contentType);
+    }
+
+    public void updatePatientStatus(boolean isClosed){
+        PatientAdapter pa = (PatientAdapter) adapter;
+        View v = contentList.getChildAt(pa.getSelectedPosition());
+        if (v != null) {
+            ImageView patientStatusImage = (ImageView) v.findViewById(R.id.patientStatusImage);
+            TextView patientStatusTextView = (TextView) v.findViewById(R.id.patient_status);
+            if (isClosed) {
+                patientStatusImage.setImageResource(R.drawable.closed);
+                patientStatusTextView.setText(R.string.closed);
+            } else {
+                patientStatusImage.setImageResource(R.drawable.pending);
+                patientStatusTextView.setText(R.string.pending);
+            }
+        }
+    }
+
+    public RecyclerView.Adapter getAdapter() {
+        return adapter;
     }
 
     public void setAdapter(RecyclerView.Adapter adapter, ContentType contentType) {

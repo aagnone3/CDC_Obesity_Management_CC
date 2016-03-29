@@ -109,11 +109,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         if (savedInstanceState == null) {
             onNavigationItemSelected(navigationView.getMenu().getItem(0).setChecked(true));
+            Utility.getAllReferrals();
+            Utility.getAllPatients();
+            Utility.getAllCommunities();
         }
-
-        Utility.getAllReferrals();
-        Utility.getAllPatients();
-        Utility.getAllCommunities();
     }
 
     @Override

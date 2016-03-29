@@ -319,4 +319,19 @@ public class Patient {
                 '}';
     }
 
+    @Override
+    public int hashCode() {
+        return Integer.valueOf(id);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Patient) {
+            if (hashCode() == o.hashCode()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

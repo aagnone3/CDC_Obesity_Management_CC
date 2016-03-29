@@ -142,8 +142,6 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         return selectedPosition;
     }
 
-
-
     public class PatientHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView patientStatusImage;
         private final TextView patientNameTextView;

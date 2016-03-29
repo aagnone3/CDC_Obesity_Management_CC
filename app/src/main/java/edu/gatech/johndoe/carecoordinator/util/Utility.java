@@ -1,6 +1,5 @@
 package edu.gatech.johndoe.carecoordinator.util;
 
-import android.location.Geocoder;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
@@ -24,10 +23,10 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.Community;
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
 import edu.gatech.johndoe.carecoordinator.community.Physical;
 import edu.gatech.johndoe.carecoordinator.community.Restaurant;
+import edu.gatech.johndoe.carecoordinator.patient.EHR;
 
 /*import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -126,11 +125,13 @@ public class Utility {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                    referral_list.add(ds
-                            .getValue(EHR.class));
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    EHR ehr = ds.getValue(EHR.class);
+                    if (!referral_list.contains(ehr)) {
+                        referral_list.add(ehr);
+                    }
+                }
             }
-
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.e("AllReferrals", firebaseError.getMessage());
@@ -158,9 +159,12 @@ public class Utility {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                    patient_list.add(ds
-                            .getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class));
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    edu.gatech.johndoe.carecoordinator.patient.Patient p = ds.getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class);
+                    if (!patient_list.contains(p)) {
+                        patient_list.add(p);
+                    }
+                }
             }
 
             @Override
@@ -256,6 +260,7 @@ public class Utility {
         for (EHR referral : referral_list) {
             if (referral.getId().equals(id)) {
                 referral.setPending(status);
+                break;
             }
         }
     }
