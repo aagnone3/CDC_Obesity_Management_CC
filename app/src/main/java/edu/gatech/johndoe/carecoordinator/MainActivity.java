@@ -149,8 +149,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         View inflatedView = getLayoutInflater().inflate(R.layout.nav_header_main, null);
 
         TextView emailLabel = (TextView) findViewById(R.id.coordinator_email);
-        emailLabel.setText(currentUserAccount.getEmail());
-        Log.d(TAG, "Updated user's email to " + emailLabel.getText());
+//        emailLabel.setText(currentUserAccount.getEmail());
+//        Log.d(TAG, "Updated user's email to " + emailLabel.getText());
 
     }
 
