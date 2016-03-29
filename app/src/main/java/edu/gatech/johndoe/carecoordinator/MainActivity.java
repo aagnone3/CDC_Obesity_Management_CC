@@ -8,9 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -21,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +28,9 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
+import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientDetailFragment;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
@@ -240,6 +239,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public void onShouldUpdateDetail(Object content) {
         if (content instanceof Community) {
             Fragment detailFragment = CommunityDetailFragment.newInstance((Community) content);
+            getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
+        } else if (content instanceof Patient) {
+            Patient p = (Patient) content;
+            Fragment detailFragment = PatientDetailFragment.newInstance(p,  Utility.getAllRelatedReferrals(p.getEhrList()));
             getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
         }
     }

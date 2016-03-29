@@ -193,7 +193,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                     transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail");
                 } else {
                     transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    transaction.replace(R.id.contentContainer, detailFragment).addToBackStack(null);
+                    transaction.replace(R.id.contentContainer, detailFragment, "detail").addToBackStack(null);
                 }
 
                 transaction.commit();
