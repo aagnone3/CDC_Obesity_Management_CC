@@ -1,5 +1,8 @@
 package edu.gatech.johndoe.carecoordinator.community;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * abstract community class for all community resource types
  * contains basic information for each community resource type
@@ -12,7 +15,9 @@ public class CommunityResource {
     private String streetAddress;
     private String city;
     private String state;
-    private String hours;
+    private String openDays;
+    private String openHour;
+    private String closeHour;
     private String description;
 
     private Double latitude;
@@ -21,9 +26,11 @@ public class CommunityResource {
     private int patientCount;
     private int zipcode;
 
-    /* will we want a "patient list" for each community resource?
-    if so, figure out how this will be stored and updated on firebase
-    can most likely just use patient IDs */
+    public List<String> patientList;
+
+
+
+    /* class methods */
 
     public CommunityResource() {}
 
@@ -47,8 +54,16 @@ public class CommunityResource {
         return state;
     }
 
-    public String getHours() {
-        return hours;
+    public String getOpenDays() {
+        return openDays;
+    }
+
+    public String getOpenHour() {
+        return openHour;
+    }
+
+    public String getCloseHour() {
+        return closeHour;
     }
 
     public String getDescription() {
@@ -69,6 +84,10 @@ public class CommunityResource {
 
     public int getZipcode() {
         return zipcode;
+    }
+
+    public List<String> getPatientList() {
+        return patientList;
     }
 
     public void setPatientCount(int patientCount) {

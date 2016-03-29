@@ -1,5 +1,6 @@
 package edu.gatech.johndoe.carecoordinator.util;
 
+import android.location.Geocoder;
 import android.util.Log;
 
 import com.firebase.client.DataSnapshot;
@@ -28,6 +29,12 @@ import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
 import edu.gatech.johndoe.carecoordinator.community.Physical;
 import edu.gatech.johndoe.carecoordinator.community.Restaurant;
 
+/*import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;*/
+
 
 public class Utility {
     private static final String SERVER_BASE = "http://52.72.172.54:8080/fhir/baseDstu2";
@@ -41,12 +48,18 @@ public class Utility {
             new Firebase("https://cdccoordinator2.firebaseio.com/communities");
     public static final Firebase PHYSICAL_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/physical");
+    public static final Firebase NUTRITIONIST_REF =
+            new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/nutritionist");
+    public static final Firebase RESTAURANT_REF =
+            new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/restaurant");
     public static final Firebase INCOMING_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/incoming");
     public static List<EHR> referral_list = new ArrayList<>();
     public static List<edu.gatech.johndoe.carecoordinator.patient.Patient> patient_list = new ArrayList<>();
     public static List<Community> community_list = new ArrayList<>();
     public static List<Physical> physical_list = new ArrayList<>();
+    public static List<Nutritionist> nutritionist_list = new ArrayList<>();
+    public static List<Restaurant> restaurant_list = new ArrayList<>();
 
     public static void dummyDataGenerator () {
         Random random = new Random();
@@ -192,18 +205,46 @@ public class Utility {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    Physical testPhys = ds.getValue(Physical.class);
-                    Log.e("physical", "Name is: " + testPhys.getName());
-                    Log.e("physical", "Street address is: " + testPhys.getStreetAddress());
-                    Log.e("physical", "Type is: " + testPhys.getType());
-                    Log.e("physical", "Hours are: " + testPhys.getHours());
-                    Log.e("physical", "Description is: " + testPhys.getDescription());
+                    physical_list.add(ds.getValue(Physical.class));
+                    Log.e("physical_list", physical_list.get(0).getName());
                 }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.e("AllCommunities_Physical", firebaseError.getMessage());
+            }
+        });
+
+        Query nutRef = NUTRITIONIST_REF.orderByKey();
+        nutRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    nutritionist_list.add(ds.getValue(Nutritionist.class));
+                    Log.e("nutritionist_list", nutritionist_list.get(0).getFirstName());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("AllCommunities_Nut", firebaseError.getMessage());
+            }
+        });
+
+        Query restRef = RESTAURANT_REF.orderByKey();
+        restRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    restaurant_list.add(ds.getValue(Restaurant.class));
+                    Log.e("restaurant_list", restaurant_list.get(0).getFoodType());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("AllCommunities_Rest", firebaseError.getMessage());
             }
         });
     }
@@ -260,7 +301,7 @@ public class Utility {
 
     public static ArrayList<Community> getCommunities() {
         ArrayList<Community> communities = new ArrayList<>(Arrays.asList(
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
+                new Community("YMCA11", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
                 new Community("YMCA", 120), new Community("Farmer's Market", 54),
