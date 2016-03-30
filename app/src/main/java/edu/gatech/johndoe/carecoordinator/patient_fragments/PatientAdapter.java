@@ -53,6 +53,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
     private List<Patient> patients;
     private List<Patient> filteredPatients;
     private int selectedPosition;
+    public static Patient currentPatient;
+    public static int currentPosition;
 
     public PatientAdapter(List<Patient> patients, int selected) {
         this.patients = patients;
@@ -203,6 +205,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                 } else {
                     selectedPosition = getLayoutPosition();
                 }
+                currentPatient = patient;
+                currentPosition = selectedPosition;
             }
         }
     }

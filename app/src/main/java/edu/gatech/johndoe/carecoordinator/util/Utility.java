@@ -1,6 +1,9 @@
 package edu.gatech.johndoe.carecoordinator.util;
 
+import android.content.Context;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -23,14 +26,20 @@ import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.Community;
+import edu.gatech.johndoe.carecoordinator.CommunityAdapter;
+import edu.gatech.johndoe.carecoordinator.CommunityDetailFragment;
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
+import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.ReferralDetailFragment;
 import edu.gatech.johndoe.carecoordinator.ReferralListAdapter;
+import edu.gatech.johndoe.carecoordinator.UnselectedFragment;
 import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
 import edu.gatech.johndoe.carecoordinator.community.Physical;
 import edu.gatech.johndoe.carecoordinator.community.Restaurant;
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
+import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientDetailFragment;
 
 /*import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -63,6 +72,7 @@ public class Utility {
     public static List<Physical> physical_list = new ArrayList<>();
     public static List<Nutritionist> nutritionist_list = new ArrayList<>();
     public static List<Restaurant> restaurant_list = new ArrayList<>();
+    public static final String UPDATE_MESSAGE = "Data Updated.";
 
     public static void dummyDataGenerator () {
         Random random = new Random();
@@ -136,6 +146,7 @@ public class Utility {
                     }
                 }
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.e("AllReferrals", firebaseError.getMessage());
@@ -288,7 +299,13 @@ public class Utility {
         return result;
     }
 
-    public static void update(final ContentListFragment contentListFragment, final int id) {
+    public static void updateReferral(final Context context,
+                                      final ContentListFragment contentListFragment,
+                                      final FragmentTransaction transaction,
+                                      final boolean isInExpandedMode,
+                                      final boolean refresh,
+                                      final boolean toast) {
+
         Query queryRef = REFERRALS_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -297,9 +314,33 @@ public class Utility {
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                     updated.add(ds.getValue(EHR.class));
                 referral_list = updated;
-                if (id == R.id.nav_referrals) {
-                    contentListFragment.setAdapter(new ReferralListAdapter(Utility.referral_list), ContentListFragment.ContentType.Referral);
+
+                if (refresh && MainActivity.currentNavigationItemId == R.id.nav_referrals) {
+                    contentListFragment.setAdapter(
+                            new ReferralListAdapter(Utility.referral_list),
+                            ContentListFragment.ContentType.Referral);
+
+                    if (isInExpandedMode) {
+                        //FIXME: replace with updated referral detail if needed
+                        for (EHR e : referral_list) {
+                            if (ReferralListAdapter.currentReferral != null) {
+                                if (e.getId().equals(ReferralListAdapter.currentReferral.getId())) {
+                                    transaction.replace(
+                                            R.id.detailFragmentContainer,
+                                            ReferralDetailFragment.newInstance(e),
+                                            "detail").commit();
+                                    break;
+                                }
+                            }
+                        }
+                        transaction.replace(R.id.detailFragmentContainer, new UnselectedFragment(), "detail").commit();
+
+                    }
                 }
+
+                if (toast)
+                    Toast.makeText(context, UPDATE_MESSAGE, Toast.LENGTH_LONG).show();
+
                 Log.i("Update Referrals", "Done with updating referrals.");
             }
 
@@ -308,8 +349,16 @@ public class Utility {
                 Log.e("Update Referrals", firebaseError.getMessage());
             }
         });
+    }
 
-        queryRef = PATIENTS_REF.orderByChild("id");
+    public static void updatePatient(final Context context,
+                                     final ContentListFragment contentListFragment,
+                                     final FragmentTransaction transaction,
+                                     final boolean isInExpandedMode,
+                                     final boolean refresh,
+                                     final boolean toast) {
+
+        Query queryRef = PATIENTS_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -318,9 +367,30 @@ public class Utility {
                     updated.add(ds.getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class));
                 patient_list = updated;
 
-                if (id == R.id.nav_patients) {
-                    contentListFragment.setAdapter(new PatientAdapter(Utility.patient_list), ContentListFragment.ContentType.Patient);
-                } 
+                if (refresh && MainActivity.currentNavigationItemId == R.id.nav_patients) {
+                    contentListFragment.setAdapter(
+                            new PatientAdapter(Utility.patient_list,
+                            PatientAdapter.currentPosition),
+                            ContentListFragment.ContentType.Patient);
+
+                    if (isInExpandedMode) {
+                        for (edu.gatech.johndoe.carecoordinator.patient.Patient p : patient_list) {
+                            if (PatientAdapter.currentPatient != null) {
+                                if (p.getId().equals(PatientAdapter.currentPatient.getId())) {
+                                    transaction.replace(
+                                            R.id.detailFragmentContainer,
+                                            PatientDetailFragment.newInstance(p, Utility.getAllRelatedReferrals(p.getEhrList())),
+                                            "detail").commit();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (toast)
+                    Toast.makeText(context, UPDATE_MESSAGE, Toast.LENGTH_LONG).show();
+
                 Log.i("Update Patients", "Done with updating patients.");
             }
 
@@ -329,6 +399,112 @@ public class Utility {
                 Log.e("Update Patients", firebaseError.getMessage());
             }
         });
+    }
+
+    public static void updateCommunity(final Context context,
+                                       final ContentListFragment contentListFragment,
+                                       final FragmentTransaction transaction,
+                                       final boolean isInExpandedMode,
+                                       final boolean refresh,
+                                       final boolean toast) {
+
+        //FIXME: replace with New Version of Community Resource.
+
+        Query queryRef = COMMUNITES_REF.orderByChild("id");
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<Community> updated = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                    updated.add(ds.getValue(Community.class));
+                community_list = updated;
+
+                if (refresh && MainActivity.currentNavigationItemId == R.id.nav_communities) {
+                    contentListFragment.setAdapter(
+                            new CommunityAdapter(Utility.community_list,
+                                    CommunityAdapter.currentPosition),
+                            ContentListFragment.ContentType.Community);
+
+                    if (isInExpandedMode) {
+                        for (Community c : community_list) {
+                            if (CommunityAdapter.currentCommunity != null) {
+                                if (c.getId().equals(CommunityAdapter.currentCommunity.getId())) {
+                                    transaction.replace(
+                                            R.id.detailFragmentContainer,
+                                            CommunityDetailFragment.newInstance(c),
+                                            "detail").commit();
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (toast)
+                    Toast.makeText(context, UPDATE_MESSAGE, Toast.LENGTH_LONG).show();
+
+                Log.i("Update Patients", "Done with updating patients.");
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("Update Patients", firebaseError.getMessage());
+            }
+        });
+
+        // TODO: should be updated later.
+        if (refresh && MainActivity.currentNavigationItemId == R.id.nav_communities) {
+
+        }
+
+        if (toast)
+            Toast.makeText(context, UPDATE_MESSAGE, Toast.LENGTH_LONG).show();
+
+        Log.i("Update Communities", "Done with updating communities.");
+    }
+
+    public static void update(final Context context,
+                              final ContentListFragment contentListFragment,
+                              final FragmentTransaction transaction,
+                              final boolean isInExpandedMode,
+                              final int id) {
+        String targets = "012";
+        targets.replace(String.valueOf(id), "");
+        switch (id) {
+            case 0:
+                updateReferral(context, contentListFragment,
+                        transaction, isInExpandedMode, true, true);
+                break;
+            case 1:
+                updatePatient(context, contentListFragment,
+                        transaction, isInExpandedMode, true, true);
+                break;
+            case 2:
+                updateCommunity(context, contentListFragment,
+                        transaction, isInExpandedMode, true, true);
+                break;
+        }
+        for (int i = 0; i < targets.length(); i++) {
+            switch (Integer.valueOf(targets.charAt(i))) {
+                case 0:
+                    updateReferral(context, contentListFragment,
+                            transaction, isInExpandedMode, false, false);
+                    break;
+                case 1:
+                    updatePatient(context, contentListFragment,
+                            transaction, isInExpandedMode, false, false);
+                    break;
+                case 2:
+                    updateCommunity(context, contentListFragment,
+                            transaction, isInExpandedMode, false, false);
+                    break;
+            }
+        }
+    }
+
+    public static void fhirUpdate() {
+        //TODO
+
     }
 
     public static ca.uhn.fhir.model.dstu2.resource.Patient get_patient_info_by_id(int id) {

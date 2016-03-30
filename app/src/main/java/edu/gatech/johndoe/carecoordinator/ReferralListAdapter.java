@@ -11,15 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.sql.Ref;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.patient.EHR;
@@ -56,6 +50,8 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
     private List<EHR> referrals;
     private List<EHR> filteredReferral;
     private int selectedPosition;
+    public static EHR currentReferral;
+    public static int currentPosition;
 
     public ReferralListAdapter(List<EHR> referral, int selectedPosition) {
         this.referrals = referral;
@@ -194,6 +190,8 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
                 } else {
                     selectedPosition = getLayoutPosition();
                 }
+                currentReferral = referral;
+                currentPosition = selectedPosition;
             }
         }
     }

@@ -48,6 +48,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
     private List<Community> communities;
     private List<Community> filteredCommunities;
     private int selectedPosition;
+    public static Community currentCommunity;
+    public static int currentPosition;
 
     public CommunityAdapter(List<Community> communities, int selectedPosition) {
         this.communities = communities;
@@ -184,6 +186,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                 } else {
                     selectedPosition = getLayoutPosition();
                 }
+                currentCommunity = community;
+                currentPosition = selectedPosition;
             }
         }
     }

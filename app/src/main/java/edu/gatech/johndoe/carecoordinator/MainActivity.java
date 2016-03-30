@@ -19,15 +19,17 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+
+import java.util.Arrays;
 
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
@@ -40,14 +42,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public static boolean isInExpandedMode;
     public static GoogleSignInAccount currentUserAccount;
     public static final String TAG = "MainActivity";
+    public static final long UPDATE_INTERVAL = 60 * 10 * 1000;  // 10 minutes
 
     private Menu mOptionsMenu;
     private CommunityListFragment currentFragment;
-    private int currentNavigationItemId;
+    public static int currentNavigationItemId;
     private Intent intent;
     private NavigationView navigationView;
-    private ContentListFragment contentListFragment;
-
+    private long[] lastUpdateTime = new long[3];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         if (savedInstanceState == null) {
             onNavigationItemSelected(navigationView.getMenu().getItem(0).setChecked(true));
+            updateTime();
             Utility.getAllReferrals();
             Utility.getAllPatients();
             Utility.getAllCommunities();
@@ -269,8 +272,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             return true;
         }
 
-        contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
-
+        ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+        updateEachTab(getNavID(id));
         if (id == R.id.nav_referrals) {
             contentListFragment.setAdapter(new ReferralListAdapter(Utility.referral_list), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
         } else if (id == R.id.nav_patients) {
@@ -307,8 +310,63 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     public void loadData() {
-        Utility.update(contentListFragment, currentNavigationItemId);
-        Toast.makeText(getApplicationContext(), "Data Updated", Toast.LENGTH_LONG).show();
+        updateTime();
+        Utility.fhirUpdate();
+        Utility.update(getApplicationContext(),
+                       (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
+                       getSupportFragmentManager().beginTransaction(),
+                       isInExpandedMode,
+                       getNavID(currentNavigationItemId));
     }
 
+    public void updateEachTab(int id) {
+        if (System.currentTimeMillis() - lastUpdateTime[id] >= UPDATE_INTERVAL) {
+            switch (id) {
+                case 0:
+                    Utility.updateReferral(getApplicationContext(),
+                                           (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
+                                           getSupportFragmentManager().beginTransaction(),
+                                           isInExpandedMode,
+                                           true,
+                                           false);
+                    break;
+                case 1:
+                    Utility.updatePatient(getApplicationContext(),
+                                          (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
+                                          getSupportFragmentManager().beginTransaction(),
+                                          isInExpandedMode,
+                                          true,
+                                          false);
+                    break;
+                case 2:
+                    Utility.updateCommunity(getApplicationContext(),
+                                            (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
+                                            getSupportFragmentManager().beginTransaction(),
+                                            isInExpandedMode,
+                                            true,
+                                            false);
+                    break;
+            }
+            lastUpdateTime[id] = System.currentTimeMillis();
+        }
+    }
+
+    public void updateTime() {
+        for (int i = 0; i < lastUpdateTime.length; i++) {
+            lastUpdateTime[i]  = System.currentTimeMillis();
+        }
+        Log.i(TAG, "Last updated time updated. (" + Arrays.toString(lastUpdateTime) + ")");
+    }
+
+    public int getNavID(int id) {
+        switch (id) {
+            case R.id.nav_referrals:
+                return 0;
+            case R.id.nav_patients:
+                return 1;
+            case R.id.nav_communities:
+                return 2;
+        }
+        return -1;
+    }
 }
