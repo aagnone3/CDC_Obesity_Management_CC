@@ -3,7 +3,7 @@ package edu.gatech.johndoe.carecoordinator.community;
 /**
  * healthy restaurant community resource
  */
-public class Restaurant extends CommunityResource {
+public class Restaurant extends Community {
 
     private String foodType;
     private int costLevel;

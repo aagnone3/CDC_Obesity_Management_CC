@@ -3,7 +3,7 @@ package edu.gatech.johndoe.carecoordinator.community;
 /**
  * nutritionist community resource
  */
-public class Nutritionist extends CommunityResource {
+public class Nutritionist extends Community {
 
     private String firstName;
     private String lastName;

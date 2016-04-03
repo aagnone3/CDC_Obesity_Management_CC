@@ -4,7 +4,7 @@ package edu.gatech.johndoe.carecoordinator.community;
 /**
  * physical (exercise-oriented) community resources
  */
-public class Physical extends CommunityResource {
+public class Physical extends Community {
 
     private int free;
     private String type;

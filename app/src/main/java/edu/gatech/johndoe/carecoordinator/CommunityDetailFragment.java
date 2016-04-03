@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import edu.gatech.johndoe.carecoordinator.community.Community;
+
 
 public class CommunityDetailFragment extends Fragment {
 
@@ -66,10 +68,10 @@ public class CommunityDetailFragment extends Fragment {
         communityImage.setImageResource(R.mipmap.ic_launcher);  // FIXME: replace with real data
 
         TextView communityName = (TextView) view.findViewById(R.id.communityName);
-        communityName.setText(community.name);
+        communityName.setText(community.getName());
 
         TextView patientCount = (TextView) view.findViewById(R.id.patientCount);
-        patientCount.setText(getString(R.string.patient_count, community.patientCount));
+        patientCount.setText(getString(R.string.patient_count, community.getPatientCount()));
 
         TextView address = (TextView) view.findViewById(R.id.address);
         address.setText("450 Madison Court, Decatur, GA 30030");    // FIXME: replace with real data

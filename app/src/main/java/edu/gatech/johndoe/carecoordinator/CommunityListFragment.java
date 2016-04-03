@@ -9,9 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 
 public class CommunityListFragment extends Fragment {
 
@@ -28,15 +25,6 @@ public class CommunityListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_community_list, container, false);
 
-        ArrayList<Community> communities = new ArrayList<>(Arrays.asList(
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54)
-        ));  // FIXME: replace with real data
-
-        communityAdapter = new CommunityAdapter(communities);
         RecyclerView communityList = (RecyclerView) view.findViewById(R.id.communityList);
         communityList.setLayoutManager(new LinearLayoutManager(getContext()));
         communityList.setAdapter(communityAdapter);

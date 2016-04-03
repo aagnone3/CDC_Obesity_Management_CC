@@ -17,7 +17,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.PractitionerRoleEnum;
 import ca.uhn.fhir.model.primitive.InstantDt;
-import edu.gatech.johndoe.carecoordinator.Community;
+import edu.gatech.johndoe.carecoordinator.community.Community;
 
 public class Patient {
     private String id;

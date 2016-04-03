@@ -1,15 +1,16 @@
 package edu.gatech.johndoe.carecoordinator.community;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import edu.gatech.johndoe.carecoordinator.patient.Patient;
 
 /**
  * abstract community class for all community resource types
  * contains basic information for each community resource type
  */
-public class CommunityResource {
+public class Community {
 
-    /* private variable declarations */
+    private String id;
     private String name;
     private String phoneNumber;
     private String streetAddress;
@@ -28,11 +29,19 @@ public class CommunityResource {
 
     public List<String> patientList;
 
+    private String communityType;
 
 
-    /* class methods */
+    public Community() {}
 
-    public CommunityResource() {}
+    public Community(String name, int patientCount) {
+        this.name = name;
+        this.patientCount = patientCount;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public String getName() {
         return name;
@@ -90,7 +99,19 @@ public class CommunityResource {
         return patientList;
     }
 
+    public String getCommunityType() {
+        return communityType;
+    }
+
     public void setPatientCount(int patientCount) {
         this.patientCount = patientCount;
+    }
+
+    public void addPatient(Patient p) {
+        patientList.add(p.getId());
+    }
+
+    public void removePatient(Patient p) {
+        patientList.remove(p.getId());
     }
 }

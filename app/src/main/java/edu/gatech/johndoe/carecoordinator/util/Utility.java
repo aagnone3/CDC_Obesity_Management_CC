@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
@@ -25,7 +26,6 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
-import edu.gatech.johndoe.carecoordinator.Community;
 import edu.gatech.johndoe.carecoordinator.CommunityAdapter;
 import edu.gatech.johndoe.carecoordinator.CommunityDetailFragment;
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
@@ -34,6 +34,7 @@ import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.ReferralDetailFragment;
 import edu.gatech.johndoe.carecoordinator.ReferralListAdapter;
 import edu.gatech.johndoe.carecoordinator.UnselectedFragment;
+import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
 import edu.gatech.johndoe.carecoordinator.community.Physical;
 import edu.gatech.johndoe.carecoordinator.community.Restaurant;
@@ -57,7 +58,7 @@ public class Utility {
     public static final Firebase PATIENTS_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/patients");
     public static final Firebase COMMUNITES_REF =
-            new Firebase("https://cdccoordinator2.firebaseio.com/communities");
+            new Firebase("https://cdccoordinator2.firebaseio.com/community_resources");
     public static final Firebase PHYSICAL_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/physical");
     public static final Firebase NUTRITIONIST_REF =
@@ -69,18 +70,15 @@ public class Utility {
     public static List<EHR> referral_list = new ArrayList<>();
     public static List<edu.gatech.johndoe.carecoordinator.patient.Patient> patient_list = new ArrayList<>();
     public static List<Community> community_list = new ArrayList<>();
-    public static List<Physical> physical_list = new ArrayList<>();
-    public static List<Nutritionist> nutritionist_list = new ArrayList<>();
-    public static List<Restaurant> restaurant_list = new ArrayList<>();
     public static final String UPDATE_MESSAGE = "Data Updated.";
 
     public static void dummyDataGenerator () {
         Random random = new Random();
         // Generating Fake Communities
-        List<Community> communities = new ArrayList<>();
-        for (int i = 1; i <= 30; i++) {
-            communities.add(new Community(String.valueOf(i), "Community" + i, "450 Madison Court, Deactur, GA 30030", "(678) 148 - 4606", "johndoe@gmail.com", "No Information"));
-        }
+//        List<Community> communities = new ArrayList<>();
+//        for (int i = 1; i <= 30; i++) {
+//            communities.add(new Community(String.valueOf(i), "Community" + i, "450 Madison Court, Deactur, GA 30030", "(678) 148 - 4606", "johndoe@gmail.com", "No Information"));
+//        }
         // Generating Fake Patients and their Referrals
         int j, ehrID = 1;
         for (int i = 1; i < 50; i++) {
@@ -93,15 +91,15 @@ public class Utility {
                     saveReferral(ehr);
                 }
                 ehrID = j;
-                Community community = communities.get((int) (Math.random()* 10));
-                community.addPatient(patient);
-                patient.addCommunity(community);
+//                Community community = communities.get((int) (Math.random()* 10));
+//                community.addPatient(patient);
+//                patient.addCommunity(community);
                 savePatient(patient);
             }
         }
         //Saving Fake Communities
-        for (Community c : communities)
-            saveCommunity(c);
+//        for (Community c : communities)
+//            saveCommunity(c);
     }
 
     public static void saveReferral(EHR ehr) {
@@ -196,6 +194,7 @@ public class Utility {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 community_list.add(dataSnapshot.child(id).getValue(Community.class));
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.e("CommunityID", firebaseError.getMessage());
@@ -209,61 +208,25 @@ public class Utility {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    community_list.add(ds.getValue(Community.class));
+                    GenericTypeIndicator<Map<String, Object>> ti = new GenericTypeIndicator<Map<String, Object>>() {};
+                    Map<String, Object> cr = ds.getValue(ti);
+                    switch (cr.get("communityType").toString()) {
+                        case "nutritionist":
+                            community_list.add(ds.getValue(Nutritionist.class));
+                            break;
+                        case "physical":
+                            community_list.add(ds.getValue(Physical.class));
+                            break;
+                        case "restaurant":
+                            community_list.add(ds.getValue(Restaurant.class));
+                            break;
+                    }
                 }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Log.e("AllCommunities", firebaseError.getMessage());
-            }
-        });
-
-        Query physRef = PHYSICAL_REF.orderByKey();
-        physRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    physical_list.add(ds.getValue(Physical.class));
-                    Log.e("physical_list", physical_list.get(0).getName());
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.e("AllCommunities_Physical", firebaseError.getMessage());
-            }
-        });
-
-        Query nutRef = NUTRITIONIST_REF.orderByKey();
-        nutRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    nutritionist_list.add(ds.getValue(Nutritionist.class));
-                    Log.e("nutritionist_list", nutritionist_list.get(0).getFirstName());
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.e("AllCommunities_Nut", firebaseError.getMessage());
-            }
-        });
-
-        Query restRef = RESTAURANT_REF.orderByKey();
-        restRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    restaurant_list.add(ds.getValue(Restaurant.class));
-                    Log.e("restaurant_list", restaurant_list.get(0).getFoodType());
-                }
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-                Log.e("AllCommunities_Rest", firebaseError.getMessage());
             }
         });
     }
@@ -408,15 +371,26 @@ public class Utility {
                                        final boolean refresh,
                                        final boolean toast) {
 
-        //FIXME: replace with New Version of Community Resource.
-
         Query queryRef = COMMUNITES_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 List<Community> updated = new ArrayList<>();
-                for (DataSnapshot ds : dataSnapshot.getChildren())
-                    updated.add(ds.getValue(Community.class));
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    GenericTypeIndicator<Map<String, Object>> ti = new GenericTypeIndicator<Map<String, Object>>() {};
+                    Map<String, Object> cr = ds.getValue(ti);
+                    switch (cr.get("communityType").toString()) {
+                        case "nutritionist":
+                            updated.add(ds.getValue(Nutritionist.class));
+                            break;
+                        case "physical":
+                            updated.add(ds.getValue(Physical.class));
+                            break;
+                        case "restaurant":
+                            updated.add(ds.getValue(Restaurant.class));
+                            break;
+                    }
+                }
                 community_list = updated;
 
                 if (refresh && MainActivity.currentNavigationItemId == R.id.nav_communities) {
@@ -451,11 +425,6 @@ public class Utility {
                 Log.e("Update Patients", firebaseError.getMessage());
             }
         });
-
-        // TODO: should be updated later.
-        if (refresh && MainActivity.currentNavigationItemId == R.id.nav_communities) {
-
-        }
 
         if (toast)
             Toast.makeText(context, UPDATE_MESSAGE, Toast.LENGTH_LONG).show();

@@ -31,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.Arrays;
 
+import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientDetailFragment;
@@ -279,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         } else if (id == R.id.nav_patients) {
             contentListFragment.setAdapter(new PatientAdapter(Utility.patient_list), ContentListFragment.ContentType.Patient);
         } else if (id == R.id.nav_communities) {
-            contentListFragment.setAdapter(new CommunityAdapter(Utility.getCommunities()), ContentListFragment.ContentType.Community);
+            contentListFragment.setAdapter(new CommunityAdapter(Utility.community_list), ContentListFragment.ContentType.Community);
         } else if (id == R.id.nav_account) {
             // TODO
         } else if (id == R.id.nav_settings) {

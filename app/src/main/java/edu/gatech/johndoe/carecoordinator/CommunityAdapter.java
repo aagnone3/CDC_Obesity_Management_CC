@@ -19,20 +19,22 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.gatech.johndoe.carecoordinator.community.Community;
+
 
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, Restorable {
 
     private static final Comparator<Community> NAME_COMPARATOR = new Comparator<Community>() {
         @Override
         public int compare(Community lhs, Community rhs) {
-            return lhs.name.compareTo(rhs.name);
+            return lhs.getName().compareTo(rhs.getName());
         }
     };
 
     private static final Comparator<Community> POPULARITY_COMPARATOR = new Comparator<Community>() {
         @Override
         public int compare(Community lhs, Community rhs) {
-            return rhs.patientCount - lhs.patientCount;
+            return rhs.getPatientCount() - lhs.getPatientCount();
         }
     };
 
@@ -93,7 +95,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
 
                 constraint = constraint.toString().toLowerCase().trim();
                 for (Community community : communities) {
-                    if (community.name.toLowerCase().startsWith(constraint.toString())) {
+                    if (community.getName().toLowerCase().startsWith(constraint.toString())) {
                         filtered.add(community);
                     }
                 }
@@ -157,8 +159,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
         public void bindCommunity(Context context, Community community) {
             this.community = community;
             communityImageView.setImageResource(R.mipmap.ic_launcher);   // FIXME: set to an actual image
-            communityNameTextView.setText(community.name);
-            patientCountTextView.setText(context.getString(R.string.patient_count, community.patientCount));
+            communityNameTextView.setText(community.getName());
+            patientCountTextView.setText(context.getString(R.string.patient_count, community.getPatientCount()));
         }
 
         @Override
