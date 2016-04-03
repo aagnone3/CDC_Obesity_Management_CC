@@ -114,4 +114,21 @@ public class Community {
     public void removePatient(Patient p) {
         patientList.remove(p.getId());
     }
+
+    public enum CommunityType {
+        NUTRITIONIST("nutritionist"), PHYSICAL("physical"), RESTAURANT("restaurant");
+
+        public static final CommunityType values[] = values();
+
+        private final String type;
+
+        CommunityType(String type) {
+            this.type = type;
+        }
+
+        @Override
+        public String toString() {
+            return this.type;
+        }
+    }
 }

@@ -21,14 +21,14 @@
         android:title="@string/refresh"
         android:icon="@drawable/ic_menu_refresh"
         app:showAsAction="collapseActionView|ifRoom"
-        android:visible="true"/>
+        android:visible="true" />
 
     <item
         android:id="@+id/sort"
         android:title="@string/sort_title"
         android:icon="@android:drawable/ic_menu_sort_by_size"
         app:showAsAction="collapseActionView|ifRoom"
-        android:visible="true">
+        android:visible="false">
         <menu>
             <item
                 android:id="@+id/menuSortName"
@@ -41,4 +41,12 @@
                 android:title="@string/sort_menu_distance" />
         </menu>
     </item>
+
+    <item
+        android:id="@+id/filter"
+        android:title="@string/filter_title"
+        android:icon="@drawable/ic_filter_list_white_36dp"
+        app:showAsAction="collapseActionView|ifRoom"
+        android:visible="true" />
+
 </menu>

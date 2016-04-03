@@ -1,8 +1,10 @@
 package edu.gatech.johndoe.carecoordinator;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -20,6 +22,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -166,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         mOptionsMenu = menu;
         MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
         MenuItem searchMenuItem = menu.findItem(R.id.search);
+        MenuItem filterMenuItem = menu.findItem(R.id.filter);
 
         SearchManager searchManager =
                 (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -214,6 +218,22 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 return true;
             case R.id.menuSortDistance:
                 sortCommunityList(CommunityAdapter.SortType.DISTANCE);
+                return true;
+            case R.id.filter:
+                final ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Filter Communities");
+                builder.setMultiChoiceItems(R.array.filterOptions, contentListFragment.getCommunityFilters(), null)
+                        .setPositiveButton("Filter", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                SparseBooleanArray checked = ((AlertDialog) dialog).getListView().getCheckedItemPositions();
+                                contentListFragment.filterList(checked);
+                            }
+                        }).setNegativeButton("Cancel", null).create();
+
+                builder.show();
+
                 return true;
         }
 

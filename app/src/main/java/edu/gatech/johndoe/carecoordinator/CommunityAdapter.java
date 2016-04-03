@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -93,10 +94,20 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                 FilterResults results = new FilterResults();
                 ArrayList<Community> filtered = new ArrayList<>();
 
-                constraint = constraint.toString().toLowerCase().trim();
-                for (Community community : communities) {
-                    if (community.getName().toLowerCase().startsWith(constraint.toString())) {
-                        filtered.add(community);
+                if (constraint.toString().startsWith("=")) {
+                    List<String> filters = Arrays.asList(constraint.toString().substring(1).split(","));
+                    for (Community community : communities) {
+                        if (filters.contains(community.getCommunityType())) {
+                            filtered.add(community);
+                        }
+                    }
+                } else {
+                    constraint = constraint.toString().toLowerCase().trim();
+
+                    for (Community community : communities) {
+                        if (community.getName().toLowerCase().startsWith(constraint.toString())) {
+                            filtered.add(community);
+                        }
                     }
                 }
 

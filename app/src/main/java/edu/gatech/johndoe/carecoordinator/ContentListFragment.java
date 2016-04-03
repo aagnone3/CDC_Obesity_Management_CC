@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.community.Community;
@@ -30,6 +32,9 @@ public class ContentListFragment extends Fragment {
     private RecyclerView contentList;
     private RecyclerView.Adapter adapter;
     private ContentType contentType;
+
+    private boolean[] communityFilters;
+    private String query;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -143,6 +148,10 @@ public class ContentListFragment extends Fragment {
 
     public void setAdapter(RecyclerView.Adapter adapter, ContentType contentType) {
         if (getView() != null) {
+            if (adapter instanceof CommunityAdapter && query != null) {
+                ((CommunityAdapter) adapter).getFilter().filter(query);
+            }
+
             contentList.setAdapter(adapter);
             this.adapter = adapter;
             this.contentType = contentType;
@@ -154,6 +163,31 @@ public class ContentListFragment extends Fragment {
         if (fragmentManager.getBackStackEntryCount() != 0) {
             fragmentManager.popBackStackImmediate();
         }
+    }
+
+    public void filterList(SparseBooleanArray filters) {
+        if (adapter instanceof CommunityAdapter) {
+            query = "=";
+            communityFilters = new boolean[3];
+            for (int i = 0; i < filters.size(); i++) {
+                if (filters.valueAt(i)) {
+                    if (query.length() > 1) {
+                        query += ",";
+                    }
+                    query += Community.CommunityType.values[filters.keyAt(i)].toString();
+                    communityFilters[filters.keyAt(i)] = true;
+                }
+            }
+            ((CommunityAdapter) adapter).getFilter().filter(query);
+        }
+    }
+
+    public boolean[] getCommunityFilters() {
+        if (communityFilters == null) {
+            communityFilters = new boolean[3];
+            Arrays.fill(communityFilters, true);
+        }
+        return communityFilters;
     }
 
     public enum ContentType {

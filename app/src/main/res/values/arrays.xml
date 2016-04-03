@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="filterOptions">
+        <item>Nutritionist</item>
+        <item>Physical</item>
+        <item>Restaurant</item>
+    </string-array>
+</resources>
