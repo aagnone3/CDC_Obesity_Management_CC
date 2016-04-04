@@ -131,4 +131,9 @@ public class Community {
             return this.type;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Community && ((Community) o).getId().equals(id);
+    }
 }

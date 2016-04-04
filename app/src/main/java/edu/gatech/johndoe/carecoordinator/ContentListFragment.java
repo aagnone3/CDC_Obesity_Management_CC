@@ -61,11 +61,14 @@ public class ContentListFragment extends Fragment {
                 case Community:
                     listType = new TypeToken<List<Community>>(){}.getType();
                     data = new Gson().fromJson(savedInstanceState.getString("data"), listType);
-                    adapter = new CommunityAdapter(data, selectedPosition);
+                    adapter = new CommunityAdapter(data);
                     break;
                 default:
                     return;
             }
+
+            communityFilters = savedInstanceState.getBooleanArray("communityFilters");
+            query = savedInstanceState.getString("query");
 
             setAdapter(adapter, contentType);
 
@@ -121,6 +124,8 @@ public class ContentListFragment extends Fragment {
         if (adapter instanceof Restorable) {
             outState.putString("data", new Gson().toJson(((Restorable) adapter).getDataSet()));
             outState.putInt("selectedPosition", ((Restorable) adapter).getSelectedPosition());
+            outState.putBooleanArray("communityFilters", communityFilters);
+            outState.putString("query", query);
         }
 
         outState.putSerializable("contentType", contentType);

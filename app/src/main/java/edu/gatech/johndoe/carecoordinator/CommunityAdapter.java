@@ -76,8 +76,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
         Community community = filteredCommunities.get(position);
         holder.bindCommunity(context, community);
 
-        if (MainActivity.isInExpandedMode) {
-            holder.itemView.setSelected(position == selectedPosition);
+        if (MainActivity.isInExpandedMode && currentCommunity != null) {
+            holder.itemView.setSelected(community.equals(currentCommunity));
         }
     }
 
@@ -122,6 +122,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 filteredCommunities.clear();
                 filteredCommunities.addAll((ArrayList<Community>) results.values);
+                currentPosition = filteredCommunities.indexOf(currentCommunity);
                 notifyDataSetChanged();
             }
         };
@@ -193,14 +194,13 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                 transaction.commit();
 
                 if (MainActivity.isInExpandedMode) {
-                    notifyItemChanged(selectedPosition);
-                    selectedPosition = getLayoutPosition();
-                    notifyItemChanged(selectedPosition);
+                    notifyItemChanged(currentPosition);
+                    currentPosition = getLayoutPosition();
+                    notifyItemChanged(currentPosition);
                 } else {
-                    selectedPosition = getLayoutPosition();
+                    currentPosition = getLayoutPosition();
                 }
                 currentCommunity = community;
-                currentPosition = selectedPosition;
             }
         }
     }

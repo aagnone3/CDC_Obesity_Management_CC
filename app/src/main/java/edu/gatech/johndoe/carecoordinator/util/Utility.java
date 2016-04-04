@@ -395,8 +395,7 @@ public class Utility {
 
                 if (refresh && MainActivity.currentNavigationItemId == R.id.nav_communities) {
                     contentListFragment.setAdapter(
-                            new CommunityAdapter(Utility.community_list,
-                                    CommunityAdapter.currentPosition),
+                            new CommunityAdapter(Utility.community_list),
                             ContentListFragment.ContentType.Community);
 
                     if (isInExpandedMode) {
