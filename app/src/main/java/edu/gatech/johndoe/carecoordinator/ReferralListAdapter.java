@@ -78,8 +78,8 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
             holder.bindCommunity(context, referral);
 //        }
 
-        if (MainActivity.isInExpandedMode) {
-            holder.itemView.setSelected(position == selectedPosition);
+        if (MainActivity.isInExpandedMode && currentReferral != null) {
+            holder.itemView.setSelected(referral.equals(currentReferral));
         }
     }
 
@@ -114,6 +114,7 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 filteredReferral.clear();
                 filteredReferral.addAll((ArrayList<EHR>) results.values);
+                currentPosition = filteredReferral.indexOf(currentReferral);
                 notifyDataSetChanged();
             }
         };
@@ -184,14 +185,15 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
                 transaction.commit();
 
                 if (MainActivity.isInExpandedMode) {
-                    notifyItemChanged(selectedPosition);
-                    selectedPosition = getLayoutPosition();
-                    notifyItemChanged(selectedPosition);
+                    notifyItemChanged(currentPosition);
+                    currentPosition = getLayoutPosition();
+                    notifyItemChanged(currentPosition);
                 } else {
                     selectedPosition = getLayoutPosition();
+                    currentPosition = getLayoutPosition();
                 }
                 currentReferral = referral;
-                currentPosition = selectedPosition;
+
             }
         }
     }

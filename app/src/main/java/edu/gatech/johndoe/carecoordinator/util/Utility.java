@@ -332,8 +332,7 @@ public class Utility {
 
                 if (refresh && MainActivity.currentNavigationItemId == R.id.nav_patients) {
                     contentListFragment.setAdapter(
-                            new PatientAdapter(Utility.patient_list,
-                            PatientAdapter.currentPosition),
+                            new PatientAdapter(Utility.patient_list),
                             ContentListFragment.ContentType.Patient);
 
                     if (isInExpandedMode) {

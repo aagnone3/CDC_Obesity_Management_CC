@@ -78,8 +78,8 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         Patient patient = filteredPatients.get(position);
         holder.bindPatient(context, patient);
 
-        if (MainActivity.isInExpandedMode) {
-            holder.itemView.setSelected(position == selectedPosition);
+        if (MainActivity.isInExpandedMode && currentPatient != null) {
+            holder.itemView.setSelected(patient.equals(currentPatient));
         }
     }
 
@@ -114,6 +114,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
             protected void publishResults(CharSequence constraint, FilterResults results) {
                 filteredPatients.clear();
                 filteredPatients.addAll((ArrayList<Patient>) results.values);
+                currentPosition = filteredPatients.indexOf(currentPatient);
                 notifyDataSetChanged();
             }
         };
@@ -199,14 +200,15 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                 transaction.commit();
 
                 if (MainActivity.isInExpandedMode) {
-                    notifyItemChanged(selectedPosition);
-                    selectedPosition = getLayoutPosition();
-                    notifyItemChanged(selectedPosition);
+                    notifyItemChanged(currentPosition);
+                    currentPosition = getLayoutPosition();
+                    notifyItemChanged(currentPosition);
                 } else {
                     selectedPosition = getLayoutPosition();
+                    currentPosition = getLayoutPosition();
                 }
                 currentPatient = patient;
-                currentPosition = selectedPosition;
+
             }
         }
     }
