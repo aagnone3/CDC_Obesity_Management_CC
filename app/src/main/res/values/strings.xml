@@ -84,4 +84,6 @@
          from https://console.developers.google.com/ -->
     <string name="server_client_id">YOUR_SERVER_CLIENT_ID</string>
     <string name="filter_title">Filter Community</string>
+    <string name="opendays_label">Open Days:</string>
+    <string name="hours_label">Hours:</string>
 </resources>

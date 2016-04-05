@@ -1,5 +1,11 @@
 package edu.gatech.johndoe.carecoordinator.community;
 
+import android.annotation.SuppressLint;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
@@ -20,6 +26,7 @@ public class Community {
     private String openHour;
     private String closeHour;
     private String description;
+    private String emailAddress;
 
     private Double latitude;
     private Double longitude;
@@ -79,6 +86,10 @@ public class Community {
         return description;
     }
 
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
     public Double getLatitude() {
         return latitude;
     }
@@ -135,5 +146,27 @@ public class Community {
     @Override
     public boolean equals(Object o) {
         return o instanceof Community && ((Community) o).getId().equals(id);
+    }
+
+    public String getFullAddress() {
+        return String.format("%s, %s, %s %d", streetAddress, city, state, zipcode);
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    public String getHours() {
+        try {
+            DateFormat hourFormat = new SimpleDateFormat("HHmm");
+            Date openHour = hourFormat.parse(this.openHour);
+            Date closeHour = hourFormat.parse(this.closeHour);
+
+            if (openHour.equals(closeHour)) {
+                return "24 hours";
+            }
+
+            DateFormat hoursFormat = new SimpleDateFormat("hh:mm aa");
+            return hoursFormat.format(openHour) + " - " + hoursFormat.format(closeHour);
+        } catch (ParseException e) {
+            return "N/A";
+        }
     }
 }

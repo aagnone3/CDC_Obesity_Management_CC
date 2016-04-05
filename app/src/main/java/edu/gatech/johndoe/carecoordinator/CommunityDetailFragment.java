@@ -74,22 +74,21 @@ public class CommunityDetailFragment extends Fragment {
         patientCount.setText(getString(R.string.patient_count, community.getPatientCount()));
 
         TextView address = (TextView) view.findViewById(R.id.address);
-        address.setText("450 Madison Court, Decatur, GA 30030");    // FIXME: replace with real data
+        address.setText(community.getFullAddress());
 
         TextView phoneNumber = (TextView) view.findViewById(R.id.phoneNumber);
-        final String fake_phoneNumber = "(678) 148 - 4606";
-        phoneNumber.setText(fake_phoneNumber);    // FIXME: replace with real data
+        phoneNumber.setText(community.getPhoneNumber());
         phoneNumber.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(getActivity())
                         .setIcon(android.R.drawable.ic_menu_call)
-                        .setTitle(fake_phoneNumber)
+                        .setTitle(community.getPhoneNumber())
                         .setMessage("Do you want to call this number? ")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Intent in = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + fake_phoneNumber));
+                                Intent in = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + community.getPhoneNumber()));
                                 startActivity(in);
                             }
                         })
@@ -99,12 +98,16 @@ public class CommunityDetailFragment extends Fragment {
         });
 
         TextView email = (TextView) view.findViewById(R.id.email);
-        email.setText("johndoe@gmail.com"); // FIXME: replace with real data
+        email.setText(community.getEmailAddress());
+
+        TextView openDays = (TextView) view.findViewById(R.id.openDays);
+        openDays.setText(community.getOpenDays());
+
+        TextView hours = (TextView) view.findViewById(R.id.hours);
+        hours.setText(community.getHours());
 
         TextView description = (TextView) view.findViewById(R.id.description);
-        description.setText("This is a random description of a random community resource. " +
-                "This is a random description of a random community resource. " +
-                "This is a random description of a random community resource.");    // FIXME: replace with real data
+        description.setText(community.getDescription());
 
         return view;
     }
