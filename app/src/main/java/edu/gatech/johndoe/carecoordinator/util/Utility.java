@@ -142,6 +142,39 @@ public class Utility {
                     if (!referral_list.contains(ehr)) {
                         referral_list.add(ehr);
                     }
+
+                    List<EHR> referral_pending = new ArrayList<>();
+                    List<EHR> referral_Npending = new ArrayList<>();
+                    for (EHR ehr2: referral_list) {
+                        if (ehr2.isPending()) {
+                            referral_pending.add(ehr2);
+                        } else {
+                            referral_Npending.add(ehr2);
+                        }
+                    }
+
+                    referral_list.clear();
+
+
+
+                    Collections.sort(referral_pending, new Comparator<EHR>() {
+                        @Override
+                        public int compare(EHR lhs, EHR rhs) {
+
+                            return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
+                        }
+                    });
+
+                    Collections.sort(referral_Npending, new Comparator<EHR>() {
+                        @Override
+                        public int compare(EHR lhs, EHR rhs) {
+
+                            return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
+                        }
+                    });
+
+                    referral_list.addAll(referral_pending);
+                    referral_list.addAll(referral_Npending);
                 }
             }
 
@@ -178,6 +211,8 @@ public class Utility {
                         patient_list.add(p);
                     }
                 }
+
+
             }
 
             @Override

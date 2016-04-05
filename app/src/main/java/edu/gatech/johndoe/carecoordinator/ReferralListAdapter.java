@@ -23,28 +23,6 @@ import edu.gatech.johndoe.carecoordinator.patient.EHR;
  */
 //extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, Restorable
 public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapter.ReferralListAdpaterHolder> implements Filterable, Restorable {
-//    private static final Comparator<EHR> NAME_COMPARATOR2 = new Comparator<Referral>() {
-//        @Override
-//        public int compare(Referral lhs, Referral rhs) {
-//            return lhs.getName().compareTo(rhs.getName());
-//        }
-//    };
-//
-//    private static final Comparator<Referral> POPULARITY_COMPARATOR2 = new Comparator<Referral>() {
-//        @Override
-//        public int compare(Referral lhs, Referral rhs) {
-////            return rhs.getName() - lhs.getName();
-//            return 0;
-//        }
-//    };
-//
-//    private static final Comparator<Community> DISTANCE_COMPARATOR = new Comparator<Community>() {
-//        @Override
-//        public int compare(Community lhs, Community rhs) {
-//            // TODO: compare by distance?
-//            return 0;
-//        }
-//    };
 
     private Context context;
     private List<EHR> referrals;
@@ -72,11 +50,11 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
 
     @Override
     public void onBindViewHolder(ReferralListAdpaterHolder holder, int position) {
-        System.out.println("Pos" + position);
+//        System.out.println("Pos" + position);
 //        if (position != null) {
-            EHR referral = filteredReferral.get(position);
-            holder.bindCommunity(context, referral);
-//        }
+        EHR referral = filteredReferral.get(position);
+//        System.out.println("EHR " + referral.getTitle());
+        holder.bindReferral(context, referral);
 
         if (MainActivity.isInExpandedMode && currentReferral != null) {
             holder.itemView.setSelected(referral.equals(currentReferral));
@@ -99,7 +77,7 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
                 constraint = constraint.toString().toLowerCase().trim();
                 for (EHR referral : referrals) {
 //                    if (referral.) {
-                        filtered.add(referral);
+                    filtered.add(referral);
 //                    }
                 }
 
@@ -123,13 +101,10 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
 //    public void sort(SortType type) {
 //        switch (type) {
 //            case NAME:
-//                Collections.sort(filteredCommunities, NAME_COMPARATOR2);
+//                Collections.sort(filteredReferral, NAME_COMPARATOR2);
 //                break;
 //            case POPULARITY:
-//                Collections.sort(filteredCommunities, POPULARITY_COMPARATOR2);
-//                break;
-//            case DISTANCE:
-//                Collections.sort(filteredCommunities, DISTANCE_COMPARATOR);
+//                Collections.sort(filteredReferral, DATE_COMPARATOR2);
 //                break;
 //        }
 //        notifyDataSetChanged();
@@ -147,23 +122,30 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
 
     public class ReferralListAdpaterHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private final TextView listName;
-        private final TextView listDetails;
+        private final TextView listTitle;
+        private final TextView listPatientID;
+        private final TextView listPending;
         private EHR referral;
 
 
 
         public ReferralListAdpaterHolder(View itemView) {
             super(itemView);
-            listName = (TextView) itemView.findViewById(R.id.patientname);
-            listDetails = (TextView) itemView.findViewById(R.id.referralsummary);
+            listTitle = (TextView) itemView.findViewById(R.id.referraltitle);
+            listPatientID = (TextView) itemView.findViewById(R.id.referralpatientid);
+            listPending = (TextView) itemView.findViewById(R.id.referralpending);
             itemView.setOnClickListener(this);
         }
 
-        public void bindCommunity(Context context, EHR referral) {
+        public void bindReferral(Context context, EHR referral) {
             this.referral = referral;
-            listName.setText(referral.getPatientID());
-            listDetails.setText(referral.getDetail());
+            listTitle.setText(referral.getTitle());
+            listPatientID.setText(referral.getPatientID());
+            if (referral.isPending()) {
+                listPending.setText("Pending");
+            } else {
+                listPending.setText("Not Pending");
+            }
         }
 
         @Override
@@ -198,7 +180,7 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
         }
     }
 
-    public enum SortType {
-        NAME, POPULARITY, DISTANCE
-    }
+//    public enum SortType {
+//        NAME, POPULARITY, DISTANCE
+//    }
 }

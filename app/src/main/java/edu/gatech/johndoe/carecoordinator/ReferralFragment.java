@@ -41,9 +41,9 @@ public class ReferralFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_referral, container, false);
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        System.out.println("ReferralFragment");
         transaction.replace(R.id.referral_content, new ReferralListFragment(), "list");
         transaction.commit();
         return view;
     }
-
 }
