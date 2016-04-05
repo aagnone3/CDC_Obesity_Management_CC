@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     public void updateEachTab(int id) {
-        if (System.currentTimeMillis() - lastUpdateTime[id] >= UPDATE_INTERVAL) {
+        if (id >= 0 && System.currentTimeMillis() - lastUpdateTime[id] >= UPDATE_INTERVAL) {
             switch (id) {
                 case 0:
                     Utility.updateReferral(getApplicationContext(),

@@ -50,9 +50,12 @@ public class LoginActivity extends AppCompatActivity implements
         // Store intent for sign-out purposes
         intent = getIntent();
         try {
-            signOut = (boolean) intent.getExtras().get("SIGN_OUT");
+            Object signOutIndicator = intent.getExtras().get("SIGN_OUT");
+            if (signOutIndicator != null) {
+                signOut = (boolean) signOutIndicator;
+            }
         } catch (Exception e) {
-            Log.d(TAG, "Exception casting SIGN_OUT key of intent to boolean");
+            Log.d(TAG, "Exception parsing SIGN_OUT key from intent.");
             Log.d(TAG, e.toString());
         }
 
@@ -161,8 +164,11 @@ public class LoginActivity extends AppCompatActivity implements
 
     @Override
     protected void onNewIntent(Intent intent) {
-        signOut = (boolean) intent.getExtras().get("SIGN_OUT");
-        Log.d(TAG, "Got SIGN_OUT result from intent: " + String.valueOf(signOut));
+        Object signOutIndicator = intent.getExtras().get("SIGN_OUT");
+        if (signOutIndicator != null) {
+            signOut = (boolean) signOutIndicator;
+            Log.d(TAG, "Got SIGN_OUT result from intent: " + String.valueOf(signOut));
+        }
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -175,6 +181,7 @@ public class LoginActivity extends AppCompatActivity implements
             Intent mainActivityIntent = new Intent(this, MainActivity.class);
             mainActivityIntent.putExtra("userAccount", acct);
             //startActivityForResult(mainActivityIntent, SIGN_OUT);
+            Log.d(TAG, "Signed in, starting main activity.");
             startActivity(mainActivityIntent);
             finish();
         } else {
