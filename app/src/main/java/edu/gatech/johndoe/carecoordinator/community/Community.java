@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 
@@ -22,9 +23,6 @@ public class Community {
     private String streetAddress;
     private String city;
     private String state;
-    private String openDays;
-    private String openHour;
-    private String closeHour;
     private String description;
     private String emailAddress;
 
@@ -35,6 +33,8 @@ public class Community {
     private int zipcode;
 
     public List<String> patientList;
+
+    public List<Map<String, String>> hours;
 
     private String communityType;
 
@@ -70,18 +70,6 @@ public class Community {
         return state;
     }
 
-    public String getOpenDays() {
-        return openDays;
-    }
-
-    public String getOpenHour() {
-        return openHour;
-    }
-
-    public String getCloseHour() {
-        return closeHour;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -112,6 +100,10 @@ public class Community {
 
     public String getCommunityType() {
         return communityType;
+    }
+
+    public List<Map<String, String>> getHours() {
+        return hours;
     }
 
     public void setPatientCount(int patientCount) {
@@ -153,20 +145,39 @@ public class Community {
     }
 
     @SuppressLint("SimpleDateFormat")
-    public String getHours() {
-        try {
-            DateFormat hourFormat = new SimpleDateFormat("HHmm");
-            Date openHour = hourFormat.parse(this.openHour);
-            Date closeHour = hourFormat.parse(this.closeHour);
+    public String getHoursAsString() {
+        StringBuilder hoursString = new StringBuilder();
 
-            if (openHour.equals(closeHour)) {
-                return "24 hours";
+        final String[] days = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+        for (int i = 0; i < hours.size(); i++) {
+            Map<String, String> day = hours.get(i);
+            hoursString.append(days[i]).append(": ");
+
+            if (day.get("open").isEmpty() && day.get("close").isEmpty()) {
+                hoursString.append("Closed");
+            } else {
+                try {
+                    DateFormat hourFormat = new SimpleDateFormat("HHmm");
+                    Date openHour = hourFormat.parse(day.get("open"));
+                    Date closeHour = hourFormat.parse(day.get("close"));
+
+                    if (openHour.equals(closeHour)) {
+                        hoursString.append("24 hours");
+                    } else {
+                        DateFormat hoursFormat = new SimpleDateFormat("h:mm aa");
+                        hoursString.append(hoursFormat.format(openHour)).append(" - ").append(hoursFormat.format(closeHour));
+                    }
+                } catch (ParseException e) {
+                    hoursString.append("N/A");
+                }
             }
 
-            DateFormat hoursFormat = new SimpleDateFormat("hh:mm aa");
-            return hoursFormat.format(openHour) + " - " + hoursFormat.format(closeHour);
-        } catch (ParseException e) {
-            return "N/A";
+            if (i < hours.size() - 1) {
+                hoursString.append('\n');
+            }
         }
+
+        return hoursString.toString();
     }
 }

@@ -100,11 +100,8 @@ public class CommunityDetailFragment extends Fragment {
         TextView email = (TextView) view.findViewById(R.id.email);
         email.setText(community.getEmailAddress());
 
-        TextView openDays = (TextView) view.findViewById(R.id.openDays);
-        openDays.setText(community.getOpenDays());
-
         TextView hours = (TextView) view.findViewById(R.id.hours);
-        hours.setText(community.getHours());
+        hours.setText(community.getHoursAsString());
 
         TextView description = (TextView) view.findViewById(R.id.description);
         description.setText(community.getDescription());
