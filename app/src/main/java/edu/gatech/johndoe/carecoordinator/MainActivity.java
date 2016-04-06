@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import edu.gatech.johndoe.carecoordinator.community.Community;
+import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientDetailFragment;
@@ -268,6 +269,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         } else if (content instanceof Patient) {
             Patient p = (Patient) content;
             Fragment detailFragment = PatientDetailFragment.newInstance(p,  Utility.getAllRelatedReferrals(p.getEhrList()));
+            getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
+        } else if (content instanceof EHR) {
+            Fragment detailFragment = ReferralDetailFragment.newInstance((EHR) content);
             getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
         }
     }

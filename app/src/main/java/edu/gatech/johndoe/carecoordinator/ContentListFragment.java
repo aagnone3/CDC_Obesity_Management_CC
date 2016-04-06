@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.community.Community;
+import edu.gatech.johndoe.carecoordinator.patient.EHR;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
 
@@ -49,9 +50,9 @@ public class ContentListFragment extends Fragment {
             switch (contentType) {
                 case Referral:
                     // TODO: change to Referral type
-                    listType = new TypeToken<List<Community>>(){}.getType();
+                    listType = new TypeToken<List<EHR>>(){}.getType();
                     data = new Gson().fromJson(savedInstanceState.getString("data"), listType);
-                    adapter = new ReferralListAdapter(data);
+                    adapter = new ReferralListAdapter(data, selectedPosition);
                     break;
                 case Patient:
                     listType = new TypeToken<List<Patient>>(){}.getType();
