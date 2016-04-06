@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
@@ -26,12 +29,14 @@ import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import java.io.InputStream;
 import java.util.Arrays;
 
 import edu.gatech.johndoe.carecoordinator.community.Community;
@@ -116,6 +121,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        View headerView = navigationView.getHeaderView(0);
+        if (currentUserAccount.getPhotoUrl() != null) {
+            new ProfilePictureTask((ImageView) headerView.findViewById(R.id.coordinatorPicture)).execute(currentUserAccount.getPhotoUrl());
+        }
+        ((TextView) headerView.findViewById(R.id.coordinatorName)).setText(currentUserAccount.getDisplayName());
+        ((TextView) headerView.findViewById(R.id.coordinatorEmail)).setText(currentUserAccount.getEmail());
+
         if (savedInstanceState == null) {
             onNavigationItemSelected(navigationView.getMenu().getItem(0).setChecked(true));
             updateTime();
@@ -136,30 +148,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
      */
     private void handleIntent(Intent intent) {
         // Update information for the current user
-        updateCurrentUserInfo(intent);
+        currentUserAccount = (GoogleSignInAccount) intent.getExtras().get("userAccount");
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             if (currentFragment != null) {
                 currentFragment.filterList(query);
             }
         }
-    }
-
-    /**
-     * Updates the current user account, and displays the user's email in the navigation header
-     * @param intent Intent which contains the current user
-     */
-    private void updateCurrentUserInfo(Intent intent) {
-        Bundle intentExtra = intent.getExtras();
-        // Update the current user
-        currentUserAccount = (GoogleSignInAccount) intentExtra.get("userAccount");
-        // Display the current user's email in the navigation header
-        View inflatedView = getLayoutInflater().inflate(R.layout.nav_header_main, null);
-
-        TextView emailLabel = (TextView) findViewById(R.id.coordinator_email);
-//        emailLabel.setText(currentUserAccount.getEmail());
-//        Log.d(TAG, "Updated user's email to " + emailLabel.getText());
-
     }
 
     @Override
@@ -389,5 +384,30 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 return 2;
         }
         return -1;
+    }
+
+    private class ProfilePictureTask extends AsyncTask<Uri, Void, Bitmap> {
+        private ImageView imageView;
+
+        public ProfilePictureTask(ImageView bmImage) {
+            this.imageView = bmImage;
+        }
+
+        protected Bitmap doInBackground(Uri... uris) {
+            Bitmap picture = null;
+
+            try {
+                InputStream in = new java.net.URL(uris[0].toString()).openStream();
+                picture = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("MainActivity", "Error while downloading profile picture: " + e.getMessage());
+            }
+
+            return picture;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
     }
 }
