@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,15 +84,20 @@ public class Utility {
             ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
             if (p != null) {
                 edu.gatech.johndoe.carecoordinator.patient.Patient patient = new edu.gatech.johndoe.carecoordinator.patient.Patient(p);
-                for (j = ehrID; j <= ehrID + random.nextInt(15); j++) {
-                    EHR ehr = new EHR(String.valueOf(j), patient.getId(), "Referral " + j, "None", j % 2 == 0, new Date());
-                    patient.addEHR(ehr);
-                    saveReferral(ehr);
-                }
-                ehrID = j;
+//                System.out.println(patient);
+//                for (j = ehrID; j <= ehrID + random.nextInt(15); j++) {
+//                    EHR ehr = new EHR(String.valueOf(j), patient.getId(), "Referral " + j, "None", j % 2 == 0, new Date());
+//                    patient.addEHR(ehr);
+//                    saveReferral(ehr);
+//                }
+//                ehrID = j;
 //                Community community = communities.get((int) (Math.random()* 10));
 //                community.addPatient(patient);
 //                patient.addCommunity(community);
+//                ArrayList<String> d = new ArrayList<>();
+//                d.add("1");
+//                patient.setEhrList(d);
+//                patient.setCommunityList(d);
                 savePatient(patient);
             }
         }
@@ -109,7 +113,26 @@ public class Utility {
 
     public static void savePatient(edu.gatech.johndoe.carecoordinator.patient.Patient p) {
         Firebase ref = PATIENTS_REF.child(p.getId());
-        ref.setValue(p);
+//        ref.setValue(new Patient());
+        ref.child("active").setValue(p.isActive());
+        ref.child("address_first").setValue(p.getAddress_first());
+        ref.child("address_second").setValue(p.getAddress_second());
+        ref.child("age").setValue(p.getAge());
+        ref.child("birth_date").setValue(p.getBirth_date());
+        ref.child("communityList").setValue(p.getCommunityList());
+        ref.child("dateOfimport").setValue(p.getDateOfimport());
+        ref.child("ehrList").setValue(p.getEhrList());
+        ref.child("email").setValue(p.getEmail());
+        ref.child("first_name").setValue(p.getFirst_name());
+        ref.child("formatted_birth_date").setValue(p.getFormatted_birth_date());
+        ref.child("full_name_first").setValue(p.getFull_name_first());
+        ref.child("full_name_last").setValue(p.getFull_name_last());
+        ref.child("gender").setValue(p.getGender());
+        ref.child("id").setValue(p.getId());
+        ref.child("lastUpdated").setValue(p.getLastUpdated());
+        ref.child("last_name").setValue(p.getLast_name());
+        ref.child("phoneNumber").setValue(p.getPhoneNumber());
+        ref.child("type").setValue(p.getType());
     }
     
     public static void saveCommunity(Community community) {
@@ -280,20 +303,22 @@ public class Utility {
 
     public static List<EHR> getAllRelatedReferrals(List<String> referralIDs) {
         List<EHR> result = new ArrayList<>();
-        for (EHR referral : referral_list) {
-            for (String id : referralIDs) {
-                if (id.equals(referral.getId())) {
-                    result.add(referral);
-                    break;
+        if (referralIDs != null) {
+            for (EHR referral : referral_list) {
+                for (String id : referralIDs) {
+                    if (id.equals(referral.getId())) {
+                        result.add(referral);
+                        break;
+                    }
                 }
             }
+            Collections.sort(result, new Comparator<EHR>() {
+                @Override
+                public int compare(EHR e1, EHR e2) {
+                    return Integer.valueOf(e1.getId()) - Integer.valueOf(e2.getId());
+                }
+            });
         }
-        Collections.sort(result, new Comparator<EHR>() {
-            @Override
-            public int compare(EHR e1, EHR e2) {
-                return Integer.valueOf(e1.getId()) - Integer.valueOf(e2.getId());
-            }
-        });
         return result;
     }
 
