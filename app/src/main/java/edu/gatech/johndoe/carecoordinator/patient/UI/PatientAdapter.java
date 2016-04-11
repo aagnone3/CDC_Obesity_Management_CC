@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator.patient_fragments;
+package edu.gatech.johndoe.carecoordinator.patient.UI;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -22,7 +22,7 @@ import java.util.List;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.Restorable;
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
@@ -150,7 +150,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         private final TextView patientNameTextView;
         private final TextView patientStatusTextView;
         private Patient patient;
-        private List<EHR> referralList;
+        private List<CarePlan> carePlanList;
 
         public PatientHolder(View itemView) {
             super(itemView);
@@ -162,10 +162,10 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
         public void bindPatient(Context context, Patient patient) {
             this.patient = patient;
-            this.referralList = Utility.getAllRelatedReferrals(patient.getEhrList());
+            this.carePlanList = Utility.getAllRelatedReferrals(patient.getReferralList());
             boolean isPending = false;
-            for (EHR referral : referralList) {
-                if (referral.isPending()) {
+            for (CarePlan carePlan : carePlanList) {
+                if (carePlan.isPending()) {
                     isPending = true;
                     break;
                 }
@@ -184,7 +184,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         public void onClick(View v) {
             if (patient != null) {
 
-                Fragment detailFragment = PatientDetailFragment.newInstance(patient, referralList);
+                Fragment detailFragment = PatientDetailFragment.newInstance(patient, carePlanList);
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 

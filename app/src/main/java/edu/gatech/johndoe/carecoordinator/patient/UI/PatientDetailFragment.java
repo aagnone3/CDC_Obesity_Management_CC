@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator.patient_fragments;
+package edu.gatech.johndoe.carecoordinator.patient.UI;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -25,7 +25,7 @@ import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
 import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
@@ -35,15 +35,15 @@ public class PatientDetailFragment extends Fragment {
     private static final String ARG_PATIENT = "patient";
     private static final String ARG_PATIENT_REFERRALS = "referralList_in_patient";
     private Patient patient;
-    private List<EHR> referralList;
+    private List<CarePlan> carePlanList;
     private OnFragmentInteractionListener mListener;
-    Type listType = new TypeToken<ArrayList<EHR>>() {}.getType();
+    Type listType = new TypeToken<ArrayList<CarePlan>>() {}.getType();
 
-    public static PatientDetailFragment newInstance(Patient patient, List<EHR> referralList) {
+    public static PatientDetailFragment newInstance(Patient patient, List<CarePlan> carePlanList) {
         PatientDetailFragment fragment = new PatientDetailFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PATIENT, new Gson().toJson(patient));
-        args.putString(ARG_PATIENT_REFERRALS, new Gson().toJson(referralList));
+        args.putString(ARG_PATIENT_REFERRALS, new Gson().toJson(carePlanList));
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,7 +53,7 @@ public class PatientDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             patient = new Gson().fromJson(getArguments().getString(ARG_PATIENT), Patient.class);
-            referralList = new Gson().fromJson(getArguments().getString(ARG_PATIENT_REFERRALS), listType);
+            carePlanList = new Gson().fromJson(getArguments().getString(ARG_PATIENT_REFERRALS), listType);
         }
     }
 
@@ -63,7 +63,6 @@ public class PatientDetailFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_patient_detail, container, false);
         // Set patient-specific information
         TextView patient_name = (TextView) view.findViewById(R.id.patient_name);
-        TextView patient_id = (TextView) view.findViewById(R.id.patient_id);
         TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender);
         TextView patient_birth_date = (TextView) view.findViewById(R.id.patient_dob);
         TextView patient_age = (TextView) view.findViewById(R.id.patient_age);
@@ -72,7 +71,6 @@ public class PatientDetailFragment extends Fragment {
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email);
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
         patient_name.setText(patient.getFull_name_first());
-        patient_id.setText(patient.getId());
         patient_gender.setText(patient.getGender());
         patient_age.setText(String.valueOf(patient.getAge()));
         patient_birth_date.setText(patient.getFormatted_birth_date());
@@ -151,8 +149,8 @@ public class PatientDetailFragment extends Fragment {
         });
 
         ListView list = (ListView) view.findViewById(R.id.patient_ehr_list);
-        InnerReferralAdapter adapter = new InnerReferralAdapter(getActivity(), R.id.patient_ehr_list_item,
-                referralList, getActivity().getSupportFragmentManager());
+        InnerCarePlanAdapter adapter = new InnerCarePlanAdapter(getActivity(), R.id.patient_ehr_list_item,
+                carePlanList, getActivity().getSupportFragmentManager());
         list.setAdapter(adapter);
         return view;
     }

@@ -39,11 +39,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
+import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanListAdapter;
 import edu.gatech.johndoe.carecoordinator.community.Community;
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
-import edu.gatech.johndoe.carecoordinator.patient.Patient;
-import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
-import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientDetailFragment;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityAdapter;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityDetailFragment;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityListFragment;
+import edu.gatech.johndoe.carecoordinator.patient.*;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
+import edu.gatech.johndoe.carecoordinator.patient.UI.PatientAdapter;
+import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
@@ -132,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (savedInstanceState == null) {
             onNavigationItemSelected(navigationView.getMenu().getItem(0).setChecked(true));
             updateTime();
-            Utility.getAllReferrals();
+            Utility.getAllCarePlans();
             Utility.getAllPatients();
             Utility.getAllCommunities();
         }
@@ -268,10 +273,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
         } else if (content instanceof Patient) {
             Patient p = (Patient) content;
-            Fragment detailFragment = PatientDetailFragment.newInstance(p,  Utility.getAllRelatedReferrals(p.getEhrList()));
+            Fragment detailFragment = PatientDetailFragment.newInstance(p,  Utility.getAllRelatedReferrals(p.getReferralList()));
             getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
-        } else if (content instanceof EHR) {
-            Fragment detailFragment = ReferralDetailFragment.newInstance((EHR) content);
+        } else if (content instanceof CarePlan) {
+            Fragment detailFragment = CarePlanDetailFragment.newInstance((CarePlan) content);
             getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
         }
     }
@@ -294,8 +299,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
         updateEachTab(getNavID(id));
-        if (id == R.id.nav_referrals) {
-            contentListFragment.setAdapter(new ReferralListAdapter(Utility.referral_list), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
+        if (id == R.id.nav_care_plans) {
+            contentListFragment.setAdapter(new CarePlanListAdapter(Utility.carePlan_list), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
         } else if (id == R.id.nav_patients) {
             contentListFragment.setAdapter(new PatientAdapter(Utility.patient_list), ContentListFragment.ContentType.Patient);
         } else if (id == R.id.nav_communities) {
@@ -343,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (id >= 0 && System.currentTimeMillis() - lastUpdateTime[id] >= UPDATE_INTERVAL) {
             switch (id) {
                 case 0:
-                    Utility.updateReferral(getApplicationContext(),
+                    Utility.updateCarePlans(getApplicationContext(),
                                            (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
                                            getSupportFragmentManager().beginTransaction(),
                                            isInExpandedMode,
@@ -351,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                                            false);
                     break;
                 case 1:
-                    Utility.updatePatient(getApplicationContext(),
+                    Utility.updatePatients(getApplicationContext(),
                                           (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
                                           getSupportFragmentManager().beginTransaction(),
                                           isInExpandedMode,
@@ -359,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                                           false);
                     break;
                 case 2:
-                    Utility.updateCommunity(getApplicationContext(),
+                    Utility.updateCommunityResources(getApplicationContext(),
                                             (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
                                             getSupportFragmentManager().beginTransaction(),
                                             isInExpandedMode,
@@ -380,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     public int getNavID(int id) {
         switch (id) {
-            case R.id.nav_referrals:
+            case R.id.nav_care_plans:
                 return 0;
             case R.id.nav_patients:
                 return 1;

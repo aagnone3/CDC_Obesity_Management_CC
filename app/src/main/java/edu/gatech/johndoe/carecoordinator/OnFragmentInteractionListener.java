@@ -2,6 +2,8 @@ package edu.gatech.johndoe.carecoordinator;
 
 import android.net.Uri;
 
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityListFragment;
+
 public interface OnFragmentInteractionListener {
     void onSummaryFragmentInteraction(Uri uri);
     void onReferralFragmentInteraction(Uri uri);

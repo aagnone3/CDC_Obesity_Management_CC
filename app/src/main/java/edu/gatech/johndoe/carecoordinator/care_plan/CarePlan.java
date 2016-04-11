@@ -1,8 +1,8 @@
-package edu.gatech.johndoe.carecoordinator.patient;
+package edu.gatech.johndoe.carecoordinator.care_plan;
 
 import java.util.Date;
 
-public class EHR {
+public class CarePlan {
     private String id;
     private String patientID;
     private String title;
@@ -11,9 +11,9 @@ public class EHR {
     private Date issueDate;
     private Date dateOfimport;
 
-    public EHR() {}
+    public CarePlan() {}
 
-    public EHR(String id, String patientID, String title, String detail, boolean pending, Date issueDate) {
+    public CarePlan(String id, String patientID, String title, String detail, boolean pending, Date issueDate) {
         this.id = id;
         this.patientID = patientID;
         this.title = title;
@@ -81,7 +81,7 @@ public class EHR {
 
     @Override
     public String toString() {
-        return "EHR{" +
+        return "CarePlan{" +
                 "id='" + id + '\'' +
                 ", patientID='" + patientID + '\'' +
                 ", title='" + title + '\'' +
@@ -94,7 +94,7 @@ public class EHR {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof EHR) {
+        if (o instanceof CarePlan) {
             if (hashCode() == o.hashCode()) {
                 return true;
             }

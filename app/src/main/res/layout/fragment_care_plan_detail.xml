@@ -4,36 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:colorBackground"
-    tools:context="edu.gatech.johndoe.carecoordinator.CommunityDetailFragment">
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:orientation="vertical"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:weightSum="1" >-->
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="0.2"-->
-    <!--android:text="Name: "-->
-    <!--android:id="@+id/textviewname"/>-->
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="0.2"-->
-    <!--android:text="Date: "-->
-    <!--android:id="@+id/textviewdate"/>-->
-    <!--<TextView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:layout_weight="0.4"-->
-    <!--android:text="Details: "-->
-    <!--android:id="@+id/textviewdetails"/>-->
-
-
-
-
-    <!--</LinearLayout>-->
+    tools:context=".community.UI.CommunityDetailFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -46,29 +17,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/referral_id_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/referral_id" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/referral_id"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/referral_id_label"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/referral_id_label" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/patient_id_label2"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_below="@id/referral_id"
             android:layout_marginTop="12dp"
-            android:layout_alignStart="@id/referral_id_label"
+            android:layout_alignTop="@id/patient_id_label2"
             android:text="@string/patient_id2" />
 
         <TextView

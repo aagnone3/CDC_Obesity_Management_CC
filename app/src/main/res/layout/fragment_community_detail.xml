@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="?android:colorBackground"
     android:clickable="true"
-    tools:context="edu.gatech.johndoe.carecoordinator.CommunityDetailFragment">
+    tools:context=".community.UI.CommunityDetailFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"

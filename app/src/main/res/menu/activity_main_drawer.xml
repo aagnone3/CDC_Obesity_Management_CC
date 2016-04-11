@@ -3,9 +3,9 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_referrals"
+            android:id="@+id/nav_care_plans"
             android:icon="@mipmap/ic_launcher"
-            android:title="Referrals" />
+            android:title="Care Plans" />
         <item
             android:id="@+id/nav_patients"
             android:icon="@mipmap/ic_launcher"
@@ -13,7 +13,7 @@
         <item
             android:id="@+id/nav_communities"
             android:icon="@mipmap/ic_launcher"
-            android:title="Communities" />
+            android:title="Resources" />
     </group>
 
     <item android:title="Application">

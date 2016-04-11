@@ -25,21 +25,21 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
-import edu.gatech.johndoe.carecoordinator.CommunityAdapter;
-import edu.gatech.johndoe.carecoordinator.CommunityDetailFragment;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityAdapter;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityDetailFragment;
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
-import edu.gatech.johndoe.carecoordinator.ReferralDetailFragment;
-import edu.gatech.johndoe.carecoordinator.ReferralListAdapter;
+import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
+import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanListAdapter;
 import edu.gatech.johndoe.carecoordinator.UnselectedFragment;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
 import edu.gatech.johndoe.carecoordinator.community.Physical;
 import edu.gatech.johndoe.carecoordinator.community.Restaurant;
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
-import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientAdapter;
-import edu.gatech.johndoe.carecoordinator.patient_fragments.PatientDetailFragment;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
+import edu.gatech.johndoe.carecoordinator.patient.UI.PatientAdapter;
+import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 
 /*import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -52,7 +52,8 @@ public class Utility {
     private static final String SERVER_BASE = "http://52.72.172.54:8080/fhir/baseDstu2";
     private static final String MAPS_API_KEY = "AIzaSyADCKXv1I_2Z0zAQ8CPMs-32YmhKGtkYBY";
     private static final FhirContext ctx = FhirContext.forDstu2();
-    public static final Firebase REFERRALS_REF =
+    private static final IGenericClient client = ctx.newRestfulGenericClient(SERVER_BASE);
+    public static final Firebase CARE_PLANS_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/referrals");
     public static final Firebase PATIENTS_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/patients");
@@ -66,7 +67,7 @@ public class Utility {
             new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/restaurant");
     public static final Firebase INCOMING_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/incoming");
-    public static List<EHR> referral_list = new ArrayList<>();
+    public static List<CarePlan> carePlan_list = new ArrayList<>();
     public static List<edu.gatech.johndoe.carecoordinator.patient.Patient> patient_list = new ArrayList<>();
     public static List<Community> community_list = new ArrayList<>();
     public static final String UPDATE_MESSAGE = "Data Updated.";
@@ -81,13 +82,13 @@ public class Utility {
         // Generating Fake Patients and their Referrals
         int j, ehrID = 1;
         for (int i = 1; i < 50; i++) {
-            ca.uhn.fhir.model.dstu2.resource.Patient p = get_patient_info_by_id(i);
+            ca.uhn.fhir.model.dstu2.resource.Patient p = getFHIRPatientByID(i);
             if (p != null) {
                 edu.gatech.johndoe.carecoordinator.patient.Patient patient = new edu.gatech.johndoe.carecoordinator.patient.Patient(p);
 //                System.out.println(patient);
 //                for (j = ehrID; j <= ehrID + random.nextInt(15); j++) {
-//                    EHR ehr = new EHR(String.valueOf(j), patient.getId(), "Referral " + j, "None", j % 2 == 0, new Date());
-//                    patient.addEHR(ehr);
+//                    CarePlan ehr = new CarePlan(String.valueOf(j), patient.getId(), "CarePlan " + j, "None", j % 2 == 0, new Date());
+//                    patient.addCarePlan(ehr);
 //                    saveReferral(ehr);
 //                }
 //                ehrID = j;
@@ -96,7 +97,7 @@ public class Utility {
 //                patient.addCommunity(community);
 //                ArrayList<String> d = new ArrayList<>();
 //                d.add("1");
-//                patient.setEhrList(d);
+//                patient.setReferralList(d);
 //                patient.setCommunityList(d);
                 savePatient(patient);
             }
@@ -106,14 +107,13 @@ public class Utility {
 //            saveCommunity(c);
     }
 
-    public static void saveReferral(EHR ehr) {
-        Firebase ref = REFERRALS_REF.child(ehr.getId());
-        ref.setValue(ehr);
+    public static void saveReferral(CarePlan carePlan) {
+        Firebase ref = CARE_PLANS_REF.child(carePlan.getId());
+        ref.setValue(carePlan);
     }
 
     public static void savePatient(edu.gatech.johndoe.carecoordinator.patient.Patient p) {
         Firebase ref = PATIENTS_REF.child(p.getId());
-//        ref.setValue(new Patient());
         ref.child("active").setValue(p.isActive());
         ref.child("address_first").setValue(p.getAddress_first());
         ref.child("address_second").setValue(p.getAddress_second());
@@ -121,7 +121,7 @@ public class Utility {
         ref.child("birth_date").setValue(p.getBirth_date());
         ref.child("communityList").setValue(p.getCommunityList());
         ref.child("dateOfimport").setValue(p.getDateOfimport());
-        ref.child("ehrList").setValue(p.getEhrList());
+        ref.child("ehrList").setValue(p.getReferralList());
         ref.child("email").setValue(p.getEmail());
         ref.child("first_name").setValue(p.getFirst_name());
         ref.child("formatted_birth_date").setValue(p.getFormatted_birth_date());
@@ -140,12 +140,12 @@ public class Utility {
         ref.setValue(community);
     }
 
-    public static void addReferral(final String id) {
-        Query queryRef = REFERRALS_REF.orderByChild("id").equalTo(id);
+    public static void addCarePlan(final String id) {
+        Query queryRef = CARE_PLANS_REF.orderByChild("id").equalTo(id);
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                referral_list.add(dataSnapshot.child(id).getValue(EHR.class));
+                carePlan_list.add(dataSnapshot.child(id).getValue(CarePlan.class));
             }
 
             @Override
@@ -155,55 +155,53 @@ public class Utility {
         });
     }
 
-    public static void getAllReferrals() {
-        Query queryRef = REFERRALS_REF.orderByChild("id");
+    public static void getAllCarePlans() {
+        Query queryRef = CARE_PLANS_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    EHR ehr = ds.getValue(EHR.class);
-                    if (!referral_list.contains(ehr)) {
-                        referral_list.add(ehr);
+                    CarePlan carePlan = ds.getValue(CarePlan.class);
+                    if (!carePlan_list.contains(carePlan)) {
+                        carePlan_list.add(carePlan);
                     }
 
-                    List<EHR> referral_pending = new ArrayList<>();
-                    List<EHR> referral_Npending = new ArrayList<>();
-                    for (EHR ehr2: referral_list) {
-                        if (ehr2.isPending()) {
-                            referral_pending.add(ehr2);
+                    List<CarePlan> carePlan_pending = new ArrayList<>();
+                    List<CarePlan> carePlan_Npending = new ArrayList<>();
+                    for (CarePlan carePlan2 : carePlan_list) {
+                        if (carePlan2.isPending()) {
+                            carePlan_pending.add(carePlan2);
                         } else {
-                            referral_Npending.add(ehr2);
+                            carePlan_Npending.add(carePlan2);
                         }
                     }
 
-                    referral_list.clear();
+                    carePlan_list.clear();
 
-
-
-                    Collections.sort(referral_pending, new Comparator<EHR>() {
+                    Collections.sort(carePlan_pending, new Comparator<CarePlan>() {
                         @Override
-                        public int compare(EHR lhs, EHR rhs) {
+                        public int compare(CarePlan lhs, CarePlan rhs) {
 
                             return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
                         }
                     });
 
-                    Collections.sort(referral_Npending, new Comparator<EHR>() {
+                    Collections.sort(carePlan_Npending, new Comparator<CarePlan>() {
                         @Override
-                        public int compare(EHR lhs, EHR rhs) {
+                        public int compare(CarePlan lhs, CarePlan rhs) {
 
                             return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
                         }
                     });
 
-                    referral_list.addAll(referral_pending);
-                    referral_list.addAll(referral_Npending);
+                    carePlan_list.addAll(carePlan_pending);
+                    carePlan_list.addAll(carePlan_Npending);
                 }
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                Log.e("AllReferrals", firebaseError.getMessage());
+                Log.e("AllCarePlans", firebaseError.getMessage());
             }
         });
     }
@@ -292,29 +290,29 @@ public class Utility {
     public static void updateReferralStatus(String id, boolean status) {
         Map<String, Object> container = new HashMap<>();
         container.put(id + "/pending", status);
-        REFERRALS_REF.updateChildren(container);
-        for (EHR referral : referral_list) {
-            if (referral.getId().equals(id)) {
-                referral.setPending(status);
+        CARE_PLANS_REF.updateChildren(container);
+        for (CarePlan carePlan : carePlan_list) {
+            if (carePlan.getId().equals(id)) {
+                carePlan.setPending(status);
                 break;
             }
         }
     }
 
-    public static List<EHR> getAllRelatedReferrals(List<String> referralIDs) {
-        List<EHR> result = new ArrayList<>();
+    public static List<CarePlan> getAllRelatedReferrals(List<String> referralIDs) {
+        List<CarePlan> result = new ArrayList<>();
         if (referralIDs != null) {
-            for (EHR referral : referral_list) {
+            for (CarePlan carePlan : carePlan_list) {
                 for (String id : referralIDs) {
-                    if (id.equals(referral.getId())) {
-                        result.add(referral);
+                    if (id.equals(carePlan.getId())) {
+                        result.add(carePlan);
                         break;
                     }
                 }
             }
-            Collections.sort(result, new Comparator<EHR>() {
+            Collections.sort(result, new Comparator<CarePlan>() {
                 @Override
-                public int compare(EHR e1, EHR e2) {
+                public int compare(CarePlan e1, CarePlan e2) {
                     return Integer.valueOf(e1.getId()) - Integer.valueOf(e2.getId());
                 }
             });
@@ -322,35 +320,35 @@ public class Utility {
         return result;
     }
 
-    public static void updateReferral(final Context context,
-                                      final ContentListFragment contentListFragment,
-                                      final FragmentTransaction transaction,
-                                      final boolean isInExpandedMode,
-                                      final boolean refresh,
-                                      final boolean toast) {
+    public static void updateCarePlans(final Context context,
+                                       final ContentListFragment contentListFragment,
+                                       final FragmentTransaction transaction,
+                                       final boolean isInExpandedMode,
+                                       final boolean refresh,
+                                       final boolean toast) {
 
-        Query queryRef = REFERRALS_REF.orderByChild("id");
+        Query queryRef = CARE_PLANS_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                List<EHR> updated = new ArrayList<>();
+                List<CarePlan> updated = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren())
-                    updated.add(ds.getValue(EHR.class));
-                referral_list = updated;
+                    updated.add(ds.getValue(CarePlan.class));
+                carePlan_list = updated;
 
-                if (refresh && MainActivity.currentNavigationItemId == R.id.nav_referrals) {
+                if (refresh && MainActivity.currentNavigationItemId == R.id.nav_care_plans) {
                     contentListFragment.setAdapter(
-                            new ReferralListAdapter(Utility.referral_list),
+                            new CarePlanListAdapter(Utility.carePlan_list),
                             ContentListFragment.ContentType.Referral);
 
                     if (isInExpandedMode) {
                         //FIXME: replace with updated referral detail if needed
-                        for (EHR e : referral_list) {
-                            if (ReferralListAdapter.currentReferral != null) {
-                                if (e.getId().equals(ReferralListAdapter.currentReferral.getId())) {
+                        for (CarePlan e : carePlan_list) {
+                            if (CarePlanListAdapter.currentCarePlan != null) {
+                                if (e.getId().equals(CarePlanListAdapter.currentCarePlan.getId())) {
                                     transaction.replace(
                                             R.id.detailFragmentContainer,
-                                            ReferralDetailFragment.newInstance(e),
+                                            CarePlanDetailFragment.newInstance(e),
                                             "detail").commit();
                                     break;
                                 }
@@ -374,12 +372,12 @@ public class Utility {
         });
     }
 
-    public static void updatePatient(final Context context,
-                                     final ContentListFragment contentListFragment,
-                                     final FragmentTransaction transaction,
-                                     final boolean isInExpandedMode,
-                                     final boolean refresh,
-                                     final boolean toast) {
+    public static void updatePatients(final Context context,
+                                      final ContentListFragment contentListFragment,
+                                      final FragmentTransaction transaction,
+                                      final boolean isInExpandedMode,
+                                      final boolean refresh,
+                                      final boolean toast) {
 
         Query queryRef = PATIENTS_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -401,7 +399,7 @@ public class Utility {
                                 if (p.getId().equals(PatientAdapter.currentPatient.getId())) {
                                     transaction.replace(
                                             R.id.detailFragmentContainer,
-                                            PatientDetailFragment.newInstance(p, Utility.getAllRelatedReferrals(p.getEhrList())),
+                                            PatientDetailFragment.newInstance(p, Utility.getAllRelatedReferrals(p.getReferralList())),
                                             "detail").commit();
                                     break;
                                 }
@@ -423,12 +421,12 @@ public class Utility {
         });
     }
 
-    public static void updateCommunity(final Context context,
-                                       final ContentListFragment contentListFragment,
-                                       final FragmentTransaction transaction,
-                                       final boolean isInExpandedMode,
-                                       final boolean refresh,
-                                       final boolean toast) {
+    public static void updateCommunityResources(final Context context,
+                                                final ContentListFragment contentListFragment,
+                                                final FragmentTransaction transaction,
+                                                final boolean isInExpandedMode,
+                                                final boolean refresh,
+                                                final boolean toast) {
 
         Query queryRef = COMMUNITES_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -499,30 +497,30 @@ public class Utility {
         targets.replace(String.valueOf(id), "");
         switch (id) {
             case 0:
-                updateReferral(context, contentListFragment,
+                updateCarePlans(context, contentListFragment,
                         transaction, isInExpandedMode, true, true);
                 break;
             case 1:
-                updatePatient(context, contentListFragment,
+                updatePatients(context, contentListFragment,
                         transaction, isInExpandedMode, true, true);
                 break;
             case 2:
-                updateCommunity(context, contentListFragment,
+                updateCommunityResources(context, contentListFragment,
                         transaction, isInExpandedMode, true, true);
                 break;
         }
         for (int i = 0; i < targets.length(); i++) {
             switch (Integer.valueOf(targets.charAt(i))) {
                 case 0:
-                    updateReferral(context, contentListFragment,
+                    updateCarePlans(context, contentListFragment,
                             transaction, isInExpandedMode, false, false);
                     break;
                 case 1:
-                    updatePatient(context, contentListFragment,
+                    updatePatients(context, contentListFragment,
                             transaction, isInExpandedMode, false, false);
                     break;
                 case 2:
-                    updateCommunity(context, contentListFragment,
+                    updateCommunityResources(context, contentListFragment,
                             transaction, isInExpandedMode, false, false);
                     break;
             }
@@ -534,9 +532,7 @@ public class Utility {
 
     }
 
-    public static ca.uhn.fhir.model.dstu2.resource.Patient get_patient_info_by_id(int id) {
-        // Create the client for interacting with the FHIR server
-        IGenericClient client = ctx.newRestfulGenericClient(SERVER_BASE);
+    public static ca.uhn.fhir.model.dstu2.resource.Patient getFHIRPatientByID(int id) {
 
         // Obtain the results from the patient query to the FHIR server
         Bundle results = client.search()
@@ -553,6 +549,24 @@ public class Utility {
         }
         return patient;
     }
+
+//    public static ca.uhn.fhir.model.dstu2.resource.Patient getFHIRCarePlanByID(int id) {
+//
+//        // Obtain the results from the query to the FHIR server
+//        Bundle results = client.search()
+//                .forResource(ca.uhn.fhir.model.dstu2.resource.CarePlan.class)
+//                .where(ca.uhn.fhir.model.dstu2.resource.CarePlan.RES_ID.matchesExactly()
+//                        .systemAndIdentifier("uniqueId", "33333" + String.valueOf(id)))
+//                .returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
+//                .execute();
+//        ca.uhn.fhir.model.dstu2.resource.Patient patient = null;
+//        if (results.getEntry().size() == 0) {
+//            System.out.println("No results matching the search criteria!");
+//        } else {
+//            patient = (Patient) results.getEntry().get(0).getResource();
+//        }
+//        return patient;
+//    }
 
     public static ArrayList<Community> getCommunities() {
         ArrayList<Community> communities = new ArrayList<>(Arrays.asList(

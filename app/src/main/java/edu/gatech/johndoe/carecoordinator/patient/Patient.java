@@ -17,6 +17,7 @@ import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
 import ca.uhn.fhir.model.dstu2.valueset.PractitionerRoleEnum;
 import ca.uhn.fhir.model.primitive.InstantDt;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 
 public class Patient {
@@ -38,7 +39,7 @@ public class Patient {
     private Date lastUpdated;
     private String phoneNumber;
     private Date dateOfimport;
-    private List<String> ehrList;
+    private List<String> referralList;
     private List<String> communityList;
 
 
@@ -68,7 +69,7 @@ public class Patient {
             active = patient.getActive();
             lastUpdated = ((InstantDt) patient.getResourceMetadata().get(ResourceMetadataKeyEnum.UPDATED)).getValue();
             dateOfimport = new Date();
-            ehrList = new LinkedList<>();
+            referralList = new LinkedList<>();
             communityList = new LinkedList<>();
         } catch (Exception e) {
             e.printStackTrace();
@@ -252,12 +253,12 @@ public class Patient {
         this.dateOfimport = dateOfimport;
     }
 
-    public List<String> getEhrList() {
-        return ehrList;
+    public List<String> getReferralList() {
+        return referralList;
     }
 
-    public void setEhrList(List<String> ehrList) {
-        this.ehrList = ehrList;
+    public void setReferralList(List<String> referralList) {
+        this.referralList = referralList;
     }
 
     public List<String> getCommunityList() {
@@ -278,12 +279,12 @@ public class Patient {
         return age;
     }
 
-    public void removeEHR(EHR e) {
-        ehrList.remove(e.getId());
+    public void removeEHR(CarePlan e) {
+        referralList.remove(e.getId());
     }
 
-    public void addEHR(EHR e) {
-        ehrList.add(e.getId());
+    public void addReferral(CarePlan e) {
+        referralList.add(e.getId());
     }
 
     public void removeCommunity(Community c) {
@@ -314,7 +315,7 @@ public class Patient {
                 ", lastUpdated=" + lastUpdated +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", dateOfimport=" + dateOfimport +
-                ", ehrList=" + ehrList +
+                ", referralList=" + referralList +
                 ", communityList=" + communityList +
                 '}';
     }

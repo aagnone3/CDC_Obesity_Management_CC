@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="?android:colorBackground"
     android:clickable="true"
-    tools:context=".patients_fragments.PatientDetailFragment">
+    tools:context=".patient.UI.PatientDetailFragment">
 
 
     <RelativeLayout
@@ -18,28 +18,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/patient_id_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/patient_id" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/patient_id"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/patient_id_label"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/patient_id_label" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/patient_name_label"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_below="@id/patient_id"
-            android:layout_marginTop="12dp"
             android:layout_alignStart="@id/patient_name_label"
             android:text="@string/patient_name" />
 
@@ -188,19 +169,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/patient_ehr_label"
+            android:id="@+id/patient_care_plans_label"
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_below="@id/patient_phone"
             android:layout_alignStart="@id/patient_phone_label"
             android:layout_marginTop="12dp"
-            android:text="@string/patient_ehr" />
+            android:text="@string/patient_care_plans" />
 
         <ListView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_below="@id/patient_ehr_label"
-            android:layout_alignStart="@id/patient_ehr_label"
+            android:layout_below="@id/patient_care_plans_label"
+            android:layout_alignStart="@id/patient_care_plans_label"
             android:layout_marginTop="12dp"
             android:id="@+id/patient_ehr_list" />
 

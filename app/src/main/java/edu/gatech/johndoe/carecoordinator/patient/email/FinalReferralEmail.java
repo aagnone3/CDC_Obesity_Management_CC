@@ -14,7 +14,7 @@ public class FinalReferralEmail extends PatientEmail {
     public FinalReferralEmail(Patient patient) {
         super(patient);
         // TODO insert care coordinator name into subject when login is finalized
-        subject = "Final Referral from your CDC Care Coordinator!";
+        subject = "Final CarePlan from your CDC Care Coordinator!";
         formContent();
         formIntent();
     }

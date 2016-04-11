@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator;
+package edu.gatech.johndoe.carecoordinator.care_plan.UI;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -6,40 +6,21 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Filter;
-import android.widget.Filterable;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-import com.firebase.client.ChildEventListener;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
-import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
-import org.slf4j.helpers.Util;
-import org.w3c.dom.Text;
-
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
-import edu.gatech.johndoe.carecoordinator.patient.Patient;
+import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
+import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
+import edu.gatech.johndoe.carecoordinator.patient.*;
 import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
 import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
@@ -47,11 +28,11 @@ import edu.gatech.johndoe.carecoordinator.util.Utility;
 /**
  * Created by rakyu012 on 3/17/2016.
  */
-public class ReferralDetailFragment extends Fragment {
+public class CarePlanDetailFragment extends Fragment {
 
-    private static final String ARG_REFERRAL = "referral";
+    private static final String ARG_REFERRAL = "carePlan";
 
-    private EHR referral;
+    private CarePlan carePlan;
 
     private OnFragmentInteractionListener mListener;
 
@@ -61,13 +42,13 @@ public class ReferralDetailFragment extends Fragment {
 
     /**
      *
-     * @param referral Community.
+     * @param carePlan Community.
      * @return A new instance of fragment CommunityDetailFragment.
      */
-    public static ReferralDetailFragment newInstance(EHR referral) {
-        ReferralDetailFragment fragment = new ReferralDetailFragment();
+    public static CarePlanDetailFragment newInstance(CarePlan carePlan) {
+        CarePlanDetailFragment fragment = new CarePlanDetailFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_REFERRAL, new Gson().toJson(referral));
+        args.putString(ARG_REFERRAL, new Gson().toJson(carePlan));
         fragment.setArguments(args);
         return fragment;
     }
@@ -77,8 +58,8 @@ public class ReferralDetailFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState != null) {
-            if (referral == null) {
-                referral = new Gson().fromJson(savedInstanceState.getString("referral"), EHR.class);
+            if (carePlan == null) {
+                carePlan = new Gson().fromJson(savedInstanceState.getString("carePlan"), CarePlan.class);
             }
         }
     }
@@ -88,27 +69,25 @@ public class ReferralDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            referral = new Gson().fromJson(getArguments().getString(ARG_REFERRAL), EHR.class);
+            carePlan = new Gson().fromJson(getArguments().getString(ARG_REFERRAL), CarePlan.class);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_referral_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_care_plan_detail, container, false);
         // Attach an listener to read the data at our posts reference
         Utility.getAllPatients();
         for (Patient pat: Utility.patient_list) {
-//            System.out.println("Patient id " + pat.getId() + " and " + referral.getPatientID());
-//            System.out.println(pat.getId().equals(referral.getPatientID()));
-            if (pat.getId().equals(referral.getPatientID())) {
+//            System.out.println("Patient id " + pat.getId() + " and " + carePlan.getPatientID());
+//            System.out.println(pat.getId().equals(carePlan.getPatientID()));
+            if (pat.getId().equals(carePlan.getPatientID())) {
 //                System.out.println("Found");
                 patient = pat;
             }
         }
-//        System.out.println("Referrance ID " + referral.getId());
 
-        TextView paitent_refID = (TextView) view.findViewById(R.id.referral_id);
         TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
         TextView patient_id = (TextView) view.findViewById(R.id.patient_id2);
         TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender2);
@@ -155,21 +134,19 @@ public class ReferralDetailFragment extends Fragment {
         });
 //        TextView referral_details = (TextView) view.findViewById(R.id.referral_details);
         if (patient == null) {
-            paitent_refID.setText(referral.getId());
             patient_name.setText("Dummy");
-            patient_id.setText(referral.getPatientID());
+            patient_id.setText(carePlan.getPatientID());
             patient_gender.setText("Male");
             patient_age.setText(String.valueOf(10));
-            patient_birth_date.setText(referral.getIssueDate().toString());
+            patient_birth_date.setText(carePlan.getIssueDate().toString());
             patient_email.setText("abc@mail.com");
             patient_phone.setText("xxx-yyy-zzzz");
         } else {
-            paitent_refID.setText(referral.getId());
             patient_name.setText(patient.getFull_name_first());
-            patient_id.setText(referral.getPatientID());
+            patient_id.setText(carePlan.getPatientID());
             patient_gender.setText(patient.getGender());
             patient_age.setText(String.valueOf(patient.getAge()));
-            patient_birth_date.setText(referral.getIssueDate().toString());
+            patient_birth_date.setText(carePlan.getIssueDate().toString());
             patient_email.setText(patient.getEmail());
             patient_phone.setText(patient.getPhoneNumber());
         }
@@ -180,27 +157,27 @@ public class ReferralDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (patient != null) {
-                    System.out.println("Referral ID " + referral.getId());
-                    Utility.updateReferralStatus(referral.getId(), true);
+                    System.out.println("CarePlan ID " + carePlan.getId());
+                    Utility.updateReferralStatus(carePlan.getId(), true);
                 } else {
                     System.out.println("null patient");
                 }
             }
-        });;
+        });
 
         erefButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (referral.isPending()) {
+                if (carePlan.isPending()) {
                     Toast.makeText(getActivity().getApplicationContext(), "Need to pend the message.",
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "Generated E-referral.",
+                    Toast.makeText(getActivity().getApplicationContext(), "Generated E-CarePlan.",
                             Toast.LENGTH_SHORT).show();
                 }
 
             }
-        });;
+        });
 
         return view;
     }
@@ -242,6 +219,6 @@ public class ReferralDetailFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        outState.putString("referral", new Gson().toJson(referral));
+        outState.putString("carePlan", new Gson().toJson(carePlan));
     }
 }

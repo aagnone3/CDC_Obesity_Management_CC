@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator;
+package edu.gatech.johndoe.carecoordinator.community.UI;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -20,6 +20,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import edu.gatech.johndoe.carecoordinator.MainActivity;
+import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.Restorable;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 
 

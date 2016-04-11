@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator.patient_fragments;
+package edu.gatech.johndoe.carecoordinator.patient.UI;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,18 +12,18 @@ import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.R;
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
-public class InnerReferralAdapter extends ArrayAdapter<EHR> {
+public class InnerCarePlanAdapter extends ArrayAdapter<CarePlan> {
 
     private android.support.v4.app.FragmentManager fragment_manager;
-    private List<EHR> referralList;
+    private List<CarePlan> carePlanList;
 
-    public InnerReferralAdapter(Context context, int resource, List<EHR> referralList, android.support.v4.app.FragmentManager fragment_manager) {
-        super(context, resource, referralList);
+    public InnerCarePlanAdapter(Context context, int resource, List<CarePlan> carePlanList, android.support.v4.app.FragmentManager fragment_manager) {
+        super(context, resource, carePlanList);
         this.fragment_manager = fragment_manager;
-        this.referralList = referralList;
+        this.carePlanList = carePlanList;
     }
 
     @Override
@@ -33,9 +33,9 @@ public class InnerReferralAdapter extends ArrayAdapter<EHR> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.patient_ehr_list_item, parent, false);
+            v = vi.inflate(R.layout.patient_care_plan_list_item, parent, false);
         }
-        final EHR e = getItem(position);
+        final CarePlan e = getItem(position);
 
         if (e != null) {
             final TextView ehr_title = (TextView) v.findViewById(R.id.ehr_title);
@@ -73,7 +73,7 @@ public class InnerReferralAdapter extends ArrayAdapter<EHR> {
     }
 
     private boolean isClosed() {
-        for (EHR e : referralList) {
+        for (CarePlan e : carePlanList) {
             if (e.isPending()) {
                 return false;
             }

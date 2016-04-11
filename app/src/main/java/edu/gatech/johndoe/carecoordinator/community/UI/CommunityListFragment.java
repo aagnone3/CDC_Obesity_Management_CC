@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator;
+package edu.gatech.johndoe.carecoordinator.community.UI;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,6 +8,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
+import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityAdapter;
 
 
 public class CommunityListFragment extends Fragment {

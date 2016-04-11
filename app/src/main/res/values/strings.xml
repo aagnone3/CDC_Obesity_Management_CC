@@ -9,14 +9,13 @@
     <string name="patient_gender">Gender:</string>
     <string name="patient_dob">DOB:</string>
     <string name="patient_address">Address:</string>
-    <string name="patient_id">ID:</string>
     <string name="patient_name">Name:</string>
     <string name="patient_age">Age:</string>
     <string name="patient_email">Email:</string>
     <string name="patient_phone">Phone:</string>
-    <string name="patient_ehr">EHRs:</string>
+    <string name="patient_care_plans">Care Plans:</string>
     <string name="patient_id2">Patient ID:</string>
-    <string name="referral_id">Referral ID:</string>
+    <string name="care_plan_id">Care Plan ID:</string>
     <string name="details">Details:</string>
 
     <string name="patient_email_button">Email Patient</string>

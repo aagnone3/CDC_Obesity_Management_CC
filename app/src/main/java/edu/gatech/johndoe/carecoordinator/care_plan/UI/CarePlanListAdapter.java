@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator;
+package edu.gatech.johndoe.carecoordinator.care_plan.UI;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -16,35 +16,38 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.gatech.johndoe.carecoordinator.patient.EHR;
+import edu.gatech.johndoe.carecoordinator.MainActivity;
+import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.Restorable;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 
 /**
  * Created by rakyu012 on 3/17/2016.
  */
 //extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, Restorable
-public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapter.ReferralListAdpaterHolder> implements Filterable, Restorable {
+public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapter.ReferralListAdpaterHolder> implements Filterable, Restorable {
 
     private Context context;
-    private List<EHR> referrals;
-    private List<EHR> filteredReferral;
+    private List<CarePlan> carePlen;
+    private List<CarePlan> filteredCarePlan;
     private int selectedPosition;
-    public static EHR currentReferral;
+    public static CarePlan currentCarePlan;
     public static int currentPosition;
 
-    public ReferralListAdapter(List<EHR> referral, int selectedPosition) {
-        this.referrals = referral;
-        this.filteredReferral = new ArrayList<>(referral);
+    public CarePlanListAdapter(List<CarePlan> carePlan, int selectedPosition) {
+        this.carePlen = carePlan;
+        this.filteredCarePlan = new ArrayList<>(carePlan);
         this.selectedPosition = selectedPosition;
     }
 
-    public ReferralListAdapter(List<EHR> referral) {
-        this(referral, -1);
+    public CarePlanListAdapter(List<CarePlan> carePlan) {
+        this(carePlan, -1);
     }
 
     @Override
     public ReferralListAdpaterHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.listview_referral, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.listview_care_plan, parent, false);
         return new ReferralListAdpaterHolder(view);
     }
 
@@ -52,18 +55,18 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
     public void onBindViewHolder(ReferralListAdpaterHolder holder, int position) {
 //        System.out.println("Pos" + position);
 //        if (position != null) {
-        EHR referral = filteredReferral.get(position);
-//        System.out.println("EHR " + referral.getTitle());
-        holder.bindReferral(context, referral);
+        CarePlan carePlan = filteredCarePlan.get(position);
+//        System.out.println("CarePlan " + carePlan.getTitle());
+        holder.bindReferral(context, carePlan);
 
-        if (MainActivity.isInExpandedMode && currentReferral != null) {
-            holder.itemView.setSelected(referral.equals(currentReferral));
+        if (MainActivity.isInExpandedMode && currentCarePlan != null) {
+            holder.itemView.setSelected(carePlan.equals(currentCarePlan));
         }
     }
 
     @Override
     public int getItemCount() {
-        return filteredReferral.size();
+        return filteredCarePlan.size();
     }
 
     @Override
@@ -72,12 +75,12 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
-                ArrayList<EHR> filtered = new ArrayList<>();
+                ArrayList<CarePlan> filtered = new ArrayList<>();
 
                 constraint = constraint.toString().toLowerCase().trim();
-                for (EHR referral : referrals) {
-//                    if (referral.) {
-                    filtered.add(referral);
+                for (CarePlan carePlan : carePlen) {
+//                    if (carePlan.) {
+                    filtered.add(carePlan);
 //                    }
                 }
 
@@ -90,9 +93,9 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
             @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                filteredReferral.clear();
-                filteredReferral.addAll((ArrayList<EHR>) results.values);
-                currentPosition = filteredReferral.indexOf(currentReferral);
+                filteredCarePlan.clear();
+                filteredCarePlan.addAll((ArrayList<CarePlan>) results.values);
+                currentPosition = filteredCarePlan.indexOf(currentCarePlan);
                 notifyDataSetChanged();
             }
         };
@@ -101,18 +104,18 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
 //    public void sort(SortType type) {
 //        switch (type) {
 //            case NAME:
-//                Collections.sort(filteredReferral, NAME_COMPARATOR2);
+//                Collections.sort(filteredCarePlan, NAME_COMPARATOR2);
 //                break;
 //            case POPULARITY:
-//                Collections.sort(filteredReferral, DATE_COMPARATOR2);
+//                Collections.sort(filteredCarePlan, DATE_COMPARATOR2);
 //                break;
 //        }
 //        notifyDataSetChanged();
 //    }
 
     @Override
-    public List<EHR> getDataSet() {
-        return referrals;
+    public List<CarePlan> getDataSet() {
+        return carePlen;
     }
 
     @Override
@@ -125,7 +128,7 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
         private final TextView listTitle;
         private final TextView listPatientID;
         private final TextView listPending;
-        private EHR referral;
+        private CarePlan carePlan;
 
 
 
@@ -137,11 +140,11 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
             itemView.setOnClickListener(this);
         }
 
-        public void bindReferral(Context context, EHR referral) {
-            this.referral = referral;
-            listTitle.setText(referral.getTitle());
-            listPatientID.setText(referral.getPatientID());
-            if (referral.isPending()) {
+        public void bindReferral(Context context, CarePlan carePlan) {
+            this.carePlan = carePlan;
+            listTitle.setText(carePlan.getTitle());
+            listPatientID.setText(carePlan.getPatientID());
+            if (carePlan.isPending()) {
                 listPending.setText("Pending");
             } else {
                 listPending.setText("Not Pending");
@@ -150,8 +153,8 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
 
         @Override
         public void onClick(View v) {
-            if (referral != null) {
-                Fragment detailFragment = ReferralDetailFragment.newInstance(referral);
+            if (carePlan != null) {
+                Fragment detailFragment = CarePlanDetailFragment.newInstance(carePlan);
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
@@ -174,7 +177,7 @@ public class ReferralListAdapter extends RecyclerView.Adapter<ReferralListAdapte
                     selectedPosition = getLayoutPosition();
                     currentPosition = getLayoutPosition();
                 }
-                currentReferral = referral;
+                currentCarePlan = carePlan;
 
             }
         }

@@ -1,4 +1,4 @@
-package edu.gatech.johndoe.carecoordinator;
+package edu.gatech.johndoe.carecoordinator.community.UI;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,6 +15,8 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
+import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 
 
