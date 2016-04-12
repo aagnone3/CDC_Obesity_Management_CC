@@ -24,9 +24,8 @@
             android:layout_weight="0.5"
             android:layout_marginLeft="20dp"
             android:textStyle="bold"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:layout_gravity="center_vertical|center_horizontal|left"/>
-        <!--android:layout_weight="1"-->
 
         <TextView
             android:id="@+id/referralpatientid"
@@ -34,10 +33,9 @@
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:layout_marginLeft="20dp"
-            android:textStyle="bold"
-            android:textSize="24sp"
+            android:textStyle="normal"
+            android:textSize="20sp"
             android:layout_gravity="center_vertical|center_horizontal|left"/>
-        <!--android:layout_weight="1"-->
     </LinearLayout>
 
     <TextView
@@ -46,10 +44,7 @@
         android:layout_weight="0.3"
         android:layout_height="match_parent"
         android:layout_marginLeft="20dp"
-        android:textStyle="bold"
-        android:textSize="24sp"/>
-
-
-    <!--android:layout_weight="1"-->
+        android:textStyle="normal"
+        android:textSize="20sp"/>
 
 </LinearLayout>

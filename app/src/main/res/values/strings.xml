@@ -9,7 +9,7 @@
     <string name="patient_gender">Gender:</string>
     <string name="patient_dob">DOB:</string>
     <string name="patient_address">Address:</string>
-    <string name="patient_name">Name:</string>
+    <string name="patient_name">Patient:</string>
     <string name="patient_age">Age:</string>
     <string name="patient_email">Email:</string>
     <string name="patient_phone">Phone:</string>

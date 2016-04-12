@@ -41,20 +41,13 @@ import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 
-/*import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;*/
-
-
 public class Utility {
     private static final String SERVER_BASE = "http://52.72.172.54:8080/fhir/baseDstu2";
     private static final String MAPS_API_KEY = "AIzaSyADCKXv1I_2Z0zAQ8CPMs-32YmhKGtkYBY";
     private static final FhirContext ctx = FhirContext.forDstu2();
     private static final IGenericClient client = ctx.newRestfulGenericClient(SERVER_BASE);
     public static final Firebase CARE_PLANS_REF =
-            new Firebase("https://cdccoordinator2.firebaseio.com/referrals");
+            new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
     public static final Firebase PATIENTS_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/patients");
     public static final Firebase COMMUNITES_REF =
@@ -72,7 +65,8 @@ public class Utility {
     public static List<Community> community_list = new ArrayList<>();
     public static final String UPDATE_MESSAGE = "Data Updated.";
 
-    public static void dummyDataGenerator () {
+    // previously dummyDataGenerator()
+    public static void populateDatabase() {
         Random random = new Random();
         // Generating Fake Communities
 //        List<Community> communities = new ArrayList<>();
@@ -89,7 +83,7 @@ public class Utility {
 //                for (j = ehrID; j <= ehrID + random.nextInt(15); j++) {
 //                    CarePlan ehr = new CarePlan(String.valueOf(j), patient.getId(), "CarePlan " + j, "None", j % 2 == 0, new Date());
 //                    patient.addCarePlan(ehr);
-//                    saveReferral(ehr);
+//                    saveCarePlan(ehr);
 //                }
 //                ehrID = j;
 //                Community community = communities.get((int) (Math.random()* 10));
@@ -104,10 +98,10 @@ public class Utility {
         }
         //Saving Fake Communities
 //        for (Community c : communities)
-//            saveCommunity(c);
+//            saveCommunityResource(c);
     }
 
-    public static void saveReferral(CarePlan carePlan) {
+    public static void saveCarePlan(CarePlan carePlan) {
         Firebase ref = CARE_PLANS_REF.child(carePlan.getId());
         ref.setValue(carePlan);
     }
@@ -135,7 +129,7 @@ public class Utility {
         ref.child("type").setValue(p.getType());
     }
     
-    public static void saveCommunity(Community community) {
+    public static void saveCommunityResource(Community community) {
         Firebase ref = COMMUNITES_REF.child(community.getId());
         ref.setValue(community);
     }
@@ -232,8 +226,6 @@ public class Utility {
                         patient_list.add(p);
                     }
                 }
-
-
             }
 
             @Override
@@ -358,6 +350,8 @@ public class Utility {
 
                     }
                 }
+
+                // TODO link care plans to patients
 
                 if (toast)
                     Toast.makeText(context, UPDATE_MESSAGE, Toast.LENGTH_LONG).show();
@@ -550,23 +544,21 @@ public class Utility {
         return patient;
     }
 
-//    public static ca.uhn.fhir.model.dstu2.resource.Patient getFHIRCarePlanByID(int id) {
-//
-//        // Obtain the results from the query to the FHIR server
-//        Bundle results = client.search()
-//                .forResource(ca.uhn.fhir.model.dstu2.resource.CarePlan.class)
-//                .where(ca.uhn.fhir.model.dstu2.resource.CarePlan.RES_ID.matchesExactly()
-//                        .systemAndIdentifier("uniqueId", "33333" + String.valueOf(id)))
-//                .returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
-//                .execute();
-//        ca.uhn.fhir.model.dstu2.resource.Patient patient = null;
-//        if (results.getEntry().size() == 0) {
-//            System.out.println("No results matching the search criteria!");
-//        } else {
-//            patient = (Patient) results.getEntry().get(0).getResource();
-//        }
-//        return patient;
-//    }
+    public static ca.uhn.fhir.model.dstu2.resource.CarePlan getFHIRCarePlanByID(int id) {
+        // Obtain the results from the query to the FHIR server
+        Bundle results = client.search()
+                .forResource(ca.uhn.fhir.model.dstu2.resource.CarePlan.class)
+                .where(ca.uhn.fhir.model.dstu2.resource.CarePlan.RES_ID.matchesExactly().value(String.valueOf(id)))
+                .returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
+                .execute();
+        ca.uhn.fhir.model.dstu2.resource.CarePlan carePlan = null;
+        if (results.getEntry().size() == 0) {
+            System.out.println("No results matching the search criteria!");
+        } else {
+            carePlan = (ca.uhn.fhir.model.dstu2.resource.CarePlan) results.getEntry().get(0).getResource();
+        }
+        return carePlan;
+    }
 
     public static ArrayList<Community> getCommunities() {
         ArrayList<Community> communities = new ArrayList<>(Arrays.asList(

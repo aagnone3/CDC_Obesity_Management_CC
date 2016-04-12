@@ -80,22 +80,17 @@ public class CarePlanDetailFragment extends Fragment {
         // Attach an listener to read the data at our posts reference
         Utility.getAllPatients();
         for (Patient pat: Utility.patient_list) {
-//            System.out.println("Patient id " + pat.getId() + " and " + carePlan.getPatientID());
-//            System.out.println(pat.getId().equals(carePlan.getPatientID()));
             if (pat.getId().equals(carePlan.getPatientID())) {
-//                System.out.println("Found");
                 patient = pat;
             }
         }
 
         TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
-        TextView patient_id = (TextView) view.findViewById(R.id.patient_id2);
         TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender2);
         TextView patient_birth_date = (TextView) view.findViewById(R.id.patient_dob2);
         TextView patient_age = (TextView) view.findViewById(R.id.patient_age2);
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email2);
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone2);
-
 
         patient_email.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,10 +127,9 @@ public class CarePlanDetailFragment extends Fragment {
                         .show();
             }
         });
-//        TextView referral_details = (TextView) view.findViewById(R.id.referral_details);
+
         if (patient == null) {
             patient_name.setText("Dummy");
-            patient_id.setText(carePlan.getPatientID());
             patient_gender.setText("Male");
             patient_age.setText(String.valueOf(10));
             patient_birth_date.setText(carePlan.getIssueDate().toString());
@@ -143,7 +137,6 @@ public class CarePlanDetailFragment extends Fragment {
             patient_phone.setText("xxx-yyy-zzzz");
         } else {
             patient_name.setText(patient.getFull_name_first());
-            patient_id.setText(carePlan.getPatientID());
             patient_gender.setText(patient.getGender());
             patient_age.setText(String.valueOf(patient.getAge()));
             patient_birth_date.setText(carePlan.getIssueDate().toString());
