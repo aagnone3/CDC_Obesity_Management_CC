@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
@@ -255,6 +256,8 @@ public class Utility {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                LatLongUpdate communitiesLatLong = new LatLongUpdate();
+
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     GenericTypeIndicator<Map<String, Object>> ti = new GenericTypeIndicator<Map<String, Object>>() {};
                     Map<String, Object> cr = ds.getValue(ti);
@@ -269,6 +272,19 @@ public class Utility {
                             community_list.add(ds.getValue(Restaurant.class));
                             break;
                     }
+                }
+
+                //fill in community resource objects with lat/long information
+                try {
+                    communitiesLatLong.execute(community_list).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                for(int i=0; i<community_list.size(); i++){
+                    Log.d("info", community_list.get(i).getFullAddress() + " " + Double.toString(community_list.get(i).getLatitude()) + ", " + Double.toString(community_list.get(i).getLongitude()));
                 }
             }
 
