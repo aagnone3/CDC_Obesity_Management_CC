@@ -273,19 +273,6 @@ public class Utility {
                             break;
                     }
                 }
-
-                //fill in community resource objects with lat/long information
-                try {
-                    communitiesLatLong.execute(community_list).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-
-                for(int i=0; i<community_list.size(); i++){
-                    Log.d("info", community_list.get(i).getFullAddress() + " " + Double.toString(community_list.get(i).getLatitude()) + ", " + Double.toString(community_list.get(i).getLongitude()));
-                }
             }
 
             @Override
@@ -293,6 +280,30 @@ public class Utility {
                 Log.e("AllCommunities", firebaseError.getMessage());
             }
         });
+    }
+
+    public static void updateCommunityLatLong(String id){
+        LatLongUpdate latLongTask = new LatLongUpdate();
+        List<Double> latLongResult = new ArrayList<>();
+        for (Community community : community_list){
+            if (community.getId().equals(id)){
+                if (community.getLatitude() == 0 || community.getLongitude() == 0) {
+                    try {
+                        latLongResult = latLongTask.execute(community.getFullAddress()).get();
+                        if (latLongResult.get(0) != -1.0) {
+                            community.setLatitude(latLongResult.get(0));
+                            community.setLongitude(latLongResult.get(1));
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+                break;
+            }
+        }
     }
 
     public static void updateReferralStatus(String id, boolean status) {

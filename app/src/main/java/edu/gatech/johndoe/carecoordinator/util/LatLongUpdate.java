@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Exchanger;
 import java.util.concurrent.TimeUnit;
@@ -25,65 +26,43 @@ import edu.gatech.johndoe.carecoordinator.util.ParsedLatLong.Location;
 /**
  * Created by colton on 4/12/16.
  */
-public class LatLongUpdate extends AsyncTask<List<Community>, Void, String> {
+public class LatLongUpdate extends AsyncTask<String, Void, List<Double>> {
 
     HttpURLConnection urlConnection;
 
     @Override
-    protected String doInBackground(List<Community>... args) {
+    protected List<Double> doInBackground(String... args) {
 
-        for(int i=0; i<args[0].size(); i++){
+        String urlString = ("http://maps.google.com/maps/api/geocode/json?address=" + args[0] + "&sensor=false");
+        List<Double> latLongResult = new ArrayList<>();
+        StringBuilder result = new StringBuilder();
 
-            if(args[0].get(i).getLatitude() != 0)
-                continue;
+        try {
+            URL url = new URL(urlString.replaceAll("\\s", "%20"));
+            urlConnection = (HttpURLConnection) url.openConnection();
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
 
-            String urlString = ("http://maps.google.com/maps/api/geocode/json?address=" + args[0].get(i).getFullAddress() + "&sensor=false");
-            StringBuilder result = new StringBuilder();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-            try {
-                URL url = new URL(urlString.replaceAll("\\s", "%20"));
-                urlConnection = (HttpURLConnection) url.openConnection();
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-
-                Gson latLongGson = new Gson();
-                LatLongResponse response = latLongGson.fromJson(result.toString(), LatLongResponse.class);
-                args[0].get(i).setLatitude(response.getResults().get(0).getGeometry().getLocation().getLat());
-                args[0].get(i).setLongitude(response.getResults().get(0).getGeometry().getLocation().getLng());
-
-            }catch( Exception e) {
-                e.printStackTrace();
-            }
-            finally {
-                urlConnection.disconnect();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
             }
 
-            //this pause is needed to avoid Google API OVER_QUERY_LIMIT of 5 requests per second
-            try{
-                TimeUnit.MILLISECONDS.sleep(200);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            Gson latLongGson = new Gson();
+            LatLongResponse response = latLongGson.fromJson(result.toString(), LatLongResponse.class);
+            latLongResult.add(response.getResults().get(0).getGeometry().getLocation().getLat());
+            latLongResult.add(response.getResults().get(0).getGeometry().getLocation().getLng());
 
+        }catch( Exception e) {
+            e.printStackTrace();
+            latLongResult.add(-1.0);
+        }
+        finally {
+            urlConnection.disconnect();
         }
 
-        return ("done");
-    }
-
-    @Override
-    protected void onPostExecute(String result) {
-
-        if (result != null){
-            Log.d("LatLongUpdate", "done getting resource lat/long");
-        }
-
+        return latLongResult;
     }
 
 }
