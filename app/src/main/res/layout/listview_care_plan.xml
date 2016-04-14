@@ -3,17 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="14dp"
-    android:paddingBottom="14dp"
-    android:paddingStart="14dp"
-    android:paddingEnd="14dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
     android:orientation="horizontal"
     android:weightSum="1"
     android:background="@drawable/selectable_list_item">
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="0.7"
+        android:layout_weight="0.8"
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:weightSum="1" >
@@ -21,9 +21,8 @@
             android:id="@+id/referraltitle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.5"
-            android:layout_marginLeft="20dp"
-            android:textStyle="bold"
+            android:layout_weight="0.4"
+            android:textStyle="normal"
             android:textSize="20sp"
             android:layout_gravity="center_vertical|center_horizontal|left"/>
 
@@ -31,20 +30,46 @@
             android:id="@+id/referralpatientid"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.5"
-            android:layout_marginLeft="20dp"
+            android:layout_weight="0.3"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:textStyle="normal"
-            android:textSize="20sp"
+            android:textSize="13sp"
+            android:layout_gravity="center_vertical|center_horizontal|left"/>
+
+        <TextView
+            android:id="@+id/referraldetail"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:textStyle="normal"
+            android:textSize="13sp"
             android:layout_gravity="center_vertical|center_horizontal|left"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/referralpending"
+    <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="0.3"
+        android:layout_weight="0.2"
+        android:orientation="vertical"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:textStyle="normal"
-        android:textSize="20sp"/>
+        android:weightSum="1" >
+        <TextView
+            android:id="@+id/referraldate"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:textStyle="normal"
+            android:textSize="10sp"
+            android:layout_gravity="center_vertical|center_horizontal|left"/>
+
+        <TextView
+            android:id="@+id/referralpending"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:textStyle="normal"
+            android:textSize="10sp"
+            android:layout_gravity="center_vertical|center_horizontal|left"/>
+    </LinearLayout>
 
 </LinearLayout>

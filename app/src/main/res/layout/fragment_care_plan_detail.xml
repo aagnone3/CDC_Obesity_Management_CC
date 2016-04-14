@@ -9,10 +9,74 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingBottom="@dimen/activity_vertical_margin">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/care_plan_title_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="@string/care_plan_title" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/care_plan_title"
+            android:textSize="20sp"
+            android:layout_toEndOf="@id/care_plan_title_label"
+            android:layout_alignTop="@id/care_plan_title_label"
+            android:layout_marginStart="10dp" />
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linear2"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_below="@id/care_plan_title"
+            android:weightSum="1"
+            android:background="@drawable/selectable_list_item">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:layout_height="match_parent"
+                android:id="@+id/care_plan_ID_label"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/care_plan_id2" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="match_parent"
+                android:id="@+id/care_plan_ID"
+                android:textSize="18sp"
+                android:layout_marginStart="3dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.2"
+                android:paddingLeft="5dp"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_ID_label"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/patient_id" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_ID"
+                android:textSize="18sp"
+                android:layout_marginStart="3dp"/>
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -21,77 +85,83 @@
             android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="12dp"
-            android:layout_alignStart="@id/patient_name_label2"
+            android:layout_below="@id/linear2"
             android:text="@string/patient_name" />
-
+        <!--android:layout_marginTop="12dp"-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/patient_name2"
             android:textSize="20sp"
             android:layout_toEndOf="@id/patient_name_label2"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/patient_name_label2" />
+            android:layout_alignTop="@id/patient_name_label2"
+            android:layout_marginStart="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/patient_gender_label2"
-            android:textSize="20sp"
-            android:textStyle="bold"
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/linear1"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal"
             android:layout_below="@id/patient_name2"
-            android:layout_alignStart="@id/patient_name_label2"
-            android:layout_marginTop="12dp"
-            android:text="@string/patient_gender" />
+            android:weightSum="1"
+            android:background="@drawable/selectable_list_item">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/patient_gender2"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/patient_gender_label2"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/patient_gender_label2" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.19"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_gender_label2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/patient_gender" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/patient_age_label2"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/patient_gender2"
-            android:layout_alignStart="@id/patient_gender_label2"
-            android:layout_marginTop="12dp"
-            android:text="@string/patient_age" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_gender2"
+                android:textSize="18sp"
+                android:layout_marginStart="3dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/patient_age2"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/patient_age_label2"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/patient_age_label2" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.12"
+                android:paddingLeft="10dp"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_age_label2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/patient_age" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/patient_dob_label2"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/patient_age2"
-            android:layout_alignStart="@id/patient_age_label2"
-            android:layout_marginTop="12dp"
-            android:text="@string/patient_dob" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_age2"
+                android:textSize="18sp"
+                android:layout_marginStart="3dp"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/patient_dob2"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/patient_dob_label2"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/patient_dob_label2" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.13"
+                android:paddingLeft="5dp"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_dob_label2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/patient_dob" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="0.36"
+                android:layout_height="match_parent"
+                android:id="@+id/patient_dob2"
+                android:textSize="18sp"
+                android:layout_marginStart="3dp" />
+
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
@@ -99,8 +169,7 @@
             android:id="@+id/patient_email_label2"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_below="@id/patient_dob2"
-            android:layout_alignStart="@id/patient_dob_label2"
+            android:layout_below="@id/linear1"
             android:layout_marginTop="12dp"
             android:text="@string/patient_email" />
 
@@ -135,13 +204,32 @@
             android:layout_marginStart="10dp"
             android:layout_alignTop="@id/patient_phone_label2" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/care_plan_detail_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_below="@id/patient_phone2"
+            android:layout_alignStart="@id/patient_phone_label2"
+            android:layout_marginTop="12dp"
+            android:text="@string/details" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/care_plan_detail"
+            android:textSize="20sp"
+            android:layout_below="@id/care_plan_detail_label"
+            android:layout_alignStart="@id/care_plan_detail_label" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reviewed"
             android:id="@+id/buttonreviewed"
-            android:layout_below="@+id/patient_phone2"
-            android:layout_toEndOf="@+id/patient_age_label2"
+            android:layout_below="@+id/care_plan_detail"
+            android:layout_toEndOf="@+id/care_plan_detail"
             android:layout_marginTop="50dp" />
 
         <Button
@@ -153,26 +241,7 @@
             android:layout_alignTop="@+id/buttonreviewed"
             android:layout_toEndOf="@+id/buttonreviewed" />
 
-        <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/referral_details_label"-->
-        <!--android:textSize="20sp"-->
-        <!--android:textStyle="bold"-->
-        <!--android:layout_below="@id/patient_phone2"-->
-        <!--android:layout_alignStart="@id/patient_phone_label2"-->
-        <!--android:layout_marginTop="12dp"-->
-        <!--android:text="@string/details" />-->
 
-        <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/referral_details"-->
-        <!--android:textColor="#003bfc"-->
-        <!--android:textSize="20sp"-->
-        <!--android:layout_toEndOf="@id/referral_details_label"-->
-        <!--android:layout_marginStart="10dp"-->
-        <!--android:layout_alignTop="@id/referral_details_label" />-->
 
     </RelativeLayout>
 

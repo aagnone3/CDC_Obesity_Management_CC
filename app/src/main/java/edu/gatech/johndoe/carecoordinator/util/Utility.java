@@ -281,7 +281,7 @@ public class Utility {
 
     public static void updateReferralStatus(String id, boolean status) {
         Map<String, Object> container = new HashMap<>();
-        container.put(id + "/pending", status);
+//        container.put(id + "/pending", status);
         CARE_PLANS_REF.updateChildren(container);
         for (CarePlan carePlan : carePlan_list) {
             if (carePlan.getId().equals(id)) {

@@ -10,6 +10,13 @@ public class CarePlan {
     private boolean pending;
     private Date issueDate;
     private Date dateOfimport;
+    private int status; /* number coding
+                            1: unopened
+                            2: opened
+                            3: sent recommendation
+                            4: sent E-referral to community
+
+                        */
 
     public CarePlan() {}
 
@@ -21,6 +28,7 @@ public class CarePlan {
         this.pending = pending;
         this.issueDate = issueDate;
         this.dateOfimport = new Date();
+        this.status = 1;
     }
 
     public String getId() {
@@ -79,6 +87,14 @@ public class CarePlan {
         this.pending = pending;
     }
 
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getStatus() {
+        return this.status;
+    }
+
     @Override
     public String toString() {
         return "CarePlan{" +
@@ -89,6 +105,7 @@ public class CarePlan {
                 ", pending=" + pending +
                 ", issueDate=" + issueDate +
                 ", dateOfimport=" + dateOfimport +
+                ", Status=" + status +
                 '}';
     }
 
@@ -107,4 +124,3 @@ public class CarePlan {
         return Integer.valueOf(id);
     }
 }
-

@@ -15,7 +15,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
@@ -36,13 +42,13 @@ public class CarePlanDetailFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private TextView listName, listDetails, name, date, details;
+    private TextView title, patientID, carePlanID, issueDate, details, patient_name, patient_gender, patient_birth_date, patient_age, patient_email, patient_phone;
     private Button reviewedButton, erefButton;
     private Patient patient;
 
     /**
      *
-     * @param carePlan Community.
+     * @param carePlan carePlan.
      * @return A new instance of fragment CommunityDetailFragment.
      */
     public static CarePlanDetailFragment newInstance(CarePlan carePlan) {
@@ -85,12 +91,23 @@ public class CarePlanDetailFragment extends Fragment {
             }
         }
 
-        TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
-        TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender2);
-        TextView patient_birth_date = (TextView) view.findViewById(R.id.patient_dob2);
-        TextView patient_age = (TextView) view.findViewById(R.id.patient_age2);
-        TextView patient_email = (TextView) view.findViewById(R.id.patient_email2);
-        TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone2);
+        patient_name = (TextView) view.findViewById(R.id.patient_name2);
+        patient_gender = (TextView) view.findViewById(R.id.patient_gender2);
+        patient_birth_date = (TextView) view.findViewById(R.id.patient_dob2);
+        patient_age = (TextView) view.findViewById(R.id.patient_age2);
+        patient_email = (TextView) view.findViewById(R.id.patient_email2);
+        patient_phone = (TextView) view.findViewById(R.id.patient_phone2);
+        title = (TextView) view.findViewById(R.id.care_plan_title);
+        patientID = (TextView) view.findViewById(R.id.patient_ID);
+        carePlanID = (TextView) view.findViewById(R.id.care_plan_ID);
+//        issueDate, details
+        details = (TextView) view.findViewById(R.id.care_plan_detail);
+        title.setText(carePlan.getTitle());
+        patientID.setText(carePlan.getPatientID());
+        carePlanID.setText(carePlan.getId());
+        details.setText(carePlan.getDetail());
+
+//        title =
 
         patient_email.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,19 +129,23 @@ public class CarePlanDetailFragment extends Fragment {
         patient_phone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(getActivity())
-                        .setIcon(android.R.drawable.ic_menu_call)
-                        .setTitle(patient.getPhoneNumber())
-                        .setMessage("Do you want to call this number? ")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent in = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + patient.getPhoneNumber()));
-                                startActivity(in);
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
+                try {
+                    new AlertDialog.Builder(getActivity())
+                            .setIcon(android.R.drawable.ic_menu_call)
+                            .setTitle(patient.getPhoneNumber())
+                            .setMessage("Do you want to call this number? ")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent in = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + patient.getPhoneNumber()));
+                                    startActivity(in);
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
+                } catch (java.lang.NullPointerException ex) {
+                    Toast.makeText(getActivity().getApplicationContext(), "The number is not valid.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -132,14 +153,14 @@ public class CarePlanDetailFragment extends Fragment {
             patient_name.setText("Dummy");
             patient_gender.setText("Male");
             patient_age.setText(String.valueOf(10));
-            patient_birth_date.setText(carePlan.getIssueDate().toString());
+            patient_birth_date.setText("April 10, 1992");
             patient_email.setText("abc@mail.com");
             patient_phone.setText("xxx-yyy-zzzz");
         } else {
             patient_name.setText(patient.getFull_name_first());
             patient_gender.setText(patient.getGender());
             patient_age.setText(String.valueOf(patient.getAge()));
-            patient_birth_date.setText(carePlan.getIssueDate().toString());
+            patient_birth_date.setText(patient.getFormatted_birth_date());
             patient_email.setText(patient.getEmail());
             patient_phone.setText(patient.getPhoneNumber());
         }
@@ -151,7 +172,24 @@ public class CarePlanDetailFragment extends Fragment {
             public void onClick(View v) {
                 if (patient != null) {
                     System.out.println("CarePlan ID " + carePlan.getId());
-                    Utility.updateReferralStatus(carePlan.getId(), true);
+//                    Utility.updateReferralStatus(carePlan.getId(), true);
+                    // need something to add to update.
+
+                    Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                    ref.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
+                            for (DataSnapshot postSnapshot: snapshot.getChildren()) {
+                                CarePlan post = postSnapshot.getValue(CarePlan.class);
+                                System.out.println(post.getTitle());
+                            }
+                        }
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+                            System.out.println("The read failed: " + firebaseError.getMessage());
+                        }
+                    });
                 } else {
                     System.out.println("null patient");
                 }

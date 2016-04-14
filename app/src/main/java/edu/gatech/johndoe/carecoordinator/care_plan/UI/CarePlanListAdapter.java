@@ -128,6 +128,8 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
         private final TextView listTitle;
         private final TextView listPatientID;
         private final TextView listPending;
+        private final TextView listDetail;
+        private final TextView listDate;
         private CarePlan carePlan;
 
 
@@ -137,13 +139,28 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
             listTitle = (TextView) itemView.findViewById(R.id.referraltitle);
             listPatientID = (TextView) itemView.findViewById(R.id.referralpatientid);
             listPending = (TextView) itemView.findViewById(R.id.referralpending);
+            listDate = (TextView) itemView.findViewById(R.id.referraldate);
+            listDetail = (TextView) itemView.findViewById(R.id.referraldetail);
             itemView.setOnClickListener(this);
         }
 
         public void bindReferral(Context context, CarePlan carePlan) {
             this.carePlan = carePlan;
             listTitle.setText(carePlan.getTitle());
-            listPatientID.setText(carePlan.getPatientID());
+            listPatientID.setText("Patient ID: " + carePlan.getPatientID());
+
+            if (carePlan.getDetail().length() > 20) {
+                listDetail.setText(carePlan.getDetail().substring(0, 20) + "...");
+
+            } else {
+                listDetail.setText(carePlan.getDetail());
+            }
+            String[] dateString = carePlan.getIssueDate().toString().split(" ");
+            if (dateString.length > 2) {
+                listDate.setText(dateString[1] + " " + dateString[2]);
+            } else {
+                listDate.setText(carePlan.getIssueDate().toString());
+            }
             if (carePlan.isPending()) {
                 listPending.setText("Pending");
             } else {
