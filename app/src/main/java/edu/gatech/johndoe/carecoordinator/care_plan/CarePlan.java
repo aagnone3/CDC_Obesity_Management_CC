@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class CarePlan {
     private String id;
+    private String fhirId;
     private String patientID;
     private String title;
     private String detail;
@@ -20,8 +21,9 @@ public class CarePlan {
 
     public CarePlan() {}
 
-    public CarePlan(String id, String patientID, String title, String detail, boolean pending, Date issueDate) {
+    public CarePlan(String id, String fhirId, String patientID, String title, String detail, boolean pending, Date issueDate) {
         this.id = id;
+        this.fhirId = fhirId;
         this.patientID = patientID;
         this.title = title;
         this.detail = detail;
@@ -37,6 +39,10 @@ public class CarePlan {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getFhirId() {
+        return fhirId;
     }
 
     public String getPatientID() {
