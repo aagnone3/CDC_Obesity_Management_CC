@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
@@ -255,6 +256,8 @@ public class Utility {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                LatLongUpdate communitiesLatLong = new LatLongUpdate();
+
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     GenericTypeIndicator<Map<String, Object>> ti = new GenericTypeIndicator<Map<String, Object>>() {};
                     Map<String, Object> cr = ds.getValue(ti);
@@ -277,6 +280,30 @@ public class Utility {
                 Log.e("AllCommunities", firebaseError.getMessage());
             }
         });
+    }
+
+    public static void updateCommunityLatLong(String id){
+        LatLongUpdate latLongTask = new LatLongUpdate();
+        List<Double> latLongResult = new ArrayList<>();
+        for (Community community : community_list){
+            if (community.getId().equals(id)){
+                if (community.getLatitude() == 0 || community.getLongitude() == 0) {
+                    try {
+                        latLongResult = latLongTask.execute(community.getFullAddress()).get();
+                        if (latLongResult.get(0) != -1.0) {
+                            community.setLatitude(latLongResult.get(0));
+                            community.setLongitude(latLongResult.get(1));
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+                break;
+            }
+        }
     }
 
     public static void updateReferralStatus(String id, boolean status) {
