@@ -15,9 +15,13 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.community.Community;
+import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
 public class CommunityDetailFragment extends Fragment {
@@ -86,7 +90,7 @@ public class CommunityDetailFragment extends Fragment {
                 new AlertDialog.Builder(getActivity())
                         .setIcon(android.R.drawable.ic_menu_call)
                         .setTitle(community.getPhoneNumber())
-                        .setMessage("Do you want to call this number? ")
+                        .setMessage("Do you want to call this number?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -107,6 +111,38 @@ public class CommunityDetailFragment extends Fragment {
 
         TextView description = (TextView) view.findViewById(R.id.description);
         description.setText(community.getDescription());
+
+        ImageView mapImageView = (ImageView) view.findViewById(R.id.mapImageView);
+        mapImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getActivity())
+                        .setIcon(R.drawable.ic_map_black)
+                        .setTitle(community.getName())
+                        .setMessage("Do you want locate this place in Google Maps?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + community.getFullAddress());
+                                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                mapIntent.setPackage("com.google.android.apps.maps");
+                                startActivity(mapIntent);
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        });
+
+        try {
+            String fullAddress = URLEncoder.encode(community.getFullAddress(), "UTF-8");
+            new Utility.ImageDownloadTask(mapImageView).execute(
+                    "https://maps.googleapis.com/maps/api/staticmap?center="
+                    + fullAddress + "&zoom=16&size=500x500&markers=color:blue|"
+                    + fullAddress + "&maptype=roadmap");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }

@@ -1,8 +1,13 @@
 package edu.gatech.johndoe.carecoordinator.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
@@ -12,6 +17,8 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -609,5 +616,29 @@ public class Utility {
         return communities;
     }
 
+    public static class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
+        private ImageView imageView;
+
+        public ImageDownloadTask(ImageView bmImage) {
+            this.imageView = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... url) {
+            Bitmap picture = null;
+
+            try {
+                InputStream in = new java.net.URL(url[0]).openStream();
+                picture = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Utility", "Error while downloading image: " + e.getMessage());
+            }
+
+            return picture;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            imageView.setImageBitmap(result);
+        }
+    }
 
 }

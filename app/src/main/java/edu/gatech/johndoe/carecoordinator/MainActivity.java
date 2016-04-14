@@ -7,10 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
@@ -36,7 +33,6 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
-import java.io.InputStream;
 import java.util.Arrays;
 
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
@@ -129,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         View headerView = navigationView.getHeaderView(0);
         if (currentUserAccount.getPhotoUrl() != null) {
-            new ProfilePictureTask((ImageView) headerView.findViewById(R.id.coordinatorPicture)).execute(currentUserAccount.getPhotoUrl());
+            new Utility.ImageDownloadTask((ImageView) headerView.findViewById(R.id.coordinatorPicture)).execute(currentUserAccount.getPhotoUrl().toString());
         }
         ((TextView) headerView.findViewById(R.id.coordinatorName)).setText(currentUserAccount.getDisplayName());
         ((TextView) headerView.findViewById(R.id.coordinatorEmail)).setText(currentUserAccount.getEmail());
@@ -393,30 +389,5 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 return 2;
         }
         return -1;
-    }
-
-    private class ProfilePictureTask extends AsyncTask<Uri, Void, Bitmap> {
-        private ImageView imageView;
-
-        public ProfilePictureTask(ImageView bmImage) {
-            this.imageView = bmImage;
-        }
-
-        protected Bitmap doInBackground(Uri... uris) {
-            Bitmap picture = null;
-
-            try {
-                InputStream in = new java.net.URL(uris[0].toString()).openStream();
-                picture = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("MainActivity", "Error while downloading profile picture: " + e.getMessage());
-            }
-
-            return picture;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
-        }
     }
 }
