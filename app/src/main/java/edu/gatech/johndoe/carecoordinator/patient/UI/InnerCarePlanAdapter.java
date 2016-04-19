@@ -1,6 +1,10 @@
 package edu.gatech.johndoe.carecoordinator.patient.UI;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +15,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
+import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
+import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 public class InnerCarePlanAdapter extends ArrayAdapter<CarePlan> {
@@ -44,7 +50,19 @@ public class InnerCarePlanAdapter extends ArrayAdapter<CarePlan> {
             ehr_title.setText(e.getTitle());
             ehr_title.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
+                    Fragment detailFragment = CarePlanDetailFragment.newInstance(e);
+                    FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
+                    FragmentTransaction transaction = fragmentManager.beginTransaction();
+                    if (MainActivity.isInExpandedMode) {
+                        //noinspection ResourceType
+                        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                        transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail").addToBackStack(null);
+                    } else {
+                        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                        transaction.add(R.id.contentContainer, detailFragment, "detail").addToBackStack(null);
+                    }
 
+                    transaction.commit();
                 }
             });
 

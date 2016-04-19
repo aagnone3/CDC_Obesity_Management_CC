@@ -16,7 +16,13 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -68,6 +74,7 @@ public class Utility {
     public static List<CarePlan> carePlan_list = new ArrayList<>();
     public static List<edu.gatech.johndoe.carecoordinator.patient.Patient> patient_list = new ArrayList<>();
     public static List<Community> community_list = new ArrayList<>();
+    public static Map<String, List<CarePlan>> careplans = new HashMap<>();
     public static final String UPDATE_MESSAGE = "Data Updated.";
 
     public static void populateDatabase() {
@@ -75,17 +82,16 @@ public class Utility {
             ca.uhn.fhir.model.dstu2.resource.Patient p = getFHIRPatientByID(i);
             if (p != null) {
                 edu.gatech.johndoe.carecoordinator.patient.Patient patient = new edu.gatech.johndoe.carecoordinator.patient.Patient(p);
-                System.out.println(patient);
-                savePatient(patient);
-                for (CarePlan cp : carePlan_list) {
-                    if (cp.getPatientID().equals(patient.getId())) {
-                        patient.addReferral(cp);
-                    }
+                List<String> ids = new ArrayList<>();
+                List<CarePlan> targets = careplans.get(patient.getId());
+                if (targets != null) {
+                    for (CarePlan c : targets)
+                        ids.add(c.getId());
+                    patient.setReferralList(ids);
                 }
+                savePatient(patient);
             }
         }
-
-
     }
 
     public static void saveCarePlan(CarePlan carePlan) {
@@ -101,8 +107,8 @@ public class Utility {
         ref.child("age").setValue(p.getAge());
         ref.child("birth_date").setValue(p.getBirth_date());
         ref.child("communityList").setValue(p.getCommunityList());
+        ref.child("referralList").setValue(p.getReferralList());
         ref.child("dateOfimport").setValue(p.getDateOfimport());
-        ref.child("ehrList").setValue(p.getReferralList());
         ref.child("email").setValue(p.getEmail());
         ref.child("first_name").setValue(p.getFirst_name());
         ref.child("formatted_birth_date").setValue(p.getFormatted_birth_date());
@@ -495,6 +501,33 @@ public class Utility {
         Log.i("Update Communities", "Done with updating communities.");
     }
 
+    public static void getSubCarePlans () {
+        for (CarePlan cp : carePlan_list) {
+            ca.uhn.fhir.model.dstu2.resource.CarePlan careplan = getFHIRCarePlanByID(Integer.valueOf(cp.getFhirId()));
+            try {
+                String uniqueID = "";
+                JSONObject result = getFHIRCarePlan(Integer.valueOf(cp.getFhirId()));
+                JSONArray sub = result.getJSONArray("contained");
+                for (int i = 0; i < sub.length(); i++) {
+                    JSONObject type = (JSONObject) sub.get(i);
+                    if (type.get("resourceType").equals("Patient")) {
+                        sub = type.getJSONArray("identifier");
+                        uniqueID = String.valueOf(((JSONObject) sub.get(0)).get("value"));
+
+                        edu.gatech.johndoe.carecoordinator.patient.Patient p = new edu.gatech.johndoe.carecoordinator.patient.Patient(getFHIRPatientByID(Integer.valueOf(uniqueID.substring(5))));
+                        if (!careplans.containsKey(p.getId()))
+                            careplans.put(p.getId(), new ArrayList<CarePlan>());
+                        careplans.get(p.getId()).add(cp);
+                        break;
+
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static void update(final Context context,
                               final ContentListFragment contentListFragment,
                               final FragmentTransaction transaction,
@@ -512,6 +545,13 @@ public class Utility {
                         ca.uhn.fhir.model.dstu2.resource.Patient p = getFHIRPatient(Integer.valueOf(ds.getKey()));
                         if (p != null) {
                             edu.gatech.johndoe.carecoordinator.patient.Patient patient = new edu.gatech.johndoe.carecoordinator.patient.Patient(p);
+                            List<String> ids = new ArrayList<>();
+                            List<CarePlan> targets = careplans.get(patient.getId());
+                            if (targets != null) {
+                                for (CarePlan c : targets)
+                                    ids.add(c.getId());
+                                patient.setReferralList(ids);
+                            }
                             savePatient(patient);
                         }
                     } catch (Exception e) {
@@ -520,7 +560,6 @@ public class Utility {
 
                 }
                 INCOMING_REF.removeValue();
-
 
                 String targets = "012";
                 targets.replace(String.valueOf(id), "");
@@ -554,6 +593,8 @@ public class Utility {
                             break;
                     }
                 }
+
+
             }
 
             @Override
@@ -561,6 +602,7 @@ public class Utility {
                 Log.e("INCOMING", firebaseError.getMessage());
             }
         });
+
 
     }
 
@@ -577,6 +619,30 @@ public class Utility {
             patient = (Patient) results.getEntry().get(0).getResource();
         }
         return patient;
+    }
+
+    public static JSONObject getFHIRCarePlan(int id) throws Exception{
+        Bundle results = client.search()
+                .forResource(ca.uhn.fhir.model.dstu2.resource.CarePlan.class)
+                .where(ca.uhn.fhir.model.dstu2.resource.CarePlan.RES_ID.matchesExactly().value(String.valueOf(id)))
+                .returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
+                .execute();
+        String result = "";
+        if (results.getEntry().size() == 0) {
+            System.out.println("No results matching the search criteria!");
+        } else {
+            try {
+                String line = "";
+                URL url = new URL(results.getEntry().get(0).getFullUrl());
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+                while ((line = in.readLine()) != null)
+                    result += line;
+                in.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new JSONObject(result);
     }
 
     public static ca.uhn.fhir.model.dstu2.resource.Patient getFHIRPatientByID(int id) {

@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             Utility.getAllCarePlans();
             Utility.getAllPatients();
             Utility.getAllCommunities();
+            Utility.getSubCarePlans();
         }
     }
 
@@ -332,12 +333,16 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     public void loadData() {
         updateTime();
-//        Utility.populateDatabase();
         Utility.update(getApplicationContext(),
                        (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
                        getSupportFragmentManager().beginTransaction(),
                        isInExpandedMode,
                        getNavID(currentNavigationItemId));
+        new Thread(new Runnable() {
+            public void run() {
+                Utility.getSubCarePlans();
+            }
+        }).start();
     }
 
     public void updateEachTab(int id) {
@@ -367,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                                             true,
                                             false);
                     break;
+
             }
             lastUpdateTime[id] = System.currentTimeMillis();
         }
