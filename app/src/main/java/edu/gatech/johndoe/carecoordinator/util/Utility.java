@@ -3,7 +3,6 @@ package edu.gatech.johndoe.carecoordinator.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -18,7 +17,6 @@ import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,26 +24,25 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
 import ca.uhn.fhir.rest.client.IGenericClient;
-import edu.gatech.johndoe.carecoordinator.community.UI.CommunityAdapter;
-import edu.gatech.johndoe.carecoordinator.community.UI.CommunityDetailFragment;
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
+import edu.gatech.johndoe.carecoordinator.UnselectedFragment;
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanListAdapter;
-import edu.gatech.johndoe.carecoordinator.UnselectedFragment;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.community.Nutritionist;
 import edu.gatech.johndoe.carecoordinator.community.Physical;
 import edu.gatech.johndoe.carecoordinator.community.Restaurant;
-import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityAdapter;
+import edu.gatech.johndoe.carecoordinator.community.UI.CommunityDetailFragment;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 
@@ -73,40 +70,22 @@ public class Utility {
     public static List<Community> community_list = new ArrayList<>();
     public static final String UPDATE_MESSAGE = "Data Updated.";
 
-    // previously dummyDataGenerator()
     public static void populateDatabase() {
-        Random random = new Random();
-        // Generating Fake Communities
-//        List<Community> communities = new ArrayList<>();
-//        for (int i = 1; i <= 30; i++) {
-//            communities.add(new Community(String.valueOf(i), "Community" + i, "450 Madison Court, Deactur, GA 30030", "(678) 148 - 4606", "johndoe@gmail.com", "No Information"));
-//        }
-        // Generating Fake Patients and their Referrals
-        int j, ehrID = 1;
-        for (int i = 1; i < 50; i++) {
+        for (int i = 1; i <= 25; i++) {
             ca.uhn.fhir.model.dstu2.resource.Patient p = getFHIRPatientByID(i);
             if (p != null) {
                 edu.gatech.johndoe.carecoordinator.patient.Patient patient = new edu.gatech.johndoe.carecoordinator.patient.Patient(p);
-//                System.out.println(patient);
-//                for (j = ehrID; j <= ehrID + random.nextInt(15); j++) {
-//                    CarePlan ehr = new CarePlan(String.valueOf(j), patient.getId(), "CarePlan " + j, "None", j % 2 == 0, new Date());
-//                    patient.addCarePlan(ehr);
-//                    saveCarePlan(ehr);
-//                }
-//                ehrID = j;
-//                Community community = communities.get((int) (Math.random()* 10));
-//                community.addPatient(patient);
-//                patient.addCommunity(community);
-//                ArrayList<String> d = new ArrayList<>();
-//                d.add("1");
-//                patient.setReferralList(d);
-//                patient.setCommunityList(d);
+                System.out.println(patient);
                 savePatient(patient);
+                for (CarePlan cp : carePlan_list) {
+                    if (cp.getPatientID().equals(patient.getId())) {
+                        patient.addReferral(cp);
+                    }
+                }
             }
         }
-        //Saving Fake Communities
-//        for (Community c : communities)
-//            saveCommunityResource(c);
+
+
     }
 
     public static void saveCarePlan(CarePlan carePlan) {
@@ -521,43 +500,83 @@ public class Utility {
                               final FragmentTransaction transaction,
                               final boolean isInExpandedMode,
                               final int id) {
-        String targets = "012";
-        targets.replace(String.valueOf(id), "");
-        switch (id) {
-            case 0:
-                updateCarePlans(context, contentListFragment,
-                        transaction, isInExpandedMode, true, true);
-                break;
-            case 1:
-                updatePatients(context, contentListFragment,
-                        transaction, isInExpandedMode, true, true);
-                break;
-            case 2:
-                updateCommunityResources(context, contentListFragment,
-                        transaction, isInExpandedMode, true, true);
-                break;
-        }
-        for (int i = 0; i < targets.length(); i++) {
-            switch (Integer.valueOf(targets.charAt(i))) {
-                case 0:
-                    updateCarePlans(context, contentListFragment,
-                            transaction, isInExpandedMode, false, false);
-                    break;
-                case 1:
-                    updatePatients(context, contentListFragment,
-                            transaction, isInExpandedMode, false, false);
-                    break;
-                case 2:
-                    updateCommunityResources(context, contentListFragment,
-                            transaction, isInExpandedMode, false, false);
-                    break;
+
+        final Query queryRef = INCOMING_REF;
+
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    try {
+                        Log.i("INCOMING", "ID: " + ds.getKey());
+                        ca.uhn.fhir.model.dstu2.resource.Patient p = getFHIRPatient(Integer.valueOf(ds.getKey()));
+                        if (p != null) {
+                            edu.gatech.johndoe.carecoordinator.patient.Patient patient = new edu.gatech.johndoe.carecoordinator.patient.Patient(p);
+                            savePatient(patient);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                INCOMING_REF.removeValue();
+
+
+                String targets = "012";
+                targets.replace(String.valueOf(id), "");
+                switch (id) {
+                    case 0:
+                        updateCarePlans(context, contentListFragment,
+                                transaction, isInExpandedMode, true, true);
+                        break;
+                    case 1:
+                        updatePatients(context, contentListFragment,
+                                transaction, isInExpandedMode, true, true);
+                        break;
+                    case 2:
+                        updateCommunityResources(context, contentListFragment,
+                                transaction, isInExpandedMode, true, true);
+                        break;
+                }
+                for (int i = 0; i < targets.length(); i++) {
+                    switch (Integer.valueOf(targets.charAt(i))) {
+                        case 0:
+                            updateCarePlans(context, contentListFragment,
+                                    transaction, isInExpandedMode, false, false);
+                            break;
+                        case 1:
+                            updatePatients(context, contentListFragment,
+                                    transaction, isInExpandedMode, false, false);
+                            break;
+                        case 2:
+                            updateCommunityResources(context, contentListFragment,
+                                    transaction, isInExpandedMode, false, false);
+                            break;
+                    }
+                }
             }
-        }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("INCOMING", firebaseError.getMessage());
+            }
+        });
+
     }
 
-    public static void fhirUpdate() {
-        //TODO
-
+    public static Patient getFHIRPatient(int id) {
+        Bundle results = client.search()
+                .forResource(Patient.class)
+                .where(Patient.RES_ID.matchesExactly().value(String.valueOf(id)))
+                .returnBundle(ca.uhn.fhir.model.dstu2.resource.Bundle.class)
+                .execute();
+        Patient patient = null;
+        if (results.getEntry().size() == 0) {
+            Log.e("getFHIRPatient", "No results matching the search criteria!");
+        } else {
+            patient = (Patient) results.getEntry().get(0).getResource();
+        }
+        return patient;
     }
 
     public static ca.uhn.fhir.model.dstu2.resource.Patient getFHIRPatientByID(int id) {

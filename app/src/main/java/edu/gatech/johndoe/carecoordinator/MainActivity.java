@@ -35,14 +35,14 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.Arrays;
 
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanListAdapter;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.community.UI.CommunityAdapter;
 import edu.gatech.johndoe.carecoordinator.community.UI.CommunityDetailFragment;
 import edu.gatech.johndoe.carecoordinator.community.UI.CommunityListFragment;
-import edu.gatech.johndoe.carecoordinator.patient.*;
-import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
+import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     public void loadData() {
         updateTime();
-        Utility.fhirUpdate();
+//        Utility.populateDatabase();
         Utility.update(getApplicationContext(),
                        (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment),
                        getSupportFragmentManager().beginTransaction(),
