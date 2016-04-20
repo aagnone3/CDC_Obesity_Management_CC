@@ -24,6 +24,7 @@ import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.Restorable;
 import edu.gatech.johndoe.carecoordinator.community.Community;
+import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, Restorable {
@@ -204,6 +205,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                     currentPosition = getLayoutPosition();
                 }
                 currentCommunity = community;
+
+                Utility.updateCommunityLatLong(community, null);
             }
         }
     }

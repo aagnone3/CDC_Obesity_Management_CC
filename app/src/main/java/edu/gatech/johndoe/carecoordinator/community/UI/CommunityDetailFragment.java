@@ -80,7 +80,7 @@ public class CommunityDetailFragment extends Fragment {
         patientCount.setText(getString(R.string.patient_count, community.getPatientCount()));
 
         TextView address = (TextView) view.findViewById(R.id.address);
-        address.setText(community.getFullAddress());
+        address.setText(community.fullAddress());
 
         TextView phoneNumber = (TextView) view.findViewById(R.id.phoneNumber);
         phoneNumber.setText(community.getPhoneNumber());
@@ -107,7 +107,7 @@ public class CommunityDetailFragment extends Fragment {
         email.setText(community.getEmailAddress());
 
         TextView hours = (TextView) view.findViewById(R.id.hours);
-        hours.setText(community.getHoursAsString());
+        hours.setText(community.hoursAsString());
 
         TextView description = (TextView) view.findViewById(R.id.description);
         description.setText(community.getDescription());
@@ -123,7 +123,7 @@ public class CommunityDetailFragment extends Fragment {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + community.getFullAddress());
+                                Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + community.fullAddress());
                                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                 mapIntent.setPackage("com.google.android.apps.maps");
                                 startActivity(mapIntent);
@@ -135,7 +135,7 @@ public class CommunityDetailFragment extends Fragment {
         });
 
         try {
-            String fullAddress = URLEncoder.encode(community.getFullAddress(), "UTF-8");
+            String fullAddress = URLEncoder.encode(community.fullAddress(), "UTF-8");
             new Utility.ImageDownloadTask(mapImageView).execute(
                     "https://maps.googleapis.com/maps/api/staticmap?center="
                     + fullAddress + "&zoom=16&size=500x500&markers=color:blue|"

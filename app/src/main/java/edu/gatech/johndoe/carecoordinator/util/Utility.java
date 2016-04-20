@@ -24,13 +24,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
 
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
@@ -63,12 +61,6 @@ public class Utility {
             new Firebase("https://cdccoordinator2.firebaseio.com/patients");
     public static final Firebase COMMUNITES_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/community_resources");
-    public static final Firebase PHYSICAL_REF =
-            new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/physical");
-    public static final Firebase NUTRITIONIST_REF =
-            new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/nutritionist");
-    public static final Firebase RESTAURANT_REF =
-            new Firebase("https://cdccoordinator2.firebaseio.com/community_resources/restaurant");
     public static final Firebase INCOMING_REF =
             new Firebase("https://cdccoordinator2.firebaseio.com/incoming");
     public static List<CarePlan> carePlan_list = new ArrayList<>();
@@ -121,7 +113,7 @@ public class Utility {
         ref.child("phoneNumber").setValue(p.getPhoneNumber());
         ref.child("type").setValue(p.getType());
     }
-    
+
     public static void saveCommunityResource(Community community) {
         Firebase ref = COMMUNITES_REF.child(community.getId());
         ref.setValue(community);
@@ -248,8 +240,6 @@ public class Utility {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                LatLongUpdate communitiesLatLong = new LatLongUpdate();
-
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     GenericTypeIndicator<Map<String, Object>> ti = new GenericTypeIndicator<Map<String, Object>>() {};
                     Map<String, Object> cr = ds.getValue(ti);
@@ -274,28 +264,25 @@ public class Utility {
         });
     }
 
-    public static void updateCommunityLatLong(String id){
-        LatLongUpdate latLongTask = new LatLongUpdate();
-        List<Double> latLongResult = new ArrayList<>();
-        for (Community community : community_list){
-            if (community.getId().equals(id)){
-                if (community.getLatitude() == 0 || community.getLongitude() == 0) {
-                    try {
-                        latLongResult = latLongTask.execute(community.getFullAddress()).get();
-                        if (latLongResult.get(0) != -1.0) {
-                            community.setLatitude(latLongResult.get(0));
-                            community.setLongitude(latLongResult.get(1));
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                }
-                break;
-            }
+    public static void updateCommunityLatLong(final Community community, final OnLatLongUpdateListener listener) {
+        if (community.getLatitude() != 0 || community.getLongitude() != 0) {
+            return;
         }
+
+        new LatLongUpdate(new OnLatLongUpdateListener() {
+            @Override
+            public void onUpdate(double[] coordinates) {
+                if (coordinates != null) {
+                    community.setLatitude(coordinates[0]);
+                    community.setLongitude(coordinates[1]);
+                    saveCommunityResource(community);
+                }
+
+                if (listener != null) {
+                    listener.onUpdate(coordinates);
+                }
+            }
+        }).execute(community.fullAddress());
     }
 
     public static void updateReferralStatus(String id, boolean status) {
@@ -677,28 +664,6 @@ public class Utility {
             carePlan = (ca.uhn.fhir.model.dstu2.resource.CarePlan) results.getEntry().get(0).getResource();
         }
         return carePlan;
-    }
-
-    public static ArrayList<Community> getCommunities() {
-        ArrayList<Community> communities = new ArrayList<>(Arrays.asList(
-                new Community("YMCA11", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54),
-                new Community("YMCA", 120), new Community("Farmer's Market", 54)
-        ));  // FIXME: replace with real data
-
-        return communities;
     }
 
     public static class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {

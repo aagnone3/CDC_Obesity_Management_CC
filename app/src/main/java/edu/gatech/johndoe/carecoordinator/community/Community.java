@@ -25,12 +25,12 @@ public class Community {
     private String state;
     private String description;
     private String emailAddress;
+    private String zipcode;
 
     private Double latitude;
     private Double longitude;
 
     private int patientCount;
-    private int zipcode;
 
     public List<String> patientList;
 
@@ -90,7 +90,7 @@ public class Community {
         return patientCount;
     }
 
-    public int getZipcode() {
+    public String getZipcode() {
         return zipcode;
     }
 
@@ -144,12 +144,12 @@ public class Community {
         return o instanceof Community && ((Community) o).getId().equals(id);
     }
 
-    public String getFullAddress() {
-        return String.format("%s, %s, %s %d", streetAddress, city, state, zipcode);
+    public String fullAddress() {
+        return String.format("%s, %s, %s %s", streetAddress, city, state, zipcode);
     }
 
     @SuppressLint("SimpleDateFormat")
-    public String getHoursAsString() {
+    public String hoursAsString() {
         StringBuilder hoursString = new StringBuilder();
 
         final String[] days = new String[]{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
