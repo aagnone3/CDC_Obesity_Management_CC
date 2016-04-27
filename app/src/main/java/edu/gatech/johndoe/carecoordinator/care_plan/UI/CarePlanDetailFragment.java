@@ -198,22 +198,6 @@ public class CarePlanDetailFragment extends Fragment {
         mListener = null;
     }
 
-
-    private void sendPatientEmail() {
-        // Email intent
-        PatientEmail email = PatientEmailFactory.getEmailBody(
-                PatientEmailFactory.EMAIL_TYPE.FINAL_REFERRAL,
-                patient);
-
-        try {
-            startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
-            Log.i("Finished email...", "");
-        }
-        catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private String formPatientConditionText() {
         StringBuilder text = new StringBuilder();
         text.append(carePlan.getConditionSystem())
