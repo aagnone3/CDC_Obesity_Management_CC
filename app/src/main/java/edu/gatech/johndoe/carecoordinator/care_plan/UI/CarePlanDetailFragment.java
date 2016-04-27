@@ -84,28 +84,7 @@ public class CarePlanDetailFragment extends Fragment {
             }
         }
 
-        TextView physician_name_short = (TextView) view.findViewById(R.id.care_plan_physician_name);
-        TextView patient_name_short = (TextView) view.findViewById(R.id.care_plan_patient_name);
-        TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
-        TextView patient_condition = (TextView) view.findViewById(R.id.care_plan_condition);
-        TextView physician_name = (TextView) view.findViewById(R.id.physician_name);
-        TextView type = (TextView) view.findViewById(R.id.care_plan_type);
-        TextView details = (TextView) view.findViewById(R.id.care_plan_detail);
-        TextView care_plan_goal = (TextView) view.findViewById(R.id.care_plan_goal);
-        TextView period = (TextView) view.findViewById(R.id.care_plan_period);
-        // Set images
-        int imageId = getResources().getIdentifier(carePlan.getPatientImageName(), "drawable", getActivity().getPackageName());
-        ImageView image = (ImageView) view.findViewById(R.id.image_patient);
-        image.setImageResource(imageId);
-        imageId = getResources().getIdentifier(carePlan.getPhysicianImageName(), "drawable", getActivity().getPackageName());
-        image = (ImageView) view.findViewById(R.id.image_physician);
-        image.setImageResource(imageId);
-        //
-        type.setText(carePlan.getType());
-        details.setText(carePlan.getDetail());
-
-        patient_name.setOnClickListener(new View.OnClickListener() {
-
+        View.OnClickListener patientClickListener = new View.OnClickListener() {
             public void onClick(View v) {
                 Fragment detailFragment = PatientDetailFragment.newInstance(patient, Utility.getAllRelatedReferrals(patient.getReferralList()));
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
@@ -121,7 +100,30 @@ public class CarePlanDetailFragment extends Fragment {
                 transaction.commit();
             }
 
-        });
+        };
+
+        TextView physician_name_short = (TextView) view.findViewById(R.id.care_plan_physician_name);
+        TextView patient_name_short = (TextView) view.findViewById(R.id.care_plan_patient_name);
+        TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
+        TextView patient_condition = (TextView) view.findViewById(R.id.care_plan_condition);
+        TextView physician_name = (TextView) view.findViewById(R.id.physician_name);
+        TextView type = (TextView) view.findViewById(R.id.care_plan_type);
+        TextView details = (TextView) view.findViewById(R.id.care_plan_detail);
+        TextView care_plan_goal = (TextView) view.findViewById(R.id.care_plan_goal);
+        TextView period = (TextView) view.findViewById(R.id.care_plan_period);
+        // Set images
+        int imageId = getResources().getIdentifier(carePlan.getPatientImageName(), "drawable", getActivity().getPackageName());
+        ImageView image = (ImageView) view.findViewById(R.id.image_patient);
+        image.setImageResource(imageId);
+        image.setOnClickListener(patientClickListener);
+        imageId = getResources().getIdentifier(carePlan.getPhysicianImageName(), "drawable", getActivity().getPackageName());
+        image = (ImageView) view.findViewById(R.id.image_physician);
+        image.setImageResource(imageId);
+        //
+        type.setText(carePlan.getType());
+        details.setText(carePlan.getDetail());
+
+        patient_name.setOnClickListener(patientClickListener);
 
         if (patient == null) {
             patient_name.setText("Dummy");
