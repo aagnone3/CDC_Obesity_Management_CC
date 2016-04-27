@@ -45,9 +45,6 @@ public class Patient {
 
     public Patient() {}
 
-    // Note patient may have multiple names in the server, implementation currently selects the
-    // first name in the list returned by getName()
-    // TODO verify that this is ok
     public Patient(ca.uhn.fhir.model.dstu2.resource.Patient patient) {
         try {
             id = patient.getId().getIdPart();

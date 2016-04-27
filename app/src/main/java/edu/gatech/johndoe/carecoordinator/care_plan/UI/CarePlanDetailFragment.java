@@ -1,20 +1,17 @@
 package edu.gatech.johndoe.carecoordinator.care_plan.UI;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,25 +27,16 @@ import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.patient.*;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
-import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
-import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
-/**
- * Created by rakyu012 on 3/17/2016.
- */
 public class CarePlanDetailFragment extends Fragment {
 
 
     private static final String ARG_REFERRAL = "carePlan";
 
     private CarePlan carePlan;
-
     private OnFragmentInteractionListener mListener;
-
-    private TextView type, issueDate, details, patient_name, patient_condition, physician_name;
     private String patientConditionText;
-    private Button reviewedButton, erefButton;
     private Patient patient;
 
     /**
@@ -96,11 +84,23 @@ public class CarePlanDetailFragment extends Fragment {
             }
         }
 
-        patient_name = (TextView) view.findViewById(R.id.patient_name2);
-        patient_condition = (TextView) view.findViewById(R.id.care_plan_condition);
-        physician_name = (TextView) view.findViewById(R.id.physician_name);
-        type = (TextView) view.findViewById(R.id.care_plan_type);
-        details = (TextView) view.findViewById(R.id.care_plan_detail);
+        TextView physician_name_short = (TextView) view.findViewById(R.id.care_plan_physician_name);
+        TextView patient_name_short = (TextView) view.findViewById(R.id.care_plan_patient_name);
+        TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
+        TextView patient_condition = (TextView) view.findViewById(R.id.care_plan_condition);
+        TextView physician_name = (TextView) view.findViewById(R.id.physician_name);
+        TextView type = (TextView) view.findViewById(R.id.care_plan_type);
+        TextView details = (TextView) view.findViewById(R.id.care_plan_detail);
+        TextView care_plan_goal = (TextView) view.findViewById(R.id.care_plan_goal);
+        TextView period = (TextView) view.findViewById(R.id.care_plan_period);
+        // Set images
+        int imageId = getResources().getIdentifier(carePlan.getPatientImageName(), "drawable", getActivity().getPackageName());
+        ImageView image = (ImageView) view.findViewById(R.id.image_patient);
+        image.setImageResource(imageId);
+        imageId = getResources().getIdentifier(carePlan.getPhysicianImageName(), "drawable", getActivity().getPackageName());
+        image = (ImageView) view.findViewById(R.id.image_physician);
+        image.setImageResource(imageId);
+        //
         type.setText(carePlan.getType());
         details.setText(carePlan.getDetail());
 
@@ -127,14 +127,31 @@ public class CarePlanDetailFragment extends Fragment {
             patient_name.setText("Dummy");
             patient_condition.setText("N/A");
             physician_name.setText("N/A");
+            care_plan_goal.setText("N/A");
+            physician_name_short.setText("Dr. Who");
+            physician_name_short.setText("Patient Who");
+            period.setText("N/A");
         } else {
-            patient_name.setText(patient.getFull_name_first());
+            Resources res = getResources();
+            // Condition that the care plan addresses
             patient_condition.setText(formPatientConditionText());
-            physician_name.setText(carePlan.getPhysicianName());
+            // Physician name
+            String physicianName = carePlan.getPhysicianName();
+            String physicianNameShort = physicianName.substring(physicianName.indexOf(',') + 2);
+            physician_name.setText(physicianName);
+            physician_name_short.setText(String.format(res.getString(R.string.care_plan_physician_name), physicianNameShort));
+            // Patient name
+            String patientName = carePlan.getPatientName();
+            patient_name.setText(patientName);
+            patient_name_short.setText(patientName.substring(patientName.indexOf(',') + 2));
+            // Goal of the care plan
+            String care_plan_goal_text = String.format(res.getString(R.string.care_plan_goal_text), carePlan.getGoalType(), carePlan.getGoalValue());
+            care_plan_goal.setText(care_plan_goal_text);
+            period.setText(carePlan.getPeriod());
         }
 
-        reviewedButton = (Button) view.findViewById(R.id.buttonreviewed);
-        erefButton = (Button) view.findViewById(R.id.buttonereferral);
+        Button reviewedButton = (Button) view.findViewById(R.id.buttonreviewed);
+        Button erefButton = (Button) view.findViewById(R.id.buttonereferral);
         reviewedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

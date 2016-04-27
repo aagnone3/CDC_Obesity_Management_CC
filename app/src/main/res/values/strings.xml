@@ -11,7 +11,11 @@
     <string name="patient_address">Address:</string>
     <string name="patient_name">Patient:</string>
     <string name="patient_age">Age:</string>
-    <string name="care_plan_condition_label">Condition:</string>
+    <string name="care_plan_condition_label">Addresses:</string>
+    <string name="care_plan_goal_label">Goal:</string>
+    <string name="care_plan_goal_text">%1$s of %2$s</string>
+    <string name="care_plan_period_label">Duration:</string>
+    <string name="care_plan_physician_name">Dr. %1$s</string>
     <string name="physician_name">Physician:</string>
     <string name="patient_care_plans">Care Plans:</string>
     <string name="patient_id2">Patient ID:</string>
