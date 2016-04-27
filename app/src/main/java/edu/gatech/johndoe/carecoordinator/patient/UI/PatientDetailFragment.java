@@ -70,7 +70,7 @@ public class PatientDetailFragment extends Fragment {
         final TextView patient_address_second = (TextView) view.findViewById(R.id.patient_address_second_line);
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email);
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
-        patient_name.setText(patient.getFull_name_first());
+        patient_name.setText(patient.getFull_name_last());
         patient_gender.setText(patient.getGender());
         patient_age.setText(String.valueOf(patient.getAge()));
         patient_birth_date.setText(patient.getFormatted_birth_date());
@@ -86,7 +86,7 @@ public class PatientDetailFragment extends Fragment {
                         .setIcon(android.R.drawable.ic_dialog_map)
                         .setTitle(patient.getAddress_first())
                         .setMessage("Do you want to view address of "
-                                + patient.getFull_name_first() + "?")
+                                + patient.getFull_name_last() + "?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -110,7 +110,7 @@ public class PatientDetailFragment extends Fragment {
                 new AlertDialog.Builder(getActivity())
                         .setIcon(android.R.drawable.ic_dialog_email)
                         .setTitle(patient.getEmail())
-                        .setMessage("Do you want to send an email to " + patient.getFull_name_first() + "?")
+                        .setMessage("Do you want to send an email to " + patient.getFull_name_last() + "?")
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -148,8 +148,8 @@ public class PatientDetailFragment extends Fragment {
             }
         });
 
-        ListView list = (ListView) view.findViewById(R.id.patient_ehr_list);
-        InnerCarePlanAdapter adapter = new InnerCarePlanAdapter(getActivity(), R.id.patient_ehr_list_item,
+        ListView list = (ListView) view.findViewById(R.id.patient_care_plan_list);
+        InnerCarePlanAdapter adapter = new InnerCarePlanAdapter(getActivity(), R.id.patient_care_plan_list_item,
                 carePlanList, getActivity().getSupportFragmentManager());
         list.setAdapter(adapter);
         return view;

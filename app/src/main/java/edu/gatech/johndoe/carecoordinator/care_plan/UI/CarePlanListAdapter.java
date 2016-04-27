@@ -146,8 +146,8 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
 
         public void bindReferral(Context context, CarePlan carePlan) {
             this.carePlan = carePlan;
-            listTitle.setText(carePlan.getTitle());
-            listPatientID.setText("Patient ID: " + carePlan.getPatientID());
+            listTitle.setText(carePlan.getType());
+            listPatientID.setText("Patient: " + carePlan.getPatientName());
 
             if (carePlan.getDetail().length() > 20) {
                 listDetail.setText(carePlan.getDetail().substring(0, 20) + "...");
