@@ -170,7 +170,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                     break;
                 }
             }
-            patientNameTextView.setText(patient.getFull_name_first());
+            patientNameTextView.setText(patient.getFull_name_last());
             if (isPending) {
                 patientStatusImage.setImageResource(R.drawable.pending);
                 patientStatusTextView.setText(R.string.pending);

@@ -133,7 +133,7 @@
             android:layout_below="@id/patient_address_second_line"
             android:layout_alignStart="@id/patient_address_label"
             android:layout_marginTop="12dp"
-            android:text="@string/patient_email" />
+            android:text="@string/care_plan_condition_label" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -154,7 +154,7 @@
             android:layout_below="@id/patient_email"
             android:layout_alignStart="@id/patient_email_label"
             android:layout_marginTop="12dp"
-            android:text="@string/patient_phone" />
+            android:text="@string/physician_name" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -183,7 +183,7 @@
             android:layout_below="@id/patient_care_plans_label"
             android:layout_alignStart="@id/patient_care_plans_label"
             android:layout_marginTop="12dp"
-            android:id="@+id/patient_ehr_list" />
+            android:id="@+id/patient_care_plan_list" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

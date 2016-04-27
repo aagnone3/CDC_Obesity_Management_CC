@@ -5,8 +5,15 @@ import java.util.Date;
 public class CarePlan {
     private String id;
     private String fhirId;
+    private String patientName;
     private String patientID;
-    private String title;
+    private String patientUniqueID;
+    private String physicianName;
+    private String conditionSystem;
+    private String conditionCode;
+    private String goalType;
+    private double goalValue;
+    private String type;
     private String detail;
     private boolean pending;
     private Date issueDate;
@@ -21,11 +28,21 @@ public class CarePlan {
 
     public CarePlan() {}
 
-    public CarePlan(String id, String fhirId, String patientID, String title, String detail, boolean pending, Date issueDate) {
+    public CarePlan(String id, String fhirId, String patientID, String patientUniqueID,
+                    String physicianName, String conditionSystem, String conditionCode,
+                    String goalType, double goalValue,
+                    String patientName, String type, String detail, boolean pending, Date issueDate) {
         this.id = id;
         this.fhirId = fhirId;
         this.patientID = patientID;
-        this.title = title;
+        this.patientUniqueID = patientUniqueID;
+        this.physicianName = physicianName;
+        this.conditionSystem = conditionSystem;
+        this.conditionCode = conditionCode;
+        this.patientName = patientName;
+        this.goalValue = goalValue;
+        this.patientName = patientName;
+        this.type = type;
         this.detail = detail;
         this.pending = pending;
         this.issueDate = issueDate;
@@ -53,12 +70,32 @@ public class CarePlan {
         this.patientID = patientID;
     }
 
-    public String getTitle() {
-        return title;
+    public String getPatientName() {
+        return patientName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPatientName(String patientName) {
+        this.patientName = patientName;
+    }
+
+    public void setFhirId(String fhirId) {
+        this.fhirId = fhirId;
+    }
+
+    public String getPatientUniqueID() {
+        return patientUniqueID;
+    }
+
+    public void setPatientUniqueID(String patientUniqueID) {
+        this.patientUniqueID = patientUniqueID;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDetail() {
@@ -101,12 +138,59 @@ public class CarePlan {
         return this.status;
     }
 
+    public String getPhysicianName() {
+        return physicianName;
+    }
+
+    public void setPhysicianName(String physicianName) {
+        this.physicianName = physicianName;
+    }
+
+    public String getConditionSystem() {
+        return conditionSystem;
+    }
+
+    public void setConditionSystem(String conditionSystem) {
+        this.conditionSystem = conditionSystem;
+    }
+
+    public String getConditionCode() {
+        return conditionCode;
+    }
+
+    public void setConditionCode(String conditionCode) {
+        this.conditionCode = conditionCode;
+    }
+
+    public String getGoalType() {
+        return goalType;
+    }
+
+    public void setGoalType(String goalType) {
+        this.goalType = goalType;
+    }
+
+    public double getGoalValue() {
+        return goalValue;
+    }
+
+    public void setGoalValue(double goalValue) {
+        this.goalValue = goalValue;
+    }
+
     @Override
     public String toString() {
         return "CarePlan{" +
                 "id='" + id + '\'' +
+                ", patientName='" + patientName + '\'' +
                 ", patientID='" + patientID + '\'' +
-                ", title='" + title + '\'' +
+                ", patientUniqueID='" + patientUniqueID + '\'' +
+                ", physicianName='" + physicianName + '\'' +
+                ", conditionSystem='" + conditionSystem + '\'' +
+                ", conditionCode='" + conditionCode + '\'' +
+                ", goalType='" + goalType + '\'' +
+                ", goalValue='" + goalValue + '\'' +
+                ", type='" + type + '\'' +
                 ", detail='" + detail + '\'' +
                 ", pending=" + pending +
                 ", issueDate=" + issueDate +

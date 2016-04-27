@@ -338,6 +338,7 @@ public class Utility {
                 Log.e("AllCommunities", firebaseError.getMessage());
             }
         });
+        Log.e("sizeComm", Integer.toString(community_list.size()));
     }
 
     public static void updateCommunityLatLong(final Community community, final OnLatLongUpdateListener listener) {

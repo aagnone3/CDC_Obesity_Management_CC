@@ -44,11 +44,11 @@ public class InnerCarePlanAdapter extends ArrayAdapter<CarePlan> {
         final CarePlan e = getItem(position);
 
         if (e != null) {
-            final TextView ehr_title = (TextView) v.findViewById(R.id.ehr_title);
-            final ImageView ehr_status_image = (ImageView) v.findViewById(R.id.ehr_status_image);
-            final TextView ehr_status = (TextView) v.findViewById(R.id.ehr_status);
-            ehr_title.setText(e.getTitle());
-            ehr_title.setOnClickListener(new View.OnClickListener() {
+            final TextView care_plan_title = (TextView) v.findViewById(R.id.inner_care_plan_title);
+            final ImageView care_plan_status_image = (ImageView) v.findViewById(R.id.care_plan_status_image);
+            final TextView care_plan_status = (TextView) v.findViewById(R.id.care_plan_status);
+            care_plan_title.setText(e.getType());
+            care_plan_title.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     Fragment detailFragment = CarePlanDetailFragment.newInstance(e);
                     FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
@@ -66,17 +66,17 @@ public class InnerCarePlanAdapter extends ArrayAdapter<CarePlan> {
                 }
             });
 
-            ehr_status.setText(e.isPending() ? "Pending" : "Closed");
-            ehr_status_image.setBackgroundResource(e.isPending() ? android.R.drawable.ic_menu_info_details : android.R.drawable.presence_online);
-            ehr_status.setOnClickListener(new View.OnClickListener() {
+            care_plan_status.setText(e.isPending() ? "Pending" : "Closed");
+            care_plan_status_image.setBackgroundResource(e.isPending() ? android.R.drawable.ic_menu_info_details : android.R.drawable.presence_online);
+            care_plan_status.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (e.isPending()) {
-                        ehr_status.setText("Closed");
-                        ehr_status_image.setBackgroundResource(android.R.drawable.presence_online);
+                        care_plan_status.setText("Closed");
+                        care_plan_status_image.setBackgroundResource(android.R.drawable.presence_online);
                         e.setPending(false);
                     } else {
-                        ehr_status.setText("Pending");
-                        ehr_status_image.setBackgroundResource(android.R.drawable.ic_menu_info_details);
+                        care_plan_status.setText("Pending");
+                        care_plan_status_image.setBackgroundResource(android.R.drawable.ic_menu_info_details);
                         e.setPending(true);
                     }
                     Utility.updateReferralStatus(e.getId(), e.isPending());

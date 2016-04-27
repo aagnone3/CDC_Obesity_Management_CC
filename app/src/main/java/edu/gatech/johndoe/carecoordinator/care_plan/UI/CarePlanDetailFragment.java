@@ -6,6 +6,9 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,12 +24,12 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
+import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.patient.*;
+import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
 import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
@@ -36,13 +39,15 @@ import edu.gatech.johndoe.carecoordinator.util.Utility;
  */
 public class CarePlanDetailFragment extends Fragment {
 
+
     private static final String ARG_REFERRAL = "carePlan";
 
     private CarePlan carePlan;
 
     private OnFragmentInteractionListener mListener;
 
-    private TextView title, patientID, carePlanID, issueDate, details, patient_name, patient_gender, patient_birth_date, patient_age, patient_email, patient_phone;
+    private TextView type, issueDate, details, patient_name, patient_condition, physician_name;
+    private String patientConditionText;
     private Button reviewedButton, erefButton;
     private Patient patient;
 
@@ -92,77 +97,40 @@ public class CarePlanDetailFragment extends Fragment {
         }
 
         patient_name = (TextView) view.findViewById(R.id.patient_name2);
-        patient_gender = (TextView) view.findViewById(R.id.patient_gender2);
-        patient_birth_date = (TextView) view.findViewById(R.id.patient_dob2);
-        patient_age = (TextView) view.findViewById(R.id.patient_age2);
-        patient_email = (TextView) view.findViewById(R.id.patient_email2);
-        patient_phone = (TextView) view.findViewById(R.id.patient_phone2);
-        title = (TextView) view.findViewById(R.id.care_plan_title);
-        patientID = (TextView) view.findViewById(R.id.patient_ID);
-        carePlanID = (TextView) view.findViewById(R.id.care_plan_ID);
-//        issueDate, details
+        patient_condition = (TextView) view.findViewById(R.id.care_plan_condition);
+        physician_name = (TextView) view.findViewById(R.id.physician_name);
+        type = (TextView) view.findViewById(R.id.care_plan_type);
         details = (TextView) view.findViewById(R.id.care_plan_detail);
-        title.setText(carePlan.getTitle());
-        patientID.setText(carePlan.getPatientID());
-        carePlanID.setText(carePlan.getId());
+        type.setText(carePlan.getType());
         details.setText(carePlan.getDetail());
 
-//        title =
+        patient_name.setOnClickListener(new View.OnClickListener() {
 
-        patient_email.setOnClickListener(new View.OnClickListener() {
-            @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(getActivity())
-                        .setIcon(android.R.drawable.ic_dialog_email)
-                        .setTitle(patient.getEmail())
-                        .setMessage("Do you want to send an email to " + patient.getFull_name_first() + "?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sendPatientEmail();
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
-            }
-        });
-        patient_phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    new AlertDialog.Builder(getActivity())
-                            .setIcon(android.R.drawable.ic_menu_call)
-                            .setTitle(patient.getPhoneNumber())
-                            .setMessage("Do you want to call this number? ")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent in = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + patient.getPhoneNumber()));
-                                    startActivity(in);
-                                }
-                            })
-                            .setNegativeButton("No", null)
-                            .show();
-                } catch (java.lang.NullPointerException ex) {
-                    Toast.makeText(getActivity().getApplicationContext(), "The number is not valid.", Toast.LENGTH_SHORT).show();
+                Fragment detailFragment = PatientDetailFragment.newInstance(patient, Utility.getAllRelatedReferrals(patient.getReferralList()));
+                FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                if (MainActivity.isInExpandedMode) {
+                    //noinspection ResourceType
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                    transaction.replace(R.id.detailFragmentContainer, detailFragment, "detail").addToBackStack(null);
+                } else {
+                    transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                    transaction.add(R.id.contentContainer, detailFragment, "detail").addToBackStack(null);
                 }
+                transaction.commit();
             }
+
         });
 
         if (patient == null) {
             patient_name.setText("Dummy");
-            patient_gender.setText("Male");
-            patient_age.setText(String.valueOf(10));
-            patient_birth_date.setText("April 10, 1992");
-            patient_email.setText("abc@mail.com");
-            patient_phone.setText("xxx-yyy-zzzz");
+            patient_condition.setText("N/A");
+            physician_name.setText("N/A");
         } else {
             patient_name.setText(patient.getFull_name_first());
-            patient_gender.setText(patient.getGender());
-            patient_age.setText(String.valueOf(patient.getAge()));
-            patient_birth_date.setText(patient.getFormatted_birth_date());
-            patient_email.setText(patient.getEmail());
-            patient_phone.setText(patient.getPhoneNumber());
+            patient_condition.setText(formPatientConditionText());
+            physician_name.setText(carePlan.getPhysicianName());
         }
 
         reviewedButton = (Button) view.findViewById(R.id.buttonreviewed);
@@ -182,7 +150,7 @@ public class CarePlanDetailFragment extends Fragment {
                             System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
                             for (DataSnapshot postSnapshot: snapshot.getChildren()) {
                                 CarePlan post = postSnapshot.getValue(CarePlan.class);
-                                System.out.println(post.getTitle());
+                                System.out.println(post.getType());
                             }
                         }
                         @Override
@@ -244,6 +212,14 @@ public class CarePlanDetailFragment extends Fragment {
         catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private String formPatientConditionText() {
+        StringBuilder text = new StringBuilder();
+        text.append(carePlan.getConditionSystem())
+                .append(" - ")
+                .append(carePlan.getConditionCode());
+        return text.toString();
     }
 
     @Override
