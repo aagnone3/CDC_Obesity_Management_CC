@@ -24,12 +24,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -70,6 +73,8 @@ public class Utility {
     public static List<Community> community_list = new ArrayList<>();
     public static Map<String, List<CarePlan>> careplans = new HashMap<>();
     public static final String UPDATE_MESSAGE = "Data Updated.";
+    private static final Semaphore available = new Semaphore(1);
+    private static boolean fromSorting;
 
     public static void populateDatabase() {
         for (int i = 1; i <= 25; i++) {
@@ -210,8 +215,10 @@ public class Utility {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     edu.gatech.johndoe.carecoordinator.patient.Patient p = ds.getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class);
                     if (!patient_list.contains(p)) {
+                        //TODO: update the patient branch in Firebase to have lat/long set to 0 for new patients so can remove the following two lines
                         p.setLatitude(0.0);
                         p.setLongitude(0.0);
+                        p.setDistanceSortedCommunities(new TreeMap<Double, String>());
                         patient_list.add(p);
                     }
                 }
@@ -236,46 +243,46 @@ public class Utility {
                     patient.setLatitude(coordinates[0]);
                     patient.setLongitude(coordinates[1]);
                     //TODO: update patient in firebase
-                    Log.e("latLong", Double.toString(coordinates[0]) + ", " + Double.toString(coordinates[1]));
                 }
 
                 if (listener != null) {
                     listener.onUpdate(coordinates);
                 }
             }
-        }).execute(patient.fullAddress());
+        }).execute(patient.getFullAddress());
     }
 
-    public static int getClosestCommunity(final edu.gatech.johndoe.carecoordinator.patient.Patient patient){
-        int closestCommunity = -1;
+    public static void sortCommunitiesByDistance(final edu.gatech.johndoe.carecoordinator.patient.Patient patient){
+        if (!patient.getDistanceSortedCommunities().isEmpty())
+            return;
 
-        if (patient.getLatitude() == 0 || patient.getLongitude() == 0)
-            updatePatientLatLong(patient, null);
-
-        if (patient.getReferralList().isEmpty()){
-            return closestCommunity; //if no care plan exists for patient, closestCommunity will == -1
-        }
-
-        else{
-            //TODO: get care plan category (DIET, OTHER)
-            /* if (DIET)
-                    find closest nutritionists
-               else if (OTHER)
-                    find closest physical (gym, park)
-             */
-
-            for (Community community : community_list){
-                if (community.getLatitude() == 0 || community.getLongitude() == 0)
-                    updateCommunityLatLong(community, null);
-
+        //sort communities that already have lat/long stored in database
+        for (Community community : community_list){
+            if (community.getLatitude() != 0 && community.getLongitude() != 0) {
                 Double distance = distance(patient.getLatitude(), patient.getLongitude(), community.getLatitude(), community.getLongitude());
-
+                patient.addCommunityDistance(distance, community.getId());
+                //Community newCommunity = (Community) patient.getDistanceSortedCommunities().get(distance);
+                //Log.e("test", newCommunity.getName());
             }
         }
 
-
-
-        return closestCommunity;
+        //sort remaining communities (those without lat/long in database)
+        for (final Community community : community_list){
+            //note: running this code in the listener to ensure synchronization
+            updateCommunityLatLong(community, new OnLatLongUpdateListener() {
+                @Override
+                public void onUpdate(double[] coordinates) {
+                    try {
+                        available.acquire();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Double distance = distance(patient.getLatitude(), patient.getLongitude(), community.getLatitude(), community.getLongitude());
+                    patient.addCommunityDistance(distance, community.getId());
+                    available.release();
+                }
+            });
+        }
     }
 
     public static Double distance(Double lat1, Double long1, Double lat2, Double long2){

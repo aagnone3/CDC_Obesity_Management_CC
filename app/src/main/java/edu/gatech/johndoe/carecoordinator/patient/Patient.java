@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+import java.util.TreeMap;
 
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
@@ -41,6 +43,9 @@ public class Patient {
     private Date dateOfimport;
     private List<String> referralList;
     private List<String> communityList;
+    private Double latitude;
+    private Double longitude;
+    private TreeMap distanceSortedCommunities;
 
 
     public Patient() {}
@@ -269,6 +274,34 @@ public class Patient {
         this.communityList = communityList;
     }
 
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public TreeMap getDistanceSortedCommunities() {
+        return distanceSortedCommunities;
+    }
+
+    public void setDistanceSortedCommunities(TreeMap distanceSortedCommunities) {
+        this.distanceSortedCommunities = distanceSortedCommunities;
+    }
+
+    public String getFullAddress() {
+        return String.format("%s, %s", address_first, address_second);
+    }
+
     public int getAge() {
         Calendar dob = Calendar.getInstance();
         dob.setTime(birth_date);
@@ -293,6 +326,10 @@ public class Patient {
 
     public void addCommunity(Community c) {
         communityList.add(c.getId());
+    }
+
+    public void addCommunityDistance(Double distance, String id){
+        this.distanceSortedCommunities.put(distance, id);
     }
 
     @Override

@@ -3,8 +3,11 @@ package edu.gatech.johndoe.carecoordinator.patient.email;
 import android.content.Intent;
 import android.net.Uri;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ca.uhn.fhir.model.dstu2.resource.Practitioner;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
