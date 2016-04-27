@@ -35,6 +35,12 @@
     <string name="sort_menu_popularity">Sort by popularity</string>
     <string name="sort_menu_distance">Sort by distance</string>
 
+    <string name="email_menu_title">Select the Email Type</string>
+    <string name="email_select_contact">Initial Contact</string>
+    <string name="email_select_suggestions">Initial Suggestions</string>
+    <string name="email_select_followup">General Followup</string>
+    <string name="email_select_referral">Final Referral</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="no_selection">No Item Selected</string>

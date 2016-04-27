@@ -133,7 +133,7 @@
             android:layout_below="@id/patient_address_second_line"
             android:layout_alignStart="@id/patient_address_label"
             android:layout_marginTop="12dp"
-            android:text="@string/care_plan_condition_label" />
+            android:text="@string/email_label" />
 
         <TextView
             android:layout_width="wrap_content"

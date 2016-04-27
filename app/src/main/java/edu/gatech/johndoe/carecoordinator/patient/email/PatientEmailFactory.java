@@ -1,5 +1,6 @@
 package edu.gatech.johndoe.carecoordinator.patient.email;
 
+import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 
 /**
@@ -9,21 +10,22 @@ public class PatientEmailFactory {
 
     public enum EMAIL_TYPE {INITIAL_CONTACT, INITIAL_SUGGESTIONS, FOLLOW_UP, FINAL_REFERRAL}
 
-    public static PatientEmail getEmailBody(EMAIL_TYPE type, Patient patient) {
+    public static PatientEmail getEmailBody(int selectedMenuId, Patient patient) {
         PatientEmail email;
-        if (type == EMAIL_TYPE.INITIAL_CONTACT) {
+        if (selectedMenuId == R.id.menu_contact) {
             // Initial contact
             email = new InitialContactEmail(patient);
-        } else if (type == EMAIL_TYPE.INITIAL_SUGGESTIONS) {
+        } else if (selectedMenuId == R.id.menu_suggestions) {
             // Initial suggestions
             email = new InitialSuggestionsEmail(patient);
-        } else if (type == EMAIL_TYPE.FOLLOW_UP) {
+        } else if (selectedMenuId == R.id.menu_followup) {
             // Follow up
             email = new FollowUpEmail(patient);
-        } else if (type == EMAIL_TYPE.FINAL_REFERRAL) {
+        }  else if (selectedMenuId == R.id.menu_referral) {
             // Final referral
             email = new FinalReferralEmail(patient);
         } else {
+            // Basic email to be filled by the coordinator
             email = new BasicEmail(patient);
         }
         return email;

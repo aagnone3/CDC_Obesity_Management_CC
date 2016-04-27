@@ -10,9 +10,11 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,7 +62,7 @@ public class PatientDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate view
-        View view = inflater.inflate(R.layout.fragment_patient_detail, container, false);
+        final View view = inflater.inflate(R.layout.fragment_patient_detail, container, false);
         // Set patient-specific information
         TextView patient_name = (TextView) view.findViewById(R.id.patient_name);
         TextView patient_gender = (TextView) view.findViewById(R.id.patient_gender);
@@ -107,18 +109,15 @@ public class PatientDetailFragment extends Fragment {
         patient_email.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(getActivity())
-                        .setIcon(android.R.drawable.ic_dialog_email)
-                        .setTitle(patient.getEmail())
-                        .setMessage("Do you want to send an email to " + patient.getFull_name_last() + "?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                sendPatientEmail();
-                            }
-                        })
-                        .setNegativeButton("No", null)
-                        .show();
+                PopupMenu popup = new PopupMenu(getActivity(), v);
+                popup.getMenuInflater().inflate(R.menu.email_select, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        sendPatientEmail(item.getItemId());
+                        return true;
+                    }
+                });
+                popup.show();
             }
         });
         patient_phone.setOnClickListener(new View.OnClickListener() {
@@ -143,8 +142,16 @@ public class PatientDetailFragment extends Fragment {
         FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                sendPatientEmail();
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(getActivity(), v);
+                popup.getMenuInflater().inflate(R.menu.email_select, popup.getMenu());
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        sendPatientEmail(item.getItemId());
+                        return true;
+                    }
+                });
+                popup.show();
             }
         });
 
@@ -155,12 +162,11 @@ public class PatientDetailFragment extends Fragment {
         return view;
     }
 
-    private void sendPatientEmail() {
+    private void sendPatientEmail(int selectedMenuId) {
         // Email intent
         PatientEmail email = PatientEmailFactory.getEmailBody(
-                PatientEmailFactory.EMAIL_TYPE.FINAL_REFERRAL,
+                selectedMenuId,
                 patient);
-
         try {
             startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
             Log.i("Finished email...", "");
