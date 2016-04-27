@@ -42,13 +42,8 @@ public class InitialSuggestionsEmail extends PatientEmail {
         s.append("At your convenience, take some time to look over these suggestions, and let us ")
                 .append("know what your thoughts are about them!\n\n");
         // TODO insert community resource suggestions
-        /*Object o = new Object();
-        for (int i = 0; i < 5; i++){
-            o = patient.getDistanceSortedCommunities().get(Double.toString(patient.getResourceKeys().get(i)));
-            Log.e("object", o.toString());
-        }*/
 
-        Set<String> keys = patient.getDistanceSortedCommunities().keySet();
+        /*(Set<String> keys = patient.getDistanceSortedCommunities().keySet();
         for (String key: keys){
             Log.e("key", key);
             Object o = patient.getDistanceSortedCommunities().get(key);
@@ -59,7 +54,9 @@ public class InitialSuggestionsEmail extends PatientEmail {
                     break;
                 }
             }
-        }
+        }*/
+
+        Log.e("treeMapSize", Integer.toString(patient.getDistanceSortedCommunities().size()));
 
         s.append("<insert community resource suggestions here>\n\n");
         s.append(signature);

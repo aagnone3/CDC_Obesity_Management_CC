@@ -159,7 +159,6 @@ public class PatientDetailFragment extends Fragment {
         InnerCarePlanAdapter adapter = new InnerCarePlanAdapter(getActivity(), R.id.patient_care_plan_list_item,
                 carePlanList, getActivity().getSupportFragmentManager());
         list.setAdapter(adapter);
-        Log.e("size", Integer.toString(patient.getDistanceSortedCommunities().size()));
         return view;
     }
 
