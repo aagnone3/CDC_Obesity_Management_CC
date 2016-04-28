@@ -109,7 +109,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                     constraint = constraint.toString().toLowerCase().trim();
 
                     for (Community community : communities) {
-                        if (community.getName().toLowerCase().startsWith(constraint.toString())) {
+                        if (community.getName().toLowerCase().contains(constraint.toString())) {
                             filtered.add(community);
                         }
                     }

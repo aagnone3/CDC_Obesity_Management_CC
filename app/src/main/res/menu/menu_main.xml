@@ -17,13 +17,6 @@
         android:visible="false" />
 
     <item
-        android:id="@+id/refresh"
-        android:title="@string/refresh"
-        android:icon="@drawable/ic_menu_refresh"
-        app:showAsAction="collapseActionView|ifRoom"
-        android:visible="true" />
-
-    <item
         android:id="@+id/sort"
         android:title="@string/sort_title"
         android:icon="@android:drawable/ic_menu_sort_by_size"
@@ -46,6 +39,13 @@
         android:id="@+id/filter"
         android:title="@string/filter_title"
         android:icon="@drawable/ic_filter_list_white_36dp"
+        app:showAsAction="collapseActionView|ifRoom"
+        android:visible="false" />
+
+    <item
+        android:id="@+id/refresh"
+        android:title="@string/refresh"
+        android:icon="@drawable/ic_menu_refresh"
         app:showAsAction="collapseActionView|ifRoom"
         android:visible="true" />
 

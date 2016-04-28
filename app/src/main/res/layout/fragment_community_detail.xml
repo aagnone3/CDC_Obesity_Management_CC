@@ -151,6 +151,48 @@
             android:textSize="18sp"
             android:textStyle="italic" />
 
+        <LinearLayout
+            android:id="@+id/connectedPatientsLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/description"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/connectedPatientsLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:text="@string/connected_patients_text"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <View
+                android:id="@+id/connectedPatientsSeparator"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="8dp"
+                android:background="@android:color/darker_gray" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/connectedPatientsList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:id="@+id/noPatientTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAlignment="center"
+                android:text="@string/no_patient_text"
+                android:textSize="22sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/mapImageView"
             android:layout_width="match_parent"
@@ -158,12 +200,12 @@
             android:maxWidth="500dp"
             android:maxHeight="500dp"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/description"
-            android:layout_marginTop="40dp"
+            android:layout_below="@id/connectedPatientsLayout"
+            android:layout_marginTop="50dp"
             android:layout_marginBottom="20dp"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:contentDescription="Community Map" />
+            android:contentDescription="@string/community_map" />
 
     </RelativeLayout>
 

@@ -51,7 +51,6 @@ public class ContentListFragment extends Fragment {
 
             switch (contentType) {
                 case Referral:
-                    // TODO: change to CarePlan type
                     listType = new TypeToken<List<CarePlan>>(){}.getType();
                     data = new Gson().fromJson(savedInstanceState.getString("data"), listType);
                     adapter = new CarePlanListAdapter(data, selectedPosition);
@@ -170,6 +169,18 @@ public class ContentListFragment extends Fragment {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
         if (fragmentManager.getBackStackEntryCount() != 0) {
             fragmentManager.popBackStackImmediate();
+        }
+    }
+
+    public void sortList(CommunityAdapter.SortType type) {
+        if (adapter instanceof CommunityAdapter) {
+            ((CommunityAdapter) adapter).sort(type);
+        }
+    }
+
+    public void searchList(CharSequence query) {
+        if (adapter instanceof CommunityAdapter) {
+            ((CommunityAdapter) adapter).getFilter().filter(query);
         }
     }
 

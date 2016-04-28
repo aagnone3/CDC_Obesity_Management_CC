@@ -41,7 +41,6 @@ import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanListAdapter;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.community.UI.CommunityAdapter;
 import edu.gatech.johndoe.carecoordinator.community.UI.CommunityDetailFragment;
-import edu.gatech.johndoe.carecoordinator.community.UI.CommunityListFragment;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
@@ -55,8 +54,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     public static final String TAG = "MainActivity";
     public static final long UPDATE_INTERVAL = 60 * 10 * 1000;  // 10 minutes
 
+    private SearchView searchView;
+    private MenuItem searchMenuItem;
     private Menu mOptionsMenu;
-    private CommunityListFragment currentFragment;
+    private ContentListFragment currentFragment;
     public static int currentNavigationItemId;
     private Intent intent;
     private NavigationView navigationView;
@@ -152,10 +153,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private void handleIntent(Intent intent) {
         // Update information for the current user
         currentUserAccount = (GoogleSignInAccount) intent.getExtras().get("userAccount");
+
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
+            ContentListFragment currentFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
             if (currentFragment != null) {
-                currentFragment.filterList(query);
+                currentFragment.searchList(query);
             }
         }
     }
@@ -165,33 +168,27 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         mOptionsMenu = menu;
-        MenuItem refreshMenuItem = menu.findItem(R.id.refresh);
-        MenuItem searchMenuItem = menu.findItem(R.id.search);
-        MenuItem filterMenuItem = menu.findItem(R.id.filter);
+        searchMenuItem = menu.findItem(R.id.search);
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) searchMenuItem.getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
-
-//        searchMenuItem.setVisible(mViewPager.getCurrentItem() == 3);
-//        menu.findItem(R.id.sort).setVisible(mViewPager.getCurrentItem() == 3);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) searchMenuItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
+                ContentListFragment currentFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
                 if (currentFragment != null) {
-                    currentFragment.filterList(((SearchView) item.getActionView()).getQuery());
+                    currentFragment.searchList(((SearchView) item.getActionView()).getQuery());
                 }
                 return true;
             }
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
+                ContentListFragment currentFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
                 if (currentFragment != null) {
-                    currentFragment.filterList("");
+                    currentFragment.searchList("");
                 }
                 return true;
             }
@@ -239,52 +236,29 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     @Override
-    public void onSummaryFragmentInteraction(Uri uri) {
-        // TODO
-    }
-
-    @Override
-    public void onReferralFragmentInteraction(Uri uri) {
-        // TODO
-    }
-
-    @Override
-    public void onPatientFragmentInteraction(Uri uri) {
-        // TODO
-    }
-
-    @Override
-    public void onCommunityFragmentInteraction(CommunityListFragment fragment) {
-        currentFragment = fragment;
-    }
-
-    @Override
-    public void onCommunityDetailFragmentInteraction(Uri uri) {
-        // TODO
-    }
-
-    @Override
     public void onShouldUpdateDetail(Object content) {
+        Fragment detailFragment = null;
+
         if (content instanceof Community) {
-            Fragment detailFragment = CommunityDetailFragment.newInstance((Community) content);
-            getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
+            detailFragment = CommunityDetailFragment.newInstance((Community) content);
         } else if (content instanceof Patient) {
             Patient p = (Patient) content;
-            Fragment detailFragment = PatientDetailFragment.newInstance(p,  Utility.getAllRelatedReferrals(p.getReferralList()));
-            getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
+            detailFragment = PatientDetailFragment.newInstance(p, Utility.getAllRelatedReferrals(p.getReferralList()));
         } else if (content instanceof CarePlan) {
-            Fragment detailFragment = CarePlanDetailFragment.newInstance((CarePlan) content);
+            detailFragment = CarePlanDetailFragment.newInstance((CarePlan) content);
+        }
+
+        if (detailFragment != null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.detailFragmentContainer, detailFragment, "detail").commit();
         }
     }
 
     private void sortCommunityList(CommunityAdapter.SortType type) {
-        if (currentFragment != null) {
-            currentFragment.sortList(type);
+        ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+        if (contentListFragment != null) {
+            contentListFragment.sortList(type);
         }
     }
-
-
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -294,10 +268,17 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             return true;
         }
 
+        if (mOptionsMenu != null) {
+            mOptionsMenu.findItem(R.id.sort).setVisible(id == R.id.nav_communities);
+            mOptionsMenu.findItem(R.id.filter).setVisible(id == R.id.nav_communities);
+            mOptionsMenu.findItem(R.id.search).setVisible(id == R.id.nav_communities).collapseActionView();
+            searchView.setQuery("", false);
+        }
+
         ContentListFragment contentListFragment = (ContentListFragment) getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
         updateEachTab(getNavID(id));
         if (id == R.id.nav_care_plans) {
-            contentListFragment.setAdapter(new CarePlanListAdapter(Utility.carePlan_list), ContentListFragment.ContentType.Referral); // FIXME: replace with the referral adapter/data
+            contentListFragment.setAdapter(new CarePlanListAdapter(Utility.carePlan_list), ContentListFragment.ContentType.Referral);
         } else if (id == R.id.nav_patients) {
             contentListFragment.setAdapter(new PatientAdapter(Utility.patient_list), ContentListFragment.ContentType.Patient);
         } else if (id == R.id.nav_communities) {
