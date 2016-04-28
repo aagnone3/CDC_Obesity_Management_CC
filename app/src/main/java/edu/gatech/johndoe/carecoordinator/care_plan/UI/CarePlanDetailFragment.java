@@ -21,6 +21,10 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
@@ -33,7 +37,6 @@ public class CarePlanDetailFragment extends Fragment {
 
 
     private static final String ARG_REFERRAL = "carePlan";
-
     private CarePlan carePlan;
     private OnFragmentInteractionListener mListener;
     private String patientConditionText;
@@ -123,7 +126,33 @@ public class CarePlanDetailFragment extends Fragment {
         type.setText(carePlan.getType());
         details.setText(carePlan.getDetail());
 
+
         patient_name.setOnClickListener(patientClickListener);
+
+        if (carePlan.getStatus().equals("UNOPENED")) {
+            System.out.println(carePlan.getStatus() + " and " + carePlan.getId() + " is updated");
+            for (CarePlan cp : Utility.carePlan_list) {
+                if (cp.getId().equals(carePlan.getId())) {
+                    Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                    Firebase alanRef = ref.child(carePlan.getId());
+                    cp.setStatus("OPENED");
+                    Map<String, Object> cp2 = new HashMap<String, Object>();
+                    alanRef.updateChildren(cp2);
+                    cp2.put("status", "OPENED");
+                    alanRef.updateChildren(cp2);
+                }
+            }
+
+        } else if (carePlan.getStatus().equals("OPENED")){
+            System.out.println("nothing");
+            System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
+        } else if (carePlan.getStatus().equals("ACTIVE")) {
+            System.out.println("nothing");
+            System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
+        } else {
+            System.out.println("nothing");
+            System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
+        }
 
         if (patient == null) {
             patient_name.setText("Dummy");
@@ -152,31 +181,30 @@ public class CarePlanDetailFragment extends Fragment {
             period.setText(carePlan.getPeriod());
         }
 
+
         Button reviewedButton = (Button) view.findViewById(R.id.buttonreviewed);
         Button erefButton = (Button) view.findViewById(R.id.buttonereferral);
         reviewedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (patient != null) {
                     System.out.println("CarePlan ID " + carePlan.getId());
-//                    Utility.updateReferralStatus(carePlan.getId(), true);
-                    // need something to add to update.
-
-                    Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
-                    ref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
-                            for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                                CarePlan post = postSnapshot.getValue(CarePlan.class);
-                                System.out.println(post.getType());
-                            }
+                    for (CarePlan cp : Utility.carePlan_list) {
+                        if (cp.getId().equals(carePlan.getId())) {
+                            Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                            Firebase alanRef = ref.child(carePlan.getId());
+                            cp.setStatus("ACTIVE");
+                            Map<String, Object> cp2 = new HashMap<String, Object>();
+                            alanRef.updateChildren(cp2);
+                            cp2.put("status", "ACTIVE");
+                            alanRef.updateChildren(cp2);
+//                            System.out.println("Updated");
                         }
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                            System.out.println("The read failed: " + firebaseError.getMessage());
-                        }
-                    });
+                    }
+                    ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+//                    contentListFragment.updateCarePlanStatus();
+                    contentListFragment.getAdapter().notifyDataSetChanged();
                 } else {
                     System.out.println("null patient");
                 }
@@ -186,6 +214,14 @@ public class CarePlanDetailFragment extends Fragment {
         erefButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                Map<String, Object> cp = new HashMap<String, Object>();
+                for (int i=1; i < Utility.carePlan_list.size()+1; i++) {
+                    Firebase alanRef = ref.child("" +i);
+                    cp.put("status", "UNOPENED");
+                    alanRef.updateChildren(cp);
+                    cp.clear();
+                }
                 if (carePlan.isPending()) {
                     Toast.makeText(getActivity().getApplicationContext(), "Need to pend the message.",
                             Toast.LENGTH_SHORT).show();
@@ -196,6 +232,10 @@ public class CarePlanDetailFragment extends Fragment {
 
             }
         });
+
+        ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+//                    contentListFragment.updateCarePlanStatus();
+        contentListFragment.getAdapter().notifyDataSetChanged();
 
         return view;
     }

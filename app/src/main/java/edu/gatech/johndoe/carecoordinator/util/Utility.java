@@ -145,36 +145,25 @@ public class Utility {
                         carePlan_list.add(carePlan);
                     }
 
-                    List<CarePlan> carePlan_pending = new ArrayList<>();
-                    List<CarePlan> carePlan_Npending = new ArrayList<>();
-                    for (CarePlan carePlan2 : carePlan_list) {
-                        if (carePlan2.isPending()) {
-                            carePlan_pending.add(carePlan2);
-                        } else {
-                            carePlan_Npending.add(carePlan2);
-                        }
-                    }
+//                    List<CarePlan> carePlan_pending = new ArrayList<>();
+//                    List<CarePlan> carePlan_Npending = new ArrayList<>();
+//                    for (CarePlan carePlan2 : carePlan_list) {
+//                        if (carePlan2.isPending()) {
+//                            carePlan_pending.add(carePlan2);
+//                        } else {
+//                            carePlan_Npending.add(carePlan2);
+//                        }
+//                    }
+//
+//                    carePlan_list.clear();
 
-                    carePlan_list.clear();
-
-                    Collections.sort(carePlan_pending, new Comparator<CarePlan>() {
+                    Collections.sort(carePlan_list, new Comparator<CarePlan>() {
                         @Override
                         public int compare(CarePlan lhs, CarePlan rhs) {
 
                             return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
                         }
                     });
-
-                    Collections.sort(carePlan_Npending, new Comparator<CarePlan>() {
-                        @Override
-                        public int compare(CarePlan lhs, CarePlan rhs) {
-
-                            return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
-                        }
-                    });
-
-                    carePlan_list.addAll(carePlan_pending);
-                    carePlan_list.addAll(carePlan_Npending);
                 }
             }
 

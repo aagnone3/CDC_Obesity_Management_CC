@@ -63,6 +63,8 @@ public class CarePlan {
         this.status = status;
     }
 
+    public String getStatus() { return status; }
+
     public String getPhysicianImageName() {
         return physicianImageName;
     }
