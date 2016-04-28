@@ -173,22 +173,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="12dp"
                 android:background="@android:color/darker_gray" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/connectedPatientsList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/noPatientTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:textAlignment="center"
                 android:text="@string/no_patient_text"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:visibility="gone" />
 
         </LinearLayout>

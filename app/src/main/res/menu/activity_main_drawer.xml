@@ -1,38 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group_tabs"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_care_plans"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_library_books_black_24dp"
             android:title="Care Plans" />
         <item
             android:id="@+id/nav_patients"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_people_black_24dp"
             android:title="Patients" />
         <item
             android:id="@+id/nav_communities"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_location_city"
             android:title="Resources" />
     </group>
 
-    <item android:title="Application">
-        <menu>
-            <item
-                android:id="@+id/nav_account"
-                android:icon="@mipmap/ic_launcher"
-                android:title="Account" />
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@mipmap/ic_launcher"
-                android:title="Settings" />
-        </menu>
-    </item>
-
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/group_settings">
+        <item
+            android:id="@+id/nav_account"
+            android:icon="@drawable/ic_account_circle_black_24dp"
+            android:title="Account" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="Settings" />
         <item
             android:id="@+id/sign_out_button_main"
-            android:icon="@mipmap/ic_launcher"
+            android:icon="@drawable/ic_exit_to_app_black_24dp"
             android:title="Sign Out" />
     </group>
 

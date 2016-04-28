@@ -133,6 +133,7 @@ public class CommunityDetailFragment extends Fragment {
             patientList.setLayoutManager(new LinearLayoutManager(getContext()));
             patientList.setAdapter(new CommunityPatientAdapter(community, patients));
             patientList.setHasFixedSize(true);
+            patientList.setVisibility(View.VISIBLE);
         } else {
             TextView noPatientTextView = (TextView) view.findViewById(R.id.noPatientTextView);
             noPatientTextView.setVisibility(View.VISIBLE);
