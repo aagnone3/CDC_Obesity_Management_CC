@@ -1,6 +1,7 @@
 package edu.gatech.johndoe.carecoordinator.care_plan.UI;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -11,9 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import edu.gatech.johndoe.carecoordinator.MainActivity;
@@ -33,8 +37,15 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
     private int selectedPosition;
     public static CarePlan currentCarePlan;
     public static int currentPosition;
-
+    // update
     public CarePlanListAdapter(List<CarePlan> carePlan, int selectedPosition) {
+        Collections.sort(carePlan, new Comparator<CarePlan>() {
+            @Override
+            public int compare(CarePlan lhs, CarePlan rhs) {
+
+                return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
+            }
+        });
         this.carePlen = carePlan;
         this.filteredCarePlan = new ArrayList<>(carePlan);
         this.selectedPosition = selectedPosition;
@@ -127,9 +138,10 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
 
         private final TextView listTitle;
         private final TextView listPatientID;
-        private final TextView listPending;
-        private final TextView listDetail;
+//        private final TextView listPending;
+//        private final TextView listDetail;
         private final TextView listDate;
+        private final ImageView carePlanStatusImage;
         private CarePlan carePlan;
 
 
@@ -138,9 +150,11 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
             super(itemView);
             listTitle = (TextView) itemView.findViewById(R.id.referraltitle);
             listPatientID = (TextView) itemView.findViewById(R.id.referralpatientid);
-            listPending = (TextView) itemView.findViewById(R.id.referralpending);
+//            listPending = (TextView) itemView.findViewById(R.id.referralpending);
             listDate = (TextView) itemView.findViewById(R.id.referraldate);
-            listDetail = (TextView) itemView.findViewById(R.id.referraldetail);
+            carePlanStatusImage = (ImageView) itemView.findViewById(R.id.carePlanStatusImage);
+
+//            listDetail = (TextView) itemView.findViewById(R.id.referraldetail);
             itemView.setOnClickListener(this);
         }
 
@@ -149,22 +163,49 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
             listTitle.setText(carePlan.getType());
             listPatientID.setText("Patient: " + carePlan.getPatientName());
 
-            if (carePlan.getDetail().length() > 20) {
-                listDetail.setText(carePlan.getDetail().substring(0, 20) + "...");
-
-            } else {
-                listDetail.setText(carePlan.getDetail());
-            }
+//            if (carePlan.getDetail().length() > 20) {
+//                listDetail.setText(carePlan.getDetail().substring(0, 20) + "...");
+//
+//            } else {
+//                listDetail.setText(carePlan.getDetail());
+//            }
             String[] dateString = carePlan.getIssueDate().toString().split(" ");
             if (dateString.length > 2) {
                 listDate.setText(dateString[1] + " " + dateString[2]);
             } else {
                 listDate.setText(carePlan.getIssueDate().toString());
             }
-            if (carePlan.isPending()) {
-                listPending.setText("Pending");
+//            if (carePlan.isPending()) {
+//                listPending.setText("Pending");
+//            } else {
+//                listPending.setText("Not Pending");
+//            }
+            if (carePlan.getStatus().equals("UNOPENED")) {
+                listTitle.setTypeface(null, Typeface.BOLD);
+                listPatientID.setTypeface(null, Typeface.BOLD);
+//                listPending.setTypeface(null, Typeface.BOLD);
+                listDate.setTypeface(null, Typeface.BOLD);
+//                listDetail.setTypeface(null, Typeface.BOLD);
+                carePlanStatusImage.setImageResource(R.drawable.unopened);
+            } else if (carePlan.getStatus().equals("OPENED")) {
+                listTitle.setTypeface(null, Typeface.NORMAL);
+                listPatientID.setTypeface(null, Typeface.NORMAL);
+//                listPending.setTypeface(null, Typeface.NORMAL);
+                listDate.setTypeface(null, Typeface.NORMAL);
+                carePlanStatusImage.setImageResource(R.drawable.opened);
+//                listDetail.setTypeface(null, Typeface.NORMAL);
+            } else if (carePlan.getStatus().equals("ACTIVE")){
+                listTitle.setTypeface(null, Typeface.NORMAL);
+                listPatientID.setTypeface(null, Typeface.NORMAL);
+//                listPending.setTypeface(null, Typeface.NORMAL);
+                listDate.setTypeface(null, Typeface.NORMAL);
+                carePlanStatusImage.setImageResource(R.drawable.active);
             } else {
-                listPending.setText("Not Pending");
+                listTitle.setTypeface(null, Typeface.NORMAL);
+                listPatientID.setTypeface(null, Typeface.NORMAL);
+//                listPending.setTypeface(null, Typeface.NORMAL);
+                listDate.setTypeface(null, Typeface.NORMAL);
+                carePlanStatusImage.setImageResource(R.drawable.closed);
             }
         }
 

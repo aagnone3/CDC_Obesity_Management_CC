@@ -17,7 +17,49 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/care_plan_physician_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_alignStart="@+id/image_physician"
+            android:text="@string/care_plan_physician_name" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/care_plan_patient_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_alignStart="@+id/image_patient" />
+
+        <ImageView
+            android:id="@+id/image_physician"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/image_height"
+            android:maxWidth="@dimen/image_width"
+            android:adjustViewBounds="true"
+            android:layout_below="@id/care_plan_physician_name"
+            android:layout_marginStart="@dimen/image_left_margin"
+            android:src="@drawable/markbraunstein" />
+
+        <ImageView
+            android:id="@+id/image_patient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="@dimen/image_height"
+            android:maxWidth="@dimen/image_width"
+            android:adjustViewBounds="true"
+            android:layout_toEndOf="@+id/image_physician"
+            android:layout_below="@id/care_plan_patient_name"
+            android:layout_marginStart="@dimen/image_pad"
+            android:src="@drawable/anthony" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/care_plan_type_label"
+            android:layout_below="@id/image_physician"
+            android:layout_marginTop="12dp"
             android:textSize="20sp"
             android:textStyle="bold"
             android:text="@string/care_plan_type" />
@@ -92,12 +134,53 @@
 
         <TextView
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/care_plan_goal_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_below="@id/care_plan_condition"
+            android:layout_alignStart="@+id/care_plan_condition_label"
+            android:layout_marginTop="12dp"
+            android:text="@string/care_plan_goal_label" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/care_plan_goal"
+            android:textSize="20sp"
+            android:layout_toEndOf="@id/care_plan_goal_label"
+            android:layout_marginStart="10dp"
+            android:layout_alignTop="@id/care_plan_goal_label"
+            android:text="@string/care_plan_goal_text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/care_plan_period_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_below="@id/care_plan_goal"
+            android:layout_alignStart="@+id/care_plan_goal_label"
+            android:layout_marginTop="12dp"
+            android:text="@string/care_plan_period_label" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/care_plan_period"
+            android:textSize="20sp"
+            android:layout_toEndOf="@id/care_plan_period_label"
+            android:layout_marginStart="10dp"
+            android:layout_alignTop="@id/care_plan_period_label" />
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/care_plan_detail_label"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:layout_below="@id/care_plan_condition"
-            android:layout_alignStart="@id/care_plan_condition_label"
+            android:layout_below="@id/care_plan_period"
+            android:layout_alignStart="@id/care_plan_period_label"
             android:layout_marginTop="12dp"
             android:text="@string/details" />
 
@@ -126,8 +209,6 @@
             android:layout_marginStart="36dp"
             android:layout_alignTop="@+id/buttonreviewed"
             android:layout_toEndOf="@+id/buttonreviewed" />
-
-
 
     </RelativeLayout>
 

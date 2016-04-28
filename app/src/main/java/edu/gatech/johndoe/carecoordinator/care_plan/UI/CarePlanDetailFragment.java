@@ -1,54 +1,42 @@
 package edu.gatech.johndoe.carecoordinator.care_plan.UI;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.patient.*;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
-import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
-import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
-/**
- * Created by rakyu012 on 3/17/2016.
- */
 public class CarePlanDetailFragment extends Fragment {
 
 
     private static final String ARG_REFERRAL = "carePlan";
-
     private CarePlan carePlan;
-
     private OnFragmentInteractionListener mListener;
-
-    private TextView type, issueDate, details, patient_name, patient_condition, physician_name;
     private String patientConditionText;
-    private Button reviewedButton, erefButton;
     private Patient patient;
 
     /**
@@ -96,16 +84,7 @@ public class CarePlanDetailFragment extends Fragment {
             }
         }
 
-        patient_name = (TextView) view.findViewById(R.id.patient_name2);
-        patient_condition = (TextView) view.findViewById(R.id.care_plan_condition);
-        physician_name = (TextView) view.findViewById(R.id.physician_name);
-        type = (TextView) view.findViewById(R.id.care_plan_type);
-        details = (TextView) view.findViewById(R.id.care_plan_detail);
-        type.setText(carePlan.getType());
-        details.setText(carePlan.getDetail());
-
-        patient_name.setOnClickListener(new View.OnClickListener() {
-
+        View.OnClickListener patientClickListener = new View.OnClickListener() {
             public void onClick(View v) {
                 Fragment detailFragment = PatientDetailFragment.newInstance(patient, Utility.getAllRelatedReferrals(patient.getReferralList()));
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
@@ -121,43 +100,108 @@ public class CarePlanDetailFragment extends Fragment {
                 transaction.commit();
             }
 
-        });
+        };
+
+        TextView physician_name_short = (TextView) view.findViewById(R.id.care_plan_physician_name);
+        TextView patient_name_short = (TextView) view.findViewById(R.id.care_plan_patient_name);
+        TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
+        TextView patient_condition = (TextView) view.findViewById(R.id.care_plan_condition);
+        TextView physician_name = (TextView) view.findViewById(R.id.physician_name);
+        TextView type = (TextView) view.findViewById(R.id.care_plan_type);
+        TextView details = (TextView) view.findViewById(R.id.care_plan_detail);
+        TextView care_plan_goal = (TextView) view.findViewById(R.id.care_plan_goal);
+        TextView period = (TextView) view.findViewById(R.id.care_plan_period);
+        // Set images
+        int imageId = getResources().getIdentifier(patient.getImageName(), "drawable", getActivity().getPackageName());
+        ImageView image = (ImageView) view.findViewById(R.id.image_patient);
+        image.setImageResource(imageId);
+        image.setOnClickListener(patientClickListener);
+        imageId = getResources().getIdentifier(carePlan.getPhysicianImageName(), "drawable", getActivity().getPackageName());
+        image = (ImageView) view.findViewById(R.id.image_physician);
+        image.setImageResource(imageId);
+        //
+        type.setText(carePlan.getType());
+        details.setText(carePlan.getDetail());
+
+
+        patient_name.setOnClickListener(patientClickListener);
+
+        if (carePlan.getStatus().equals("UNOPENED")) {
+            System.out.println(carePlan.getStatus() + " and " + carePlan.getId() + " is updated");
+            for (CarePlan cp : Utility.carePlan_list) {
+                if (cp.getId().equals(carePlan.getId())) {
+                    Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                    Firebase alanRef = ref.child(carePlan.getId());
+                    cp.setStatus("OPENED");
+                    Map<String, Object> cp2 = new HashMap<String, Object>();
+                    alanRef.updateChildren(cp2);
+                    cp2.put("status", "OPENED");
+                    alanRef.updateChildren(cp2);
+                }
+            }
+
+        } else if (carePlan.getStatus().equals("OPENED")){
+            System.out.println("nothing");
+            System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
+        } else if (carePlan.getStatus().equals("ACTIVE")) {
+            System.out.println("nothing");
+            System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
+        } else {
+            System.out.println("nothing");
+            System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
+        }
 
         if (patient == null) {
             patient_name.setText("Dummy");
             patient_condition.setText("N/A");
             physician_name.setText("N/A");
+            care_plan_goal.setText("N/A");
+            physician_name_short.setText("Dr. Who");
+            physician_name_short.setText("Patient Who");
+            period.setText("N/A");
         } else {
-            patient_name.setText(patient.getFull_name_first());
+            Resources res = getResources();
+            // Condition that the care plan addresses
             patient_condition.setText(formPatientConditionText());
-            physician_name.setText(carePlan.getPhysicianName());
+            // Physician name
+            String physicianName = carePlan.getPhysicianName();
+            String physicianNameShort = physicianName.substring(physicianName.indexOf(',') + 2);
+            physician_name.setText(physicianName);
+            physician_name_short.setText(String.format(res.getString(R.string.care_plan_physician_name), physicianNameShort));
+            // Patient name
+            String patientName = carePlan.getPatientName();
+            patient_name.setText(patientName);
+            patient_name_short.setText(patientName.substring(patientName.indexOf(',') + 2));
+            // Goal of the care plan
+            String care_plan_goal_text = String.format(res.getString(R.string.care_plan_goal_text), carePlan.getGoalType(), carePlan.getGoalValue());
+            care_plan_goal.setText(care_plan_goal_text);
+            period.setText(carePlan.getPeriod());
         }
 
-        reviewedButton = (Button) view.findViewById(R.id.buttonreviewed);
-        erefButton = (Button) view.findViewById(R.id.buttonereferral);
+
+        Button reviewedButton = (Button) view.findViewById(R.id.buttonreviewed);
+        Button erefButton = (Button) view.findViewById(R.id.buttonereferral);
         reviewedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (patient != null) {
                     System.out.println("CarePlan ID " + carePlan.getId());
-//                    Utility.updateReferralStatus(carePlan.getId(), true);
-                    // need something to add to update.
-
-                    Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
-                    ref.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot snapshot) {
-                            System.out.println("There are " + snapshot.getChildrenCount() + " blog posts");
-                            for (DataSnapshot postSnapshot: snapshot.getChildren()) {
-                                CarePlan post = postSnapshot.getValue(CarePlan.class);
-                                System.out.println(post.getType());
-                            }
+                    for (CarePlan cp : Utility.carePlan_list) {
+                        if (cp.getId().equals(carePlan.getId())) {
+                            Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                            Firebase alanRef = ref.child(carePlan.getId());
+                            cp.setStatus("ACTIVE");
+                            Map<String, Object> cp2 = new HashMap<String, Object>();
+                            alanRef.updateChildren(cp2);
+                            cp2.put("status", "ACTIVE");
+                            alanRef.updateChildren(cp2);
+//                            System.out.println("Updated");
                         }
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-                            System.out.println("The read failed: " + firebaseError.getMessage());
-                        }
-                    });
+                    }
+                    ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+//                    contentListFragment.updateCarePlanStatus();
+                    contentListFragment.getAdapter().notifyDataSetChanged();
                 } else {
                     System.out.println("null patient");
                 }
@@ -167,6 +211,14 @@ public class CarePlanDetailFragment extends Fragment {
         erefButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                Map<String, Object> cp = new HashMap<String, Object>();
+                for (int i=1; i < Utility.carePlan_list.size()+1; i++) {
+                    Firebase alanRef = ref.child("" +i);
+                    cp.put("status", "UNOPENED");
+                    alanRef.updateChildren(cp);
+                    cp.clear();
+                }
                 if (carePlan.isPending()) {
                     Toast.makeText(getActivity().getApplicationContext(), "Need to pend the message.",
                             Toast.LENGTH_SHORT).show();
@@ -177,6 +229,10 @@ public class CarePlanDetailFragment extends Fragment {
 
             }
         });
+
+        ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+//                    contentListFragment.updateCarePlanStatus();
+        contentListFragment.getAdapter().notifyDataSetChanged();
 
         return view;
     }
@@ -196,22 +252,6 @@ public class CarePlanDetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-
-    private void sendPatientEmail() {
-        // Email intent
-        PatientEmail email = PatientEmailFactory.getEmailBody(
-                PatientEmailFactory.EMAIL_TYPE.FINAL_REFERRAL,
-                patient);
-
-        try {
-            startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
-            Log.i("Finished email...", "");
-        }
-        catch (android.content.ActivityNotFoundException ex) {
-            Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
-        }
     }
 
     private String formPatientConditionText() {

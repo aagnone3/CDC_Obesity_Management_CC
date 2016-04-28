@@ -11,14 +11,18 @@ public class CarePlan {
     private String physicianName;
     private String conditionSystem;
     private String conditionCode;
+    private String period;
     private String goalType;
-    private double goalValue;
+    private String goalValue;
     private String type;
     private String detail;
+    private String patientImageName;
+    private String physicianImageName;
+    private String status;
     private boolean pending;
     private Date issueDate;
     private Date dateOfimport;
-    private int status; /* number coding
+    private int statusCode; /* number coding
                             1: unopened
                             2: opened
                             3: sent recommendation
@@ -30,7 +34,8 @@ public class CarePlan {
 
     public CarePlan(String id, String fhirId, String patientID, String patientUniqueID,
                     String physicianName, String conditionSystem, String conditionCode,
-                    String goalType, double goalValue,
+                    String physicianImageName, String status,
+                    String goalType, String goalValue, String period, String patientImageName,
                     String patientName, String type, String detail, boolean pending, Date issueDate) {
         this.id = id;
         this.fhirId = fhirId;
@@ -41,13 +46,31 @@ public class CarePlan {
         this.conditionCode = conditionCode;
         this.patientName = patientName;
         this.goalValue = goalValue;
+        this.period = period;
         this.patientName = patientName;
         this.type = type;
         this.detail = detail;
         this.pending = pending;
         this.issueDate = issueDate;
+        this.patientImageName = patientImageName;
+        this.physicianImageName = physicianImageName;
+        this.status = status;
         this.dateOfimport = new Date();
-        this.status = 1;
+        this.statusCode = 1;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() { return status; }
+
+    public String getPhysicianImageName() {
+        return physicianImageName;
+    }
+
+    public void setPhysicianImageName(String physicianImageName) {
+        this.physicianImageName = physicianImageName;
     }
 
     public String getId() {
@@ -72,6 +95,22 @@ public class CarePlan {
 
     public String getPatientName() {
         return patientName;
+    }
+
+    public String getPatientImageName() {
+        return patientImageName;
+    }
+
+    public void setPatientImageName(String patientImageName) {
+        this.patientImageName = patientImageName;
+    }
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
     }
 
     public void setPatientName(String patientName) {
@@ -130,12 +169,12 @@ public class CarePlan {
         this.pending = pending;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
-    public int getStatus() {
-        return this.status;
+    public int getStatusCode() {
+        return this.statusCode;
     }
 
     public String getPhysicianName() {
@@ -170,11 +209,11 @@ public class CarePlan {
         this.goalType = goalType;
     }
 
-    public double getGoalValue() {
+    public String getGoalValue() {
         return goalValue;
     }
 
-    public void setGoalValue(double goalValue) {
+    public void setGoalValue(String goalValue) {
         this.goalValue = goalValue;
     }
 
@@ -188,12 +227,16 @@ public class CarePlan {
                 ", physicianName='" + physicianName + '\'' +
                 ", conditionSystem='" + conditionSystem + '\'' +
                 ", conditionCode='" + conditionCode + '\'' +
+                ", period='" + period + '\'' +
                 ", goalType='" + goalType + '\'' +
                 ", goalValue='" + goalValue + '\'' +
                 ", type='" + type + '\'' +
                 ", detail='" + detail + '\'' +
                 ", pending=" + pending +
                 ", issueDate=" + issueDate +
+                ", patientImageName=" + patientImageName +
+                ", physicianImageName=" + physicianImageName +
+                ", status=" + status +
                 ", dateOfimport=" + dateOfimport +
                 ", Status=" + status +
                 '}';

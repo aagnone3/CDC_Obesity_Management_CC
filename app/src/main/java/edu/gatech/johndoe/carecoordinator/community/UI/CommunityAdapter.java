@@ -176,7 +176,9 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
             this.community = community;
             communityImageView.setImageResource(R.mipmap.ic_launcher);   // FIXME: set to an actual image
             communityNameTextView.setText(community.getName());
-            patientCountTextView.setText(context.getString(R.string.patient_count, community.getPatientCount()));
+            int numPatients = community.getPatientCount();
+            String plurality = (numPatients == 1 ? "" : "s");
+            patientCountTextView.setText(context.getString(R.string.patient_count, numPatients, plurality));
         }
 
         @Override

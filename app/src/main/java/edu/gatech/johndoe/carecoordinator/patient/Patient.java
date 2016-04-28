@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeMap;
 
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
@@ -35,19 +36,20 @@ public class Patient {
     private String address_first;
     private String address_second;
     private String email;
+    private String imageName;
     private boolean active;
     private Date lastUpdated;
     private String phoneNumber;
     private Date dateOfimport;
     private List<String> referralList;
     private List<String> communityList;
+    private Double latitude;
+    private Double longitude;
+    private TreeMap distanceSortedCommunities;
 
 
     public Patient() {}
 
-    // Note patient may have multiple names in the server, implementation currently selects the
-    // first name in the list returned by getName()
-    // TODO verify that this is ok
     public Patient(ca.uhn.fhir.model.dstu2.resource.Patient patient) {
         try {
             id = patient.getId().getIdPart();
@@ -74,6 +76,14 @@ public class Patient {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public Practitioner getPCP() {
@@ -257,6 +267,13 @@ public class Patient {
         return referralList;
     }
 
+    public int getNumCarePlans() {
+        if (referralList != null) {
+            return referralList.size();
+        }
+        return 0;
+    }
+
     public void setReferralList(List<String> referralList) {
         this.referralList = referralList;
     }
@@ -267,6 +284,34 @@ public class Patient {
 
     public void setCommunityList(List<String> communityList) {
         this.communityList = communityList;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public TreeMap getDistanceSortedCommunities() {
+        return distanceSortedCommunities;
+    }
+
+    public void setDistanceSortedCommunities(TreeMap distanceSortedCommunities) {
+        this.distanceSortedCommunities = distanceSortedCommunities;
+    }
+
+    public String getFullAddress() {
+        return String.format("%s, %s", address_first, address_second);
     }
 
     public int getAge() {
@@ -295,6 +340,10 @@ public class Patient {
         communityList.add(c.getId());
     }
 
+    public void addCommunityDistance(Double distance, String id){
+        this.distanceSortedCommunities.put(distance, id);
+    }
+
     @Override
     public String toString() {
         return "Patient{" +
@@ -311,6 +360,7 @@ public class Patient {
                 ", address_first='" + address_first + '\'' +
                 ", address_second='" + address_second + '\'' +
                 ", email='" + email + '\'' +
+                ", imageName='" + imageName + '\'' +
                 ", isActive=" + active +
                 ", lastUpdated=" + lastUpdated +
                 ", phoneNumber='" + phoneNumber + '\'' +

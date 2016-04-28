@@ -11,17 +11,26 @@
     android:weightSum="1"
     android:background="@drawable/selectable_list_item">
 
+    <ImageView
+        android:id="@+id/carePlanStatusImage"
+        android:layout_gravity="center"
+        android:layout_weight="0.2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp" />
+
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="0.8"
+        android:layout_weight="0.6"
         android:orientation="vertical"
         android:layout_height="match_parent"
+        android:layout_marginStart="4dp"
         android:weightSum="1" >
         <TextView
             android:id="@+id/referraltitle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.4"
+            android:layout_weight="0.6"
             android:textStyle="normal"
             android:textSize="20sp"
             android:layout_gravity="center_vertical|center_horizontal|left"/>
@@ -30,46 +39,23 @@
             android:id="@+id/referralpatientid"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:layout_weight="0.3"
+            android:layout_weight="0.4"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:textStyle="normal"
             android:textSize="13sp"
             android:layout_gravity="center_vertical|center_horizontal|left"/>
 
-        <TextView
-            android:id="@+id/referraldetail"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:textStyle="normal"
-            android:textSize="13sp"
-            android:layout_gravity="center_vertical|center_horizontal|left"/>
     </LinearLayout>
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/referraldate"
         android:layout_width="0dp"
         android:layout_weight="0.2"
-        android:orientation="vertical"
         android:layout_height="match_parent"
-        android:weightSum="1" >
-        <TextView
-            android:id="@+id/referraldate"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="0.5"
-            android:textStyle="normal"
-            android:textSize="10sp"
-            android:layout_gravity="center_vertical|center_horizontal|left"/>
+        android:textStyle="normal"
+        android:textSize="15sp"
+        android:layout_gravity="center_vertical|center_horizontal|left"/>
 
-        <TextView
-            android:id="@+id/referralpending"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="0.5"
-            android:textStyle="normal"
-            android:textSize="10sp"
-            android:layout_gravity="center_vertical|center_horizontal|left"/>
-    </LinearLayout>
 
 </LinearLayout>

@@ -11,7 +11,7 @@
     android:background="@drawable/selectable_list_item">
 
     <ImageView
-        android:id="@+id/patientStatusImage"
+        android:id="@+id/patientSmallImage"
         android:layout_gravity="center"
         android:layout_width="50dp"
         android:layout_height="50dp"
@@ -33,11 +33,12 @@
             android:textSize="24sp" />
 
         <TextView
-            android:id="@+id/patient_status"
+            android:id="@+id/patient_num_care_plans"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:text="@string/patient_num_care_plans_text" />
 
     </RelativeLayout>
 

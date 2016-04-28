@@ -53,7 +53,7 @@ public class ContentListFragment extends Fragment {
                 case Referral:
                     listType = new TypeToken<List<CarePlan>>(){}.getType();
                     data = new Gson().fromJson(savedInstanceState.getString("data"), listType);
-                    adapter = new CarePlanListAdapter(data, selectedPosition);
+                    adapter = new CarePlanListAdapter(data);
                     break;
                 case Patient:
                     listType = new TypeToken<List<Patient>>(){}.getType();
@@ -135,10 +135,12 @@ public class ContentListFragment extends Fragment {
 
     public void updatePatientStatus(boolean isClosed){
         PatientAdapter pa = (PatientAdapter) adapter;
+        System.out.println("get selected2 " + pa.getSelectedPosition());
         View v = contentList.getChildAt(pa.getSelectedPosition());
         if (v != null) {
-            ImageView patientStatusImage = (ImageView) v.findViewById(R.id.patientStatusImage);
-            TextView patientStatusTextView = (TextView) v.findViewById(R.id.patient_status);
+            System.out.println("here2");
+            ImageView patientStatusImage = (ImageView) v.findViewById(R.id.patientSmallImage);
+            TextView patientStatusTextView = (TextView) v.findViewById(R.id.patient_num_care_plans);
             if (isClosed) {
                 patientStatusImage.setImageResource(R.drawable.closed);
                 patientStatusTextView.setText(R.string.closed);
@@ -148,6 +150,27 @@ public class ContentListFragment extends Fragment {
             }
         }
     }
+
+    ////////////// update this
+//    public void updateCarePlanStatus(){
+//        CarePlanListAdapter ca = (CarePlanListAdapter) adapter;
+//        System.out.println("get selected " + ca.getSelectedPosition() + " " + ca.getItemCount());
+//        View v = contentList.getChildAt(ca.getSelectedPosition());
+//        System.out.println("even?");
+//        if (v != null) {
+//            System.out.println("here");
+//            TextView listTitle = (TextView) v.findViewById(R.id.referraltitle);
+//            TextView listPatientID = (TextView) v.findViewById(R.id.referralpatientid);
+//            TextView listPending = (TextView) v.findViewById(R.id.referralpending);
+//            TextView listDate = (TextView) v.findViewById(R.id.referraldate);
+//            ImageView carePlanStatusImage = (ImageView) v.findViewById(R.id.carePlanStatusImage);
+//            carePlanStatusImage.setImageResource(R.drawable.closed);
+//            listTitle.setTypeface(null, Typeface.NORMAL);
+//            listPatientID.setTypeface(null, Typeface.NORMAL);
+//            listPending.setTypeface(null, Typeface.NORMAL);
+//            listDate.setTypeface(null, Typeface.NORMAL);
+//        }
+//    }
 
     public RecyclerView.Adapter getAdapter() {
         return adapter;
