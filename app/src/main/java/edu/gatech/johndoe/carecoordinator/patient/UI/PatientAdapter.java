@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.Restorable;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
+import edu.gatech.johndoe.carecoordinator.util.OnLatLongUpdateListener;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientHolder> implements Filterable, Restorable {
@@ -208,6 +210,18 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                     currentPosition = getLayoutPosition();
                 }
                 currentPatient = patient;
+
+                if (currentPatient.getLatitude() != 0 && currentPatient.getLongitude() != 0) {
+                    Utility.sortCommunitiesByDistance(currentPatient);
+                }
+                else {
+                    Utility.updatePatientLatLong(currentPatient, new OnLatLongUpdateListener() {
+                        @Override
+                        public void onUpdate(double[] coordinates) {
+                            Utility.sortCommunitiesByDistance(currentPatient);
+                        }
+                    });
+                }
 
             }
         }
