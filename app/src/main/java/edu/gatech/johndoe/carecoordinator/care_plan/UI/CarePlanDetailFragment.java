@@ -31,7 +31,7 @@ import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 public class CarePlanDetailFragment extends Fragment {
-
+    //
 
     private static final String ARG_REFERRAL = "carePlan";
     private CarePlan carePlan;
