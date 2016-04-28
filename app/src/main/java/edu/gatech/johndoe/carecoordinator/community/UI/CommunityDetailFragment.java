@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +19,12 @@ import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.community.Community;
+import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
@@ -78,8 +82,8 @@ public class CommunityDetailFragment extends Fragment {
 
         TextView patientCount = (TextView) view.findViewById(R.id.patientCount);
         int numPatients = community.getPatientCount();
-        String plurality = (numPatients == 1 ? "" : "s");
-        patientCount.setText(getString(R.string.patient_count, numPatients, plurality));
+        String plurality = (numPatients > 1 ? "s" : "");
+        patientCount.setText(numPatients == 0 ? getString(R.string.no_patient_description) : getString(R.string.patient_count, numPatients, plurality));
 
         TextView address = (TextView) view.findViewById(R.id.address);
         address.setText(community.fullAddress());
@@ -113,6 +117,27 @@ public class CommunityDetailFragment extends Fragment {
 
         TextView description = (TextView) view.findViewById(R.id.description);
         description.setText(community.getDescription());
+
+        if (community.getPatientCount() > 0) {
+            ArrayList<Patient> patients = new ArrayList<>(community.getPatientCount());
+
+            for (String patientId : community.getPatientList()) {
+                for (Patient patient : Utility.patient_list) {
+                    if (patient.getId().equals(patientId)) {
+                        patients.add(patient);
+                    }
+                }
+            }
+
+            RecyclerView patientList = (RecyclerView) view.findViewById(R.id.connectedPatientsList);
+            patientList.setLayoutManager(new LinearLayoutManager(getContext()));
+            patientList.setAdapter(new CommunityPatientAdapter(community, patients));
+            patientList.setHasFixedSize(true);
+            patientList.setVisibility(View.VISIBLE);
+        } else {
+            TextView noPatientTextView = (TextView) view.findViewById(R.id.noPatientTextView);
+            noPatientTextView.setVisibility(View.VISIBLE);
+        }
 
         ImageView mapImageView = (ImageView) view.findViewById(R.id.mapImageView);
         mapImageView.setOnClickListener(new View.OnClickListener() {

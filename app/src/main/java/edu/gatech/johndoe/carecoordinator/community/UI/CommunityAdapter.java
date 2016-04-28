@@ -109,7 +109,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
                     constraint = constraint.toString().toLowerCase().trim();
 
                     for (Community community : communities) {
-                        if (community.getName().toLowerCase().startsWith(constraint.toString())) {
+                        if (community.getName().toLowerCase().contains(constraint.toString())) {
                             filtered.add(community);
                         }
                     }
@@ -177,8 +177,8 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
             communityImageView.setImageResource(R.mipmap.ic_launcher);   // FIXME: set to an actual image
             communityNameTextView.setText(community.getName());
             int numPatients = community.getPatientCount();
-            String plurality = (numPatients == 1 ? "" : "s");
-            patientCountTextView.setText(context.getString(R.string.patient_count, numPatients, plurality));
+            String plurality = (numPatients > 1 ? "s" : "");
+            patientCountTextView.setText(numPatients == 0 ? context.getString(R.string.no_patient_description) : context.getString(R.string.patient_count, numPatients, plurality));
         }
 
         @Override

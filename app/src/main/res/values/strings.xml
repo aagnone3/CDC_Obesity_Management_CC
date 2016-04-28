@@ -33,9 +33,9 @@
     <string name="email_label">Email:</string>
     <string name="patient_num_care_plans_text">"%1$s Care Plan%2$s"</string>
 
-    <string name="search_title">Search Community</string>
+    <string name="search_title">Search</string>
     <string name="search_hint">Search communities</string>
-    <string name="sort_title">Sort Community</string>
+    <string name="sort_title">Sort</string>
     <string name="sort_menu_name">Sort by name</string>
     <string name="sort_menu_popularity">Sort by popularity</string>
     <string name="sort_menu_distance">Sort by distance</string>
@@ -99,4 +99,8 @@
     <string name="filter_title">Filter Community</string>
     <string name="opendays_label">Open Days:</string>
     <string name="hours_label">Hours:</string>
+    <string name="no_patient_text">No Connected Patient</string>
+    <string name="connected_patients_text">Connected Patients</string>
+    <string name="community_map">Community Map</string>
+    <string name="no_patient_description">No patient</string>
 </resources>
