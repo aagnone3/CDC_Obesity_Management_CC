@@ -102,4 +102,5 @@
     <string name="no_patient_text">No Connected Patient</string>
     <string name="connected_patients_text">Connected Patients</string>
     <string name="community_map">Community Map</string>
+    <string name="no_patient_description">No patient</string>
 </resources>
