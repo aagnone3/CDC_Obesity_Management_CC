@@ -37,7 +37,7 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
     private int selectedPosition;
     public static CarePlan currentCarePlan;
     public static int currentPosition;
-
+    // update
     public CarePlanListAdapter(List<CarePlan> carePlan, int selectedPosition) {
         Collections.sort(carePlan, new Comparator<CarePlan>() {
             @Override
