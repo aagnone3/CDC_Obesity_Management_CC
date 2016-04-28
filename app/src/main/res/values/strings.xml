@@ -24,13 +24,14 @@
     <string name="care_plan_type">Plan Type:</string>
 
     <string name="patient_email_button">Email Patient</string>
-    <string name="patient_count">"%1d patients"</string>
+    <string name="patient_count">"%1$d patient%2$s"</string>
     <string name="community_image_description">Community Image</string>
     <string name="name_label">Name:</string>
     <string name="patient_count_label">Number of Patients:</string>
     <string name="address_label">Address:</string>
     <string name="phone_number_label">Phone Number:</string>
     <string name="email_label">Email:</string>
+    <string name="patient_num_care_plans_text">"%1$s Care Plan%2$s"</string>
 
     <string name="search_title">Search Community</string>
     <string name="search_hint">Search communities</string>

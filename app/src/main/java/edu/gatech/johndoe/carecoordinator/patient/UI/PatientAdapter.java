@@ -1,12 +1,12 @@
 package edu.gatech.johndoe.carecoordinator.patient.UI;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -148,17 +148,17 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
     }
 
     public class PatientHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final ImageView patientStatusImage;
+        private final ImageView patientImage;
         private final TextView patientNameTextView;
-        private final TextView patientStatusTextView;
+        private final TextView numCarePlansTextView;
         private Patient patient;
         private List<CarePlan> carePlanList;
 
         public PatientHolder(View itemView) {
             super(itemView);
-            patientStatusImage = (ImageView) itemView.findViewById(R.id.patientStatusImage);
+            patientImage = (ImageView) itemView.findViewById(R.id.patientSmallImage);
             patientNameTextView = (TextView) itemView.findViewById(R.id.patient_name);
-            patientStatusTextView = (TextView) itemView.findViewById(R.id.patient_status);
+            numCarePlansTextView = (TextView) itemView.findViewById(R.id.patient_num_care_plans);
             itemView.setOnClickListener(this);
         }
 
@@ -173,13 +173,21 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                 }
             }
             patientNameTextView.setText(patient.getFull_name_last());
-            if (isPending) {
-                patientStatusImage.setImageResource(R.drawable.pending);
-                patientStatusTextView.setText(R.string.pending);
+            if (patient.getImageName() != null) {
+                int imageId = context.getResources().getIdentifier(patient.getImageName(), "drawable", context.getPackageName());
+                patientImage.setImageResource(imageId);
             } else {
-                patientStatusImage.setImageResource(R.drawable.closed);
-                patientStatusTextView.setText(R.string.closed);
+                patientImage.setImageResource(R.drawable.randomchild);
             }
+
+            // Display the number of care plans the patient has
+            Resources res = context.getResources();
+            int numCarePlans = patient.getNumCarePlans();
+            String plurality = (numCarePlans == 1 ? "" : "s");
+            String patient_num_care_plan_text = String.format(
+                    res.getString(R.string.patient_num_care_plans_text),
+                    numCarePlans, plurality);
+            numCarePlansTextView.setText(patient_num_care_plan_text);
         }
 
         @Override

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -72,6 +73,15 @@ public class PatientDetailFragment extends Fragment {
         final TextView patient_address_second = (TextView) view.findViewById(R.id.patient_address_second_line);
         TextView patient_email = (TextView) view.findViewById(R.id.patient_email);
         TextView patient_phone = (TextView) view.findViewById(R.id.patient_phone);
+        ImageView patient_image = (ImageView) view.findViewById(R.id.patientImage);
+        String imageName = patient.getImageName();
+        if (imageName != null) {
+            int imageId = getResources().getIdentifier(imageName, "drawable", getActivity().getPackageName());
+            patient_image.setImageResource(imageId);
+        } else {
+            patient_image.setImageResource(R.drawable.randomchild);
+        }
+
         patient_name.setText(patient.getFull_name_last());
         patient_gender.setText(patient.getGender());
         patient_age.setText(String.valueOf(patient.getAge()));

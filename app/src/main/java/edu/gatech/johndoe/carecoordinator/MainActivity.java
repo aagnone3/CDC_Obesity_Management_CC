@@ -45,7 +45,6 @@ import edu.gatech.johndoe.carecoordinator.community.UI.CommunityListFragment;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientAdapter;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
-import edu.gatech.johndoe.carecoordinator.util.OnLatLongUpdateListener;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
