@@ -1,7 +1,6 @@
 package edu.gatech.johndoe.carecoordinator;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -141,8 +140,8 @@ public class ContentListFragment extends Fragment {
         View v = contentList.getChildAt(pa.getSelectedPosition());
         if (v != null) {
             System.out.println("here2");
-            ImageView patientStatusImage = (ImageView) v.findViewById(R.id.patientStatusImage);
-            TextView patientStatusTextView = (TextView) v.findViewById(R.id.patient_status);
+            ImageView patientStatusImage = (ImageView) v.findViewById(R.id.patientSmallImage);
+            TextView patientStatusTextView = (TextView) v.findViewById(R.id.patient_num_care_plans);
             if (isClosed) {
                 patientStatusImage.setImageResource(R.drawable.closed);
                 patientStatusTextView.setText(R.string.closed);

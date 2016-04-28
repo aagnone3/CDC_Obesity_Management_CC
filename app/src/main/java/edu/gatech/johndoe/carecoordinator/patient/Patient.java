@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.TreeMap;
 
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
@@ -37,6 +36,7 @@ public class Patient {
     private String address_first;
     private String address_second;
     private String email;
+    private String imageName;
     private boolean active;
     private Date lastUpdated;
     private String phoneNumber;
@@ -76,6 +76,14 @@ public class Patient {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public String getImageName() {
+        return imageName;
+    }
+
+    public void setImageName(String imageName) {
+        this.imageName = imageName;
     }
 
     public Practitioner getPCP() {
@@ -259,6 +267,13 @@ public class Patient {
         return referralList;
     }
 
+    public int getNumCarePlans() {
+        if (referralList != null) {
+            return referralList.size();
+        }
+        return 0;
+    }
+
     public void setReferralList(List<String> referralList) {
         this.referralList = referralList;
     }
@@ -345,6 +360,7 @@ public class Patient {
                 ", address_first='" + address_first + '\'' +
                 ", address_second='" + address_second + '\'' +
                 ", email='" + email + '\'' +
+                ", imageName='" + imageName + '\'' +
                 ", isActive=" + active +
                 ", lastUpdated=" + lastUpdated +
                 ", phoneNumber='" + phoneNumber + '\'' +

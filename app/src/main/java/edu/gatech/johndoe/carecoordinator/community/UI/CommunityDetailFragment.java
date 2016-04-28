@@ -77,7 +77,9 @@ public class CommunityDetailFragment extends Fragment {
         communityName.setText(community.getName());
 
         TextView patientCount = (TextView) view.findViewById(R.id.patientCount);
-        patientCount.setText(getString(R.string.patient_count, community.getPatientCount()));
+        int numPatients = community.getPatientCount();
+        String plurality = (numPatients == 1 ? "" : "s");
+        patientCount.setText(getString(R.string.patient_count, numPatients, plurality));
 
         TextView address = (TextView) view.findViewById(R.id.address);
         address.setText(community.fullAddress());

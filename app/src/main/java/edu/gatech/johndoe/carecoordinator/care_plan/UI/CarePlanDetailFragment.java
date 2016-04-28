@@ -15,10 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -115,7 +112,7 @@ public class CarePlanDetailFragment extends Fragment {
         TextView care_plan_goal = (TextView) view.findViewById(R.id.care_plan_goal);
         TextView period = (TextView) view.findViewById(R.id.care_plan_period);
         // Set images
-        int imageId = getResources().getIdentifier(carePlan.getPatientImageName(), "drawable", getActivity().getPackageName());
+        int imageId = getResources().getIdentifier(patient.getImageName(), "drawable", getActivity().getPackageName());
         ImageView image = (ImageView) view.findViewById(R.id.image_patient);
         image.setImageResource(imageId);
         image.setOnClickListener(patientClickListener);
