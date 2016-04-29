@@ -9,5 +9,5 @@
     <dimen name="image_height">200dp</dimen>
     <dimen name="image_width">150dp</dimen>
     <dimen name="image_pad">50dp</dimen>
-    <dimen name="image_left_margin">100dp</dimen>
+    <dimen name="image_left_margin">50dp</dimen>
 </resources>

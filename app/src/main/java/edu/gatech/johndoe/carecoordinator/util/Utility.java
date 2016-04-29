@@ -34,6 +34,7 @@ import java.util.concurrent.Semaphore;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.model.dstu2.resource.Bundle;
 import ca.uhn.fhir.model.dstu2.resource.Patient;
+import ca.uhn.fhir.model.dstu2.valueset.CarePlanStatusEnum;
 import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
@@ -88,6 +89,30 @@ public class Utility {
                 savePatient(patient);
             }
         }
+    }
+
+    public static void activateCarePlan(CarePlan localCarePlan) {
+        Bundle results = client
+                .search()
+                .forResource(ca.uhn.fhir.model.dstu2.resource.CarePlan.class)
+                .where(ca.uhn.fhir.model.dstu2.resource.CarePlan.RES_ID.matchesExactly().value(localCarePlan.getFhirId()))
+                .returnBundle(Bundle.class)
+                .execute();
+        ca.uhn.fhir.model.dstu2.resource.CarePlan fhirCarePlan = (ca.uhn.fhir.model.dstu2.resource.CarePlan) results.getEntry().get(0).getResource();
+        fhirCarePlan.setStatus(CarePlanStatusEnum.ACTIVE);
+        client.update().resource(fhirCarePlan).execute();
+    }
+
+    public static void proposeCarePlan(CarePlan localCarePlan) {
+        Bundle results = client
+                .search()
+                .forResource(ca.uhn.fhir.model.dstu2.resource.CarePlan.class)
+                .where(ca.uhn.fhir.model.dstu2.resource.CarePlan.RES_ID.matchesExactly().value(localCarePlan.getFhirId()))
+                .returnBundle(Bundle.class)
+                .execute();
+        ca.uhn.fhir.model.dstu2.resource.CarePlan fhirCarePlan = (ca.uhn.fhir.model.dstu2.resource.CarePlan) results.getEntry().get(0).getResource();
+        fhirCarePlan.setStatus(CarePlanStatusEnum.PROPOSED);
+        client.update().resource(fhirCarePlan).execute();
     }
 
     public static void saveCarePlan(CarePlan carePlan) {

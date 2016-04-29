@@ -53,8 +53,6 @@
     <!-- Default email for main nav view display -->
     <string name="coordinator_email">cdc_coordinator@gmail.com</string>
 
-    <string name="sign_in_text">Centers for Disease Control and Prevention</string>
-
     <!-- Sign-in status messages -->
     <string name="signed_in_fmt">Signed in as: %s</string>
     <string name="signed_in">Signed in</string>
@@ -102,5 +100,5 @@
     <string name="no_patient_text">No Connected Patient</string>
     <string name="connected_patients_text">Connected Patients</string>
     <string name="community_map">Community Map</string>
-    <string name="no_patient_description">No patient</string>
+    <string name="no_patient_description">No patients</string>
 </resources>
