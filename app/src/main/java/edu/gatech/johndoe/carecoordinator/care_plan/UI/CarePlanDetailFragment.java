@@ -1,16 +1,19 @@
 package edu.gatech.johndoe.carecoordinator.care_plan.UI;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +34,7 @@ import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 public class CarePlanDetailFragment extends Fragment {
-
+    //
 
     private static final String ARG_REFERRAL = "carePlan";
     private CarePlan carePlan;
@@ -211,20 +214,43 @@ public class CarePlanDetailFragment extends Fragment {
         erefButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
-                Map<String, Object> cp = new HashMap<String, Object>();
-                for (int i=1; i < Utility.carePlan_list.size()+1; i++) {
-                    Firebase alanRef = ref.child("" +i);
-                    cp.put("status", "UNOPENED");
-                    alanRef.updateChildren(cp);
-                    cp.clear();
-                }
+//                Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+//                Map<String, Object> cp = new HashMap<String, Object>();
+//                for (int i=1; i < Utility.carePlan_list.size()+1; i++) {
+//                    Firebase alanRef = ref.child("" +i);
+//                    cp.put("status", "UNOPENED");
+//                    alanRef.updateChildren(cp);
+//                    cp.clear();
+//                }
+
+                AlertDialog.Builder helpBuilder = new AlertDialog.Builder(getActivity());
+                helpBuilder.setTitle("Pop Up");
+                helpBuilder.setMessage("This is a Simple Pop Up");
+                helpBuilder.setPositiveButton("Ok",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Do nothing but close the dialog
+                                Toast.makeText(getActivity().getApplicationContext(), "E-referral Generated",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                helpBuilder.setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Do nothing but close the dialog
+                                Toast.makeText(getActivity().getApplicationContext(), "Cancelled",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                // Remember, create doesn't show the dialog
+                AlertDialog helpDialog = helpBuilder.create();
+                helpDialog.show();
                 if (carePlan.isPending()) {
-                    Toast.makeText(getActivity().getApplicationContext(), "Need to pend the message.",
-                            Toast.LENGTH_SHORT).show();
+
                 } else {
-                    Toast.makeText(getActivity().getApplicationContext(), "Generated E-CarePlan.",
-                            Toast.LENGTH_SHORT).show();
+
                 }
 
             }
