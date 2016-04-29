@@ -92,7 +92,7 @@ public class InnerCarePlanAdapter extends RecyclerView.Adapter<InnerCarePlanAdap
                 }
             });
 
-            care_plan_status.setText(carePlan.isPending() ? "Pending" : "Closed");
+            care_plan_status.setText(carePlan.getStatus());
             care_plan_status_image.setBackgroundResource(carePlan.isPending() ? android.R.drawable.ic_menu_info_details : android.R.drawable.presence_online);
             care_plan_status.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
