@@ -79,6 +79,9 @@ public class Patient {
     }
 
     public String getImageName() {
+        if (imageName == null) {
+            return "randomchild";
+        }
         return imageName;
     }
 
