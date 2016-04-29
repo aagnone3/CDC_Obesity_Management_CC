@@ -204,6 +204,8 @@ public class ContentListFragment extends Fragment {
     public void searchList(CharSequence query) {
         if (adapter instanceof CommunityAdapter) {
             ((CommunityAdapter) adapter).getFilter().filter(query);
+        } else if (adapter instanceof PatientAdapter) {
+            ((PatientAdapter) adapter).getFilter().filter(query);
         }
     }
 

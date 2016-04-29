@@ -2,7 +2,6 @@ package edu.gatech.johndoe.carecoordinator.patient.UI;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -100,7 +99,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
                 constraint = constraint.toString().toLowerCase().trim();
                 for (Patient patient : patients) {
-                    if (patient.getFull_name_first().toLowerCase().startsWith(constraint.toString())) {
+                    if (patient.getFull_name_first().toLowerCase().contains(constraint.toString())) {
                         filtered.add(patient);
                     }
                 }
