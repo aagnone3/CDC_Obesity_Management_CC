@@ -80,7 +80,7 @@ public class PatientDetailFragment extends Fragment {
             int imageId = getResources().getIdentifier(imageName, "drawable", getActivity().getPackageName());
             patient_image.setImageResource(imageId);
         } else {
-            patient_image.setImageResource(R.drawable.randomchild);
+            patient_image.setImageResource(R.drawable.randomchild0);
         }
 
         patient_name.setText(patient.getFull_name_last());

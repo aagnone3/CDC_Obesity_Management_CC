@@ -176,7 +176,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                 int imageId = context.getResources().getIdentifier(patient.getImageName(), "drawable", context.getPackageName());
                 patientImage.setImageResource(imageId);
             } else {
-                patientImage.setImageResource(R.drawable.randomchild);
+                patientImage.setImageResource(R.drawable.randomchild0);
             }
 
             // Display the number of care plans the patient has
