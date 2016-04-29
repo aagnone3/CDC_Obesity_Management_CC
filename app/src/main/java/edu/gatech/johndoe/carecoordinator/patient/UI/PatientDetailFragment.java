@@ -8,13 +8,14 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -165,10 +166,11 @@ public class PatientDetailFragment extends Fragment {
             }
         });
 
-        ListView list = (ListView) view.findViewById(R.id.patient_care_plan_list);
-        InnerCarePlanAdapter adapter = new InnerCarePlanAdapter(getActivity(), R.id.patient_care_plan_list_item,
-                carePlanList, getActivity().getSupportFragmentManager());
-        list.setAdapter(adapter);
+        RecyclerView list = (RecyclerView) view.findViewById(R.id.patient_care_plan_list);
+        list.setLayoutManager(new LinearLayoutManager(getContext()));
+        list.setAdapter(new InnerCarePlanAdapter(carePlanList, getActivity().getSupportFragmentManager()));
+        list.setHasFixedSize(true);
+        list.setVisibility(View.VISIBLE);
         return view;
     }
 
