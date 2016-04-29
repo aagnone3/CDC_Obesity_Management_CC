@@ -39,7 +39,6 @@ import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
-import edu.gatech.johndoe.carecoordinator.UnselectedFragment;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanListAdapter;
@@ -447,7 +446,7 @@ public class Utility {
                                 }
                             }
                         }
-                        transaction.replace(R.id.detailFragmentContainer, new UnselectedFragment(), "detail").commit();
+//                        transaction.replace(R.id.detailFragmentContainer, new UnselectedFragment(), "detail").commit();
 
                     }
                 }
@@ -511,7 +510,7 @@ public class Utility {
                     if (!careplans.get(cp.getPatientID()).contains(cp))
                         careplans.get(cp.getPatientID()).add(cp);
                 }
-                System.out.println(careplans);
+
                 for (edu.gatech.johndoe.carecoordinator.patient.Patient p : patient_list) {
                     List<String> ids = new ArrayList<>();
                     List<CarePlan> plans = careplans.get(p.getId());
