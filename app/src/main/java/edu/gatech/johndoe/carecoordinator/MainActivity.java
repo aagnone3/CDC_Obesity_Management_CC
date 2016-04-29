@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.NavigationView;
@@ -271,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (mOptionsMenu != null) {
             mOptionsMenu.findItem(R.id.sort).setVisible(id == R.id.nav_communities);
             mOptionsMenu.findItem(R.id.filter).setVisible(id == R.id.nav_communities);
-            mOptionsMenu.findItem(R.id.search).setVisible(id == R.id.nav_communities).collapseActionView();
+            mOptionsMenu.findItem(R.id.search).setVisible(id == R.id.nav_communities || id == R.id.nav_patients).collapseActionView();
             searchView.setQuery("", false);
         }
 

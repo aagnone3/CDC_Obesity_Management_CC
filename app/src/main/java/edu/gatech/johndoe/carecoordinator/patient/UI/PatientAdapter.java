@@ -2,7 +2,6 @@ package edu.gatech.johndoe.carecoordinator.patient.UI;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -100,7 +99,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
                 constraint = constraint.toString().toLowerCase().trim();
                 for (Patient patient : patients) {
-                    if (patient.getFull_name_first().toLowerCase().startsWith(constraint.toString())) {
+                    if (patient.getFull_name_first().toLowerCase().contains(constraint.toString())) {
                         filtered.add(patient);
                     }
                 }
@@ -194,7 +193,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         public void onClick(View v) {
             if (patient != null) {
 
-                Fragment detailFragment = PatientDetailFragment.newInstance(patient, carePlanList);
+                final PatientDetailFragment detailFragment = PatientDetailFragment.newInstance(patient, carePlanList);
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
@@ -221,12 +220,14 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
                 if (currentPatient.getLatitude() != 0 && currentPatient.getLongitude() != 0) {
                     Utility.sortCommunitiesByDistance(currentPatient);
+                    detailFragment.setPatient(patient);
                 }
                 else {
-                    Utility.updatePatientLatLong(currentPatient, new OnLatLongUpdateListener() {
+                    Utility.updatePatientLatLong(patient, new OnLatLongUpdateListener() {
                         @Override
                         public void onUpdate(double[] coordinates) {
-                            Utility.sortCommunitiesByDistance(currentPatient);
+                            Utility.sortCommunitiesByDistance(patient);
+                            detailFragment.setPatient(patient);
                         }
                     });
                 }
