@@ -172,6 +172,10 @@ public class PatientDetailFragment extends Fragment {
         return view;
     }
 
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
+
     private void sendPatientEmail(int selectedMenuId) {
         // Email intent
         PatientEmail email = PatientEmailFactory.getEmailBody(

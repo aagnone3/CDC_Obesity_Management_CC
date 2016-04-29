@@ -194,7 +194,7 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
         public void onClick(View v) {
             if (patient != null) {
 
-                Fragment detailFragment = PatientDetailFragment.newInstance(patient, carePlanList);
+                final PatientDetailFragment detailFragment = PatientDetailFragment.newInstance(patient, carePlanList);
                 FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
                 FragmentTransaction transaction = fragmentManager.beginTransaction();
 
@@ -221,12 +221,14 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
                 if (currentPatient.getLatitude() != 0 && currentPatient.getLongitude() != 0) {
                     Utility.sortCommunitiesByDistance(currentPatient);
+                    detailFragment.setPatient(patient);
                 }
                 else {
-                    Utility.updatePatientLatLong(currentPatient, new OnLatLongUpdateListener() {
+                    Utility.updatePatientLatLong(patient, new OnLatLongUpdateListener() {
                         @Override
                         public void onUpdate(double[] coordinates) {
-                            Utility.sortCommunitiesByDistance(currentPatient);
+                            Utility.sortCommunitiesByDistance(patient);
+                            detailFragment.setPatient(patient);
                         }
                     });
                 }
