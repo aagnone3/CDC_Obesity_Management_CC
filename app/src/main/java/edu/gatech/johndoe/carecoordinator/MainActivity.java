@@ -318,11 +318,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                        getSupportFragmentManager().beginTransaction(),
                        isInExpandedMode,
                        getNavID(currentNavigationItemId));
-        new Thread(new Runnable() {
-            public void run() {
-                Utility.getSubCarePlans();
-            }
-        }).start();
     }
 
     public void updateEachTab(int id) {
