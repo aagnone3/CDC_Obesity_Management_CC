@@ -16,7 +16,6 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -40,7 +39,6 @@ import ca.uhn.fhir.rest.client.IGenericClient;
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
-import edu.gatech.johndoe.carecoordinator.UnselectedFragment;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanDetailFragment;
 import edu.gatech.johndoe.carecoordinator.care_plan.UI.CarePlanListAdapter;
@@ -75,6 +73,7 @@ public class Utility {
     private static boolean fromSorting;
 
     public static void populateDatabase() {
+        getSubCarePlans ();
         for (int i = 1; i <= 25; i++) {
             ca.uhn.fhir.model.dstu2.resource.Patient p = getFHIRPatientByID(i);
             if (p != null) {
@@ -168,11 +167,10 @@ public class Utility {
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                carePlan_list = new ArrayList<>();
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     CarePlan carePlan = ds.getValue(CarePlan.class);
-                    if (!carePlan_list.contains(carePlan)) {
-                        carePlan_list.add(carePlan);
-                    }
+                    carePlan_list.add(carePlan);
 
 //                    List<CarePlan> carePlan_pending = new ArrayList<>();
 //                    List<CarePlan> carePlan_Npending = new ArrayList<>();
@@ -193,6 +191,7 @@ public class Utility {
                             return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
                         }
                     });
+
                 }
             }
 
@@ -448,12 +447,14 @@ public class Utility {
                                 }
                             }
                         }
-                        transaction.replace(R.id.detailFragmentContainer, new UnselectedFragment(), "detail").commit();
+//                        transaction.replace(R.id.detailFragmentContainer, new UnselectedFragment(), "detail").commit();
 
                     }
                 }
 
                 // TODO link care plans to patients
+
+
 
                 if (toast)
                     Toast.makeText(context, UPDATE_MESSAGE, Toast.LENGTH_LONG).show();
@@ -475,7 +476,24 @@ public class Utility {
                                       final boolean refresh,
                                       final boolean toast) {
 
-        Query queryRef = PATIENTS_REF.orderByChild("id");
+        Query queryRef = CARE_PLANS_REF.orderByChild("id");
+        queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                List<CarePlan> updated = new ArrayList<>();
+                for (DataSnapshot ds : dataSnapshot.getChildren())
+                    updated.add(ds.getValue(CarePlan.class));
+                carePlan_list = updated;
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.e("Update Referrals", firebaseError.getMessage());
+            }
+        });
+
+
+        queryRef = PATIENTS_REF.orderByChild("id");
         queryRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -483,6 +501,27 @@ public class Utility {
                 for (DataSnapshot ds : dataSnapshot.getChildren())
                     updated.add(ds.getValue(edu.gatech.johndoe.carecoordinator.patient.Patient.class));
                 patient_list = updated;
+
+
+
+                careplans.clear();
+                for (CarePlan cp : carePlan_list) {
+                    if (!careplans.containsKey(cp.getPatientID()))
+                        careplans.put(cp.getPatientID(), new ArrayList<CarePlan>());
+                    if (!careplans.get(cp.getPatientID()).contains(cp))
+                        careplans.get(cp.getPatientID()).add(cp);
+                }
+
+                for (edu.gatech.johndoe.carecoordinator.patient.Patient p : patient_list) {
+                    List<String> ids = new ArrayList<>();
+                    List<CarePlan> plans = careplans.get(p.getId());
+                    if (plans != null) {
+                        for (CarePlan c : plans)
+                            ids.add(c.getId());
+                        p.setReferralList(ids);
+                    }
+                    savePatient(p);
+                }
 
                 if (refresh && MainActivity.currentNavigationItemId == R.id.nav_patients) {
                     contentListFragment.setAdapter(
@@ -495,13 +534,14 @@ public class Utility {
                                 if (p.getId().equals(PatientAdapter.currentPatient.getId())) {
                                     transaction.replace(
                                             R.id.detailFragmentContainer,
-                                            PatientDetailFragment.newInstance(p, Utility.getAllRelatedReferrals(p.getReferralList())),
+                                            PatientDetailFragment.newInstance(p, careplans.get(p.getId())),
                                             "detail").commit();
                                     break;
                                 }
                             }
                         }
                     }
+
                 }
 
                 if (toast)
@@ -585,29 +625,12 @@ public class Utility {
     }
 
     public static void getSubCarePlans () {
+        careplans.clear();
         for (CarePlan cp : carePlan_list) {
-            ca.uhn.fhir.model.dstu2.resource.CarePlan careplan = getFHIRCarePlanByID(Integer.valueOf(cp.getFhirId()));
-            try {
-                String uniqueID = "";
-                JSONObject result = getFHIRCarePlan(Integer.valueOf(cp.getFhirId()));
-                JSONArray sub = result.getJSONArray("contained");
-                for (int i = 0; i < sub.length(); i++) {
-                    JSONObject type = (JSONObject) sub.get(i);
-                    if (type.get("resourceType").equals("Patient")) {
-                        sub = type.getJSONArray("identifier");
-                        uniqueID = String.valueOf(((JSONObject) sub.get(0)).get("value"));
-
-                        edu.gatech.johndoe.carecoordinator.patient.Patient p = new edu.gatech.johndoe.carecoordinator.patient.Patient(getFHIRPatientByID(Integer.valueOf(uniqueID.substring(5))));
-                        if (!careplans.containsKey(p.getId()))
-                            careplans.put(p.getId(), new ArrayList<CarePlan>());
-                        careplans.get(p.getId()).add(cp);
-                        break;
-
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            if (!careplans.containsKey(cp.getPatientID()))
+                careplans.put(cp.getPatientID(), new ArrayList<CarePlan>());
+            if (!careplans.get(cp.getPatientID()).contains(cp))
+                careplans.get(cp.getPatientID()).add(cp);
         }
     }
 
@@ -676,7 +699,6 @@ public class Utility {
                             break;
                     }
                 }
-
 
             }
 

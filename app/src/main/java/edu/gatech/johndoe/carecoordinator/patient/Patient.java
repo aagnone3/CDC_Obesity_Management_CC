@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 import java.util.TreeMap;
 
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
@@ -52,9 +53,13 @@ public class Patient {
     private Double longitude;
     private TreeMap distanceSortedCommunities = new TreeMap<>();
     private Map<String, ArrayList<String>> suggestedCommunities = new HashMap<>();
+    private TreeMap distanceSortedCommunities;
+    private Random random;
 
 
-    public Patient() {}
+    public Patient() {
+        random = new Random();
+    }
 
     public Patient(ca.uhn.fhir.model.dstu2.resource.Patient patient) {
         try {
@@ -86,7 +91,9 @@ public class Patient {
 
     public String getImageName() {
         if (imageName == null) {
-            return "randomchild";
+            String fileName = "randomchild" + new Integer(random.nextInt(5)).toString();
+            Log.d("PatientImage", fileName);
+            return fileName;
         }
         return imageName;
     }
