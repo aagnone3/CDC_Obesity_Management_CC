@@ -1,6 +1,5 @@
 package edu.gatech.johndoe.carecoordinator.community.UI;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,13 +14,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
@@ -33,8 +32,6 @@ public class CommunityDetailFragment extends Fragment {
     private static final String ARG_COMMUNITY = "community";
 
     private Community community;
-
-    private OnFragmentInteractionListener mListener;
 
     /**
      *
@@ -74,8 +71,13 @@ public class CommunityDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_community_detail, container, false);
 
-        ImageView communityImage = (ImageView) view.findViewById(R.id.communityImage);
-        communityImage.setImageResource(R.mipmap.ic_launcher);  // FIXME: replace with real data
+        Glide
+            .with(this)
+            .load(CommunityAdapter.IMAGE_URL + community.getId())
+            .placeholder(R.drawable.community_icon)
+            .fitCenter()
+            .dontAnimate()
+            .into((ImageView) view.findViewById(R.id.communityImage));
 
         TextView communityName = (TextView) view.findViewById(R.id.communityName);
         communityName.setText(community.getName());
@@ -172,23 +174,6 @@ public class CommunityDetailFragment extends Fragment {
         }
 
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 
     @Override

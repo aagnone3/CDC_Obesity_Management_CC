@@ -199,8 +199,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
             case R.id.refresh:
                 loadData();
                 return true;

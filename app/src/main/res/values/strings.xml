@@ -97,7 +97,7 @@
     <string name="filter_title">Filter Community</string>
     <string name="opendays_label">Open Days:</string>
     <string name="hours_label">Hours:</string>
-    <string name="no_patient_text">No Connected Patient</string>
+    <string name="no_patient_text">No Connected Patients</string>
     <string name="connected_patients_text">Connected Patients</string>
     <string name="community_map">Community Map</string>
     <string name="no_patient_description">No patients</string>

@@ -14,6 +14,8 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -28,6 +30,8 @@ import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityHolder> implements Filterable, Restorable {
+
+    public static final String IMAGE_URL = "https://api.hyunseochung.com/cdcimage/";
 
     private static final Comparator<Community> NAME_COMPARATOR = new Comparator<Community>() {
         @Override
@@ -78,6 +82,7 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
     @Override
     public void onBindViewHolder(CommunityHolder holder, int position) {
         Community community = filteredCommunities.get(position);
+        holder.communityImageView.setImageDrawable(null);
         holder.bindCommunity(context, community);
 
         if (MainActivity.isInExpandedMode && currentCommunity != null) {
@@ -174,7 +179,15 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
 
         public void bindCommunity(Context context, Community community) {
             this.community = community;
-            communityImageView.setImageResource(R.mipmap.ic_launcher);   // FIXME: set to an actual image
+
+            Glide
+                .with(context)
+                .load(IMAGE_URL + community.getId())
+                .placeholder(R.drawable.community_icon)
+                .fitCenter()
+                .dontAnimate()
+                .into(communityImageView);
+
             communityNameTextView.setText(community.getName());
             int numPatients = community.getPatientCount();
             String plurality = (numPatients > 1 ? "s" : "");

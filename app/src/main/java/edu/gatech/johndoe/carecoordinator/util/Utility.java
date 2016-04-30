@@ -786,8 +786,8 @@ public class Utility {
     public static class ImageDownloadTask extends AsyncTask<String, Void, Bitmap> {
         private ImageView imageView;
 
-        public ImageDownloadTask(ImageView bmImage) {
-            this.imageView = bmImage;
+        public ImageDownloadTask(ImageView imageView) {
+            this.imageView = imageView;
         }
 
         protected Bitmap doInBackground(String... url) {
@@ -804,7 +804,8 @@ public class Utility {
         }
 
         protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
+            if (result != null)
+                imageView.setImageBitmap(result);
         }
     }
 
