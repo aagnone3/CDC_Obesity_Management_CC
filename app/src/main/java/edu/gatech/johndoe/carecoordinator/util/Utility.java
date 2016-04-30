@@ -229,7 +229,6 @@ public class Utility {
                         //TODO: update the patient branch in Firebase to have lat/long set to 0 for new patients so can remove the following two lines
                         p.setLatitude(0.0);
                         p.setLongitude(0.0);
-                        p.setDistanceSortedCommunities(new TreeMap<Double, String>());
                         patient_list.add(p);
                     }
                 }
@@ -266,6 +265,8 @@ public class Utility {
     public static void sortCommunitiesByDistance(final edu.gatech.johndoe.carecoordinator.patient.Patient patient){
         if (!patient.getDistanceSortedCommunities().isEmpty())
             return;
+
+        Log.e("updating", "sorting");
 
         //sort communities that already have lat/long stored in database
         for (Community community : community_list){
