@@ -53,7 +53,6 @@ public class Patient {
     private Double longitude;
     private TreeMap distanceSortedCommunities = new TreeMap<>();
     private Map<String, ArrayList<String>> suggestedCommunities = new HashMap<>();
-    private TreeMap distanceSortedCommunities;
     private Random random;
 
 
