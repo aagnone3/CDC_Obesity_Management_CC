@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -218,14 +219,16 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                 }
                 currentPatient = patient;
 
-                if (currentPatient.getLatitude() != 0 && currentPatient.getLongitude() != 0) {
+                if (patient.getLatitude() != 0 && patient.getLongitude() != 0) {
                     Utility.sortCommunitiesByDistance(currentPatient);
+                    Log.e("size", Integer.toString(patient.getDistanceSortedCommunities().size()));
                     detailFragment.setPatient(patient);
                 }
                 else {
                     Utility.updatePatientLatLong(patient, new OnLatLongUpdateListener() {
                         @Override
                         public void onUpdate(double[] coordinates) {
+                            Log.e("patient", "adapter2");
                             Utility.sortCommunitiesByDistance(patient);
                             detailFragment.setPatient(patient);
                         }

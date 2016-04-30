@@ -2,18 +2,23 @@ package edu.gatech.johndoe.carecoordinator.patient;
 
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
 import ca.uhn.fhir.model.api.ResourceMetadataKeyEnum;
 import ca.uhn.fhir.model.dstu2.composite.ContactPointDt;
 import ca.uhn.fhir.model.dstu2.composite.ResourceReferenceDt;
+import ca.uhn.fhir.model.dstu2.resource.Conformance;
 import ca.uhn.fhir.model.dstu2.resource.Practitioner;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointSystemEnum;
 import ca.uhn.fhir.model.dstu2.valueset.ContactPointUseEnum;
@@ -46,7 +51,8 @@ public class Patient {
     private List<String> communityList;
     private Double latitude;
     private Double longitude;
-    private TreeMap distanceSortedCommunities;
+    private TreeMap distanceSortedCommunities = new TreeMap<>();
+    private Map<String, ArrayList<String>> suggestedCommunities = new HashMap<>();
     private Random random;
 
 
@@ -319,6 +325,14 @@ public class Patient {
         this.distanceSortedCommunities = distanceSortedCommunities;
     }
 
+    public Map getSuggestedCommunities() {
+        return suggestedCommunities;
+    }
+
+    public void setSuggestedCommunities(Map suggestedCommunities) {
+        this.suggestedCommunities = suggestedCommunities;
+    }
+
     public String getFullAddress() {
         return String.format("%s, %s", address_first, address_second);
     }
@@ -351,6 +365,10 @@ public class Patient {
 
     public void addCommunityDistance(Double distance, String id){
         this.distanceSortedCommunities.put(distance, id);
+    }
+
+    public void addSuggestedCommunities(String carePlanID, ArrayList<String> communityIDList){
+        suggestedCommunities.put(carePlanID, communityIDList);
     }
 
     @Override

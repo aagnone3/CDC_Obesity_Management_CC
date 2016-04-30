@@ -2,9 +2,13 @@ package edu.gatech.johndoe.carecoordinator.patient.email;
 
 import android.util.Log;
 
+import java.lang.reflect.Array;
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
@@ -28,6 +32,29 @@ public class InitialSuggestionsEmail extends PatientEmail {
 
     public void formContent() {
         StringBuilder s = new StringBuilder("");
+        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
+        String carePlanType = "NONE";
+        String workingCarePlan = "NONE";
+        Integer resourceCount = 0;
+        Integer loopCount = 0;
+        ArrayList<String> suggestedCommunities = new ArrayList<>();
+
+        // find the type of the first "open" care plan
+        if (patient.getReferralList() != null) {
+            for (String carePlanID : patient.getReferralList()) {
+                if (!carePlanType.equals("NONE"))
+                    break;
+                for (CarePlan carePlan : Utility.carePlan_list) {
+                    if (carePlan.getId().equals(carePlanID)) {
+                        if (carePlan.getStatus().equals("OPENED")) {
+                            carePlanType = carePlan.getType();
+                            workingCarePlan = carePlan.getId();
+                        }
+                    }
+                }
+            }
+        }
+
         s.append(greeting)
                 .append("I hope you are doing well! ")
                 .append("Based on ");
@@ -43,22 +70,48 @@ public class InitialSuggestionsEmail extends PatientEmail {
                 .append("know what your thoughts are about them!\n\n");
         // TODO insert community resource suggestions
 
-        /*(Set<String> keys = patient.getDistanceSortedCommunities().keySet();
-        for (String key: keys){
-            Log.e("key", key);
-            Object o = patient.getDistanceSortedCommunities().get(key);
-            Log.e("value", o.toString());
-            for (Community community : Utility.community_list) {
-                if (community.getId().equals(o.toString())) {
-                    s.append(community.getName() + "\n");
+        if (!carePlanType.equals("NONE")) {
+            for (Object key : keys) {
+                if (loopCount >= patient.getDistanceSortedCommunities().size() || resourceCount >= 5)
                     break;
+
+                Log.e("key", key.toString());
+                Object o = patient.getDistanceSortedCommunities().get(key);
+                Log.e("id", o.toString());
+                for (Community community : Utility.community_list) {
+                    if (community.getId().equals(o.toString())) {
+                        if (carePlanType.equals("Diet Plan") && community.getCommunityType().equals("nutritionist")) {
+                            s.append(community.getName() + "\n");
+                            s.append(community.getStreetAddress() + "\n");
+                            s.append(community.getCity() + ", " + community.getState() + "   " + community.getZipcode() + "\n");
+                            s.append(community.getPhoneNumber() + "\n");
+                            s.append(community.getEmailAddress() + "\n\n");
+                            suggestedCommunities.add(community.getId());
+                            resourceCount++;
+                            loopCount++;
+                        } else if (carePlanType.equals("Exercise Plan") && community.getCommunityType().equals("physical")) {
+                            s.append(community.getName() + "\n");
+                            s.append(community.getStreetAddress() + "\n");
+                            s.append(community.getCity() + ", " + community.getState() + "   " + community.getZipcode() + "\n");
+                            s.append(community.getPhoneNumber() + "\n");
+                            s.append(community.getEmailAddress() + "\n\n");
+                            suggestedCommunities.add(community.getId());
+                            resourceCount++;
+                            loopCount++;
+                        } else {
+                            loopCount++;
+                        }
+                        break;
+                    }
                 }
             }
-        }*/
+            if (!patient.getSuggestedCommunities().containsKey(workingCarePlan)) {
+                patient.addSuggestedCommunities(workingCarePlan, suggestedCommunities);
+            }
+        }
+        else
+            s.append("! NO OPEN CARE PLAN !");
 
-        Log.e("treeMapSize", Integer.toString(patient.getDistanceSortedCommunities().size()));
-
-        s.append("<insert community resource suggestions here>\n\n");
         s.append(signature);
         content = s.toString();
     }
