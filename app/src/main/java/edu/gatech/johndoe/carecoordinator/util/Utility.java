@@ -265,8 +265,6 @@ public class Utility {
         if (!patient.getDistanceSortedCommunities().isEmpty())
             return;
 
-        Log.e("updating", "sorting");
-
         //sort communities that already have lat/long stored in database
         for (Community community : community_list){
             if (community.getLatitude() != 0 && community.getLongitude() != 0) {

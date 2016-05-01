@@ -26,6 +26,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
@@ -58,6 +59,11 @@ public class PatientDetailFragment extends Fragment {
         if (getArguments() != null) {
             patient = new Gson().fromJson(getArguments().getString(ARG_PATIENT), Patient.class);
             carePlanList = new Gson().fromJson(getArguments().getString(ARG_PATIENT_REFERRALS), listType);
+        }
+        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
+        Log.e("in", "onCreate");
+        for (Object o : keys) {
+            Log.e("onCreateKey", o.toString());
         }
     }
 
@@ -176,6 +182,11 @@ public class PatientDetailFragment extends Fragment {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
+        Log.e("in", "setPatient");
+        for (Object o : keys){
+            Log.e("setPatientKey", o.toString());
+        }
     }
 
     private void sendPatientEmail(int selectedMenuId) {

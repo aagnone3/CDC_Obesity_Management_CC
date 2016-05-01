@@ -75,9 +75,7 @@ public class InitialSuggestionsEmail extends PatientEmail {
                 if (loopCount >= patient.getDistanceSortedCommunities().size() || resourceCount >= 5)
                     break;
 
-                Log.e("key", key.toString());
                 Object o = patient.getDistanceSortedCommunities().get(key);
-                Log.e("id", o.toString());
                 for (Community community : Utility.community_list) {
                     if (community.getId().equals(o.toString())) {
                         if (carePlanType.equals("Diet Plan") && community.getCommunityType().equals("nutritionist")) {

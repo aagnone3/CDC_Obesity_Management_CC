@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.R;
@@ -220,15 +221,13 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                 currentPatient = patient;
 
                 if (patient.getLatitude() != 0 && patient.getLongitude() != 0) {
-                    Utility.sortCommunitiesByDistance(currentPatient);
-                    Log.e("size", Integer.toString(patient.getDistanceSortedCommunities().size()));
+                    Utility.sortCommunitiesByDistance(patient);
                     detailFragment.setPatient(patient);
                 }
                 else {
                     Utility.updatePatientLatLong(patient, new OnLatLongUpdateListener() {
                         @Override
                         public void onUpdate(double[] coordinates) {
-                            Log.e("patient", "adapter2");
                             Utility.sortCommunitiesByDistance(patient);
                             detailFragment.setPatient(patient);
                         }
