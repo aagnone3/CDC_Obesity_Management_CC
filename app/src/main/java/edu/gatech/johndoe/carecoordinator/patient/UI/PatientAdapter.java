@@ -222,14 +222,14 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
 
                 if (patient.getLatitude() != 0 && patient.getLongitude() != 0) {
                     Utility.sortCommunitiesByDistance(patient);
-                    detailFragment.setPatient(patient);
+                    detailFragment.setEmailPatient(patient);
                 }
                 else {
                     Utility.updatePatientLatLong(patient, new OnLatLongUpdateListener() {
                         @Override
                         public void onUpdate(double[] coordinates) {
                             Utility.sortCommunitiesByDistance(patient);
-                            detailFragment.setPatient(patient);
+                            detailFragment.setEmailPatient(patient);
                         }
                     });
                 }

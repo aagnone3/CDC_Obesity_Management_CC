@@ -40,6 +40,7 @@ public class PatientDetailFragment extends Fragment {
     private static final String ARG_PATIENT = "patient";
     private static final String ARG_PATIENT_REFERRALS = "referralList_in_patient";
     private Patient patient;
+    private Patient emailPatient;
     private List<CarePlan> carePlanList;
     private OnFragmentInteractionListener mListener;
     Type listType = new TypeToken<ArrayList<CarePlan>>() {}.getType();
@@ -56,14 +57,14 @@ public class PatientDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
+//        Log.e("in", "onCreate");
+//        for (Object o : keys) {
+//            Log.e("onCreateKey", o.toString());
+//        }
         if (getArguments() != null) {
             patient = new Gson().fromJson(getArguments().getString(ARG_PATIENT), Patient.class);
             carePlanList = new Gson().fromJson(getArguments().getString(ARG_PATIENT_REFERRALS), listType);
-        }
-        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
-        Log.e("in", "onCreate");
-        for (Object o : keys) {
-            Log.e("onCreateKey", o.toString());
         }
     }
 
@@ -182,18 +183,22 @@ public class PatientDetailFragment extends Fragment {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
-        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
-        Log.e("in", "setPatient");
-        for (Object o : keys){
-            Log.e("setPatientKey", o.toString());
-        }
+//        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
+//        Log.e("in", "setPatient");
+//        for (Object o : keys){
+//            Log.e("setPatientKey", o.toString());
+//        }
+    }
+
+    public void setEmailPatient(Patient patient) {
+        this.emailPatient = patient;
     }
 
     private void sendPatientEmail(int selectedMenuId) {
         // Email intent
         PatientEmail email = PatientEmailFactory.getEmailBody(
                 selectedMenuId,
-                patient);
+                emailPatient);
         try {
             startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
             Log.i("Finished email...", "");

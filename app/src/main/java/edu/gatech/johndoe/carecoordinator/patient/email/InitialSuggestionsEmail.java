@@ -72,6 +72,7 @@ public class InitialSuggestionsEmail extends PatientEmail {
 
         if (!carePlanType.equals("NONE")) {
             for (Object key : keys) {
+                Log.e("key", key.toString());
                 if (loopCount >= patient.getDistanceSortedCommunities().size() || resourceCount >= 5)
                     break;
 
