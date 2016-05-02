@@ -192,13 +192,32 @@
             android:layout_below="@id/care_plan_detail_label"
             android:layout_alignStart="@id/care_plan_detail_label" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/community_suggestion_label"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_below="@id/care_plan_detail"
+            android:layout_alignStart="@id/care_plan_detail"
+            android:layout_marginTop="12dp"
+            android:text="@string/suggested_community" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/community_suggestion_label"
+            android:layout_alignStart="@id/community_suggestion_label"
+            android:layout_marginTop="12dp"
+            android:id="@+id/community_suggestion_list" />
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Reviewed"
             android:id="@+id/buttonreviewed"
-            android:layout_below="@+id/care_plan_detail"
-            android:layout_toEndOf="@+id/care_plan_detail"
+            android:layout_below="@+id/community_suggestion_list"
+            android:layout_alignStart="@id/community_suggestion_list"
             android:layout_marginTop="50dp" />
 
         <Button
@@ -207,8 +226,8 @@
             android:text="E-Referral"
             android:id="@+id/buttonereferral"
             android:layout_marginStart="36dp"
-            android:layout_alignTop="@+id/buttonreviewed"
-            android:layout_toEndOf="@+id/buttonreviewed" />
+            android:layout_toEndOf="@id/buttonreviewed"
+            android:layout_alignTop="@id/buttonreviewed"/>
 
     </RelativeLayout>
 

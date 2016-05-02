@@ -219,19 +219,21 @@ public class PatientAdapter extends RecyclerView.Adapter<PatientAdapter.PatientH
                     currentPosition = getLayoutPosition();
                 }
                 currentPatient = patient;
-
-                if (patient.getLatitude() != 0 && patient.getLongitude() != 0) {
-                    Utility.sortCommunitiesByDistance(patient);
-                    detailFragment.setEmailPatient(patient);
-                }
-                else {
-                    Utility.updatePatientLatLong(patient, new OnLatLongUpdateListener() {
-                        @Override
-                        public void onUpdate(double[] coordinates) {
-                            Utility.sortCommunitiesByDistance(patient);
-                            detailFragment.setEmailPatient(patient);
-                        }
-                    });
+                try {
+                    if (patient.getLatitude() != 0 && patient.getLongitude() != 0) {
+                        Utility.sortCommunitiesByDistance(patient);
+                        detailFragment.setEmailPatient(patient);
+                    } else {
+                        Utility.updatePatientLatLong(patient, new OnLatLongUpdateListener() {
+                            @Override
+                            public void onUpdate(double[] coordinates) {
+                                Utility.sortCommunitiesByDistance(patient);
+                                detailFragment.setEmailPatient(patient);
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    System.out.println("Null Exception for lat and long");
                 }
 
             }

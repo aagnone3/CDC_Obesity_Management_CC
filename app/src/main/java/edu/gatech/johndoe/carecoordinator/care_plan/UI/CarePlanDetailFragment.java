@@ -1,36 +1,55 @@
 package edu.gatech.johndoe.carecoordinator.care_plan.UI;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import edu.gatech.johndoe.carecoordinator.ContentListFragment;
 import edu.gatech.johndoe.carecoordinator.MainActivity;
 import edu.gatech.johndoe.carecoordinator.OnFragmentInteractionListener;
 import edu.gatech.johndoe.carecoordinator.R;
 import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
+import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.patient.*;
+import edu.gatech.johndoe.carecoordinator.patient.UI.InnerCarePlanAdapter;
 import edu.gatech.johndoe.carecoordinator.patient.UI.PatientDetailFragment;
+import edu.gatech.johndoe.carecoordinator.patient.email.FinalReferralEmail;
+import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmail;
+import edu.gatech.johndoe.carecoordinator.patient.email.PatientEmailFactory;
+import edu.gatech.johndoe.carecoordinator.util.OnLatLongUpdateListener;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 public class CarePlanDetailFragment extends Fragment {
@@ -41,6 +60,10 @@ public class CarePlanDetailFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private String patientConditionText;
     private Patient patient;
+    private Map<String, ArrayList<String>> suggestedCommunitiesMap = new HashMap<>();
+    private ArrayList<String> suggestedCommunities = new ArrayList<>();
+    private RadioButton firstR, secondR, thirdR, forthR, fifthR;
+    private ArrayList<String> communityList = new ArrayList<String>();
 
     /**
      *
@@ -105,6 +128,98 @@ public class CarePlanDetailFragment extends Fragment {
 
         };
 
+        Integer resourceCount = 0;
+        Integer loopCount = 0;
+        Set<Double> keys = patient.getDistanceSortedCommunities().keySet();
+        String carePlanType = "NONE";
+        String workingCarePlan = "NONE";
+
+        Geocoder coder = new Geocoder(getActivity());
+        List<Address> address;
+
+        try {
+            address = coder.getFromLocationName(patient.getFullAddress(),1);
+            if (address==null) {
+                return null;
+            }
+            Address location=address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+            System.out.println(location.getLatitude() + "  " + location.getLongitude());
+            patient.setLatitude(location.getLatitude());
+            patient.setLongitude(location.getLongitude());
+            Utility.sortCommunitiesByDistance(patient);
+        } catch (Exception e) {
+            System.out.println("wrong");
+        }
+
+//
+        if (patient.getReferralList() != null) {
+            for (String carePlanID : patient.getReferralList()) {
+                if (!carePlanType.equals("NONE"))
+                    break;
+                for (CarePlan carePlan : Utility.carePlan_list) {
+                    if (carePlan.getId().equals(carePlanID)) {
+                        if (carePlan.getStatus().equals("OPENED")) {
+                            carePlanType = carePlan.getType();
+                            workingCarePlan = carePlan.getId();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!carePlanType.equals("NONE")) {
+            for (Object key : keys) {
+                Log.e("key", key.toString());
+                if (loopCount >= patient.getDistanceSortedCommunities().size() || resourceCount >= 5)
+                    break;
+
+                Object o = patient.getDistanceSortedCommunities().get(key);
+                for (Community community : Utility.community_list) {
+                    if (community.getId().equals(o.toString())) {
+                        if (carePlanType.equals("Diet Plan") && community.getCommunityType().equals("nutritionist")) {
+
+                            suggestedCommunities.add(community.getId());
+                            resourceCount++;
+                            loopCount++;
+                        } else if (carePlanType.equals("Exercise Plan") && community.getCommunityType().equals("physical")) {
+                            suggestedCommunities.add(community.getId());
+                            resourceCount++;
+                            loopCount++;
+                        } else {
+                            loopCount++;
+                        }
+                        break;
+                    }
+                }
+            }
+            if (!patient.getSuggestedCommunities().containsKey(workingCarePlan)) {
+                patient.addSuggestedCommunities(workingCarePlan, suggestedCommunities);
+            }
+        }
+
+        suggestedCommunitiesMap = patient.getSuggestedCommunities();
+        communityList = new ArrayList<String>();
+        if (!suggestedCommunitiesMap.keySet().isEmpty()) {
+            System.out.println("keyset " + suggestedCommunitiesMap.keySet());
+            String b = "";
+            for (String a : suggestedCommunitiesMap.keySet()) {
+                b = a;
+                System.out.println("yeah " + a);
+            }
+            System.out.println(suggestedCommunitiesMap.get(b));
+            ArrayList<String> c = suggestedCommunitiesMap.get(b);
+            for (String a : c) {
+                for (Community com : Utility.community_list) {
+                    if (a.equals(com.getId())) {
+                        communityList.add(com.getName());
+                        System.out.println("Suggested name " + com.getName());
+                    }
+                }
+            }
+        }
+
         TextView physician_name_short = (TextView) view.findViewById(R.id.care_plan_physician_name);
         TextView patient_name_short = (TextView) view.findViewById(R.id.care_plan_patient_name);
         TextView patient_name = (TextView) view.findViewById(R.id.patient_name2);
@@ -122,6 +237,7 @@ public class CarePlanDetailFragment extends Fragment {
         imageId = getResources().getIdentifier(carePlan.getPhysicianImageName(), "drawable", getActivity().getPackageName());
         image = (ImageView) view.findViewById(R.id.image_physician);
         image.setImageResource(imageId);
+        RecyclerView list = (RecyclerView) view.findViewById(R.id.community_suggestion_list);
         //
         type.setText(carePlan.getType());
         details.setText(carePlan.getDetail());
@@ -144,13 +260,10 @@ public class CarePlanDetailFragment extends Fragment {
             }
 
         } else if (carePlan.getStatus().equals("OPENED")){
-            System.out.println("nothing");
             System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
         } else if (carePlan.getStatus().equals("ACTIVE")) {
-            System.out.println("nothing");
             System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
         } else {
-            System.out.println("nothing");
             System.out.println(carePlan.getStatus()+ " and " + carePlan.getId());
         }
 
@@ -214,50 +327,20 @@ public class CarePlanDetailFragment extends Fragment {
         erefButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
-//                Map<String, Object> cp = new HashMap<String, Object>();
-//                for (int i=1; i < Utility.carePlan_list.size()+1; i++) {
-//                    Firebase alanRef = ref.child("" +i);
-//                    cp.put("status", "UNOPENED");
-//                    alanRef.updateChildren(cp);
-//                    cp.clear();
-//                }
-
-                AlertDialog.Builder helpBuilder = new AlertDialog.Builder(getActivity());
-                helpBuilder.setTitle("Pop Up");
-                helpBuilder.setMessage("This is a Simple Pop Up");
-                helpBuilder.setPositiveButton("Ok",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Do nothing but close the dialog
-                                Toast.makeText(getActivity().getApplicationContext(), "E-referral Generated",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                helpBuilder.setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Do nothing but close the dialog
-                                Toast.makeText(getActivity().getApplicationContext(), "Cancelled",
-                                        Toast.LENGTH_SHORT).show();
-                            }
-                        });
-
-                // Remember, create doesn't show the dialog
-                AlertDialog helpDialog = helpBuilder.create();
-                helpDialog.show();
-                if (carePlan.isPending()) {
-
-                } else {
-
-                }
-
+                showPopUp();
             }
         });
 
+
+        if (communityList.size() < 1) {
+            communityList.add("No Suggested Community");
+        }
+        list.setLayoutManager(new LinearLayoutManager(getContext()));
+        list.setAdapter(new InnerCommunityAdapter(communityList, getActivity().getSupportFragmentManager()));
+        list.setHasFixedSize(true);
+        list.setVisibility(View.VISIBLE);
+
         ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
-//                    contentListFragment.updateCarePlanStatus();
         contentListFragment.getAdapter().notifyDataSetChanged();
 
         return view;
@@ -294,4 +377,47 @@ public class CarePlanDetailFragment extends Fragment {
 
         outState.putString("carePlan", new Gson().toJson(carePlan));
     }
+    private final void showPopUp() {
+
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.setTitle("Woo");
+        dialog.setContentView(R.layout.pop_up);
+        List<String> stringList=new ArrayList<>();  // here is list
+        for(int i=0;i<communityList.size();i++) {
+            stringList.add(communityList.get(i));
+        }
+        RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio_group);
+
+        for(int i=0;i<stringList.size();i++){
+            RadioButton rb=new RadioButton(getActivity()); // dynamically creating RadioButton and adding to RadioGroup.
+            rb.setText(stringList.get(i));
+            rg.addView(rb);
+        }
+
+
+        dialog.show();
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                int childCount = group.getChildCount();
+                int childCount = communityList.size();
+                for (int x = 0; x < childCount; x++) {
+                    RadioButton btn = (RadioButton) group.getChildAt(x);
+                    if (btn.getId() == checkedId) {
+                        Log.e("selected RadioButton->",btn.getText().toString());
+                        try {
+                            // activate the final referral email
+                            System.out.println("hello?");
+//                            Toast.makeText(getActivity().getApplicationContext(), "final referral" + btn.getText(), Toast.LENGTH_LONG);
+                        }
+                        catch (android.content.ActivityNotFoundException ex) {
+                            Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
 }

@@ -131,7 +131,9 @@ public class PatientDetailFragment extends Fragment {
                 popup.getMenuInflater().inflate(R.menu.email_select, popup.getMenu());
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
+                        System.out.println(item.getTitle());
                         sendPatientEmail(item.getItemId());
+
                         return true;
                     }
                 });
@@ -196,6 +198,8 @@ public class PatientDetailFragment extends Fragment {
 
     private void sendPatientEmail(int selectedMenuId) {
         // Email intent
+
+        System.out.println("selectedMenuId and emailPatient " + selectedMenuId + " " + emailPatient);
         PatientEmail email = PatientEmailFactory.getEmailBody(
                 selectedMenuId,
                 emailPatient);
