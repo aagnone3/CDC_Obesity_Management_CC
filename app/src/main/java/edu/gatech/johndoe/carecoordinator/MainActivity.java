@@ -173,6 +173,11 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         searchView = (SearchView) searchMenuItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
+        menu.findItem(R.id.sort).setVisible(currentNavigationItemId == R.id.nav_communities);
+        menu.findItem(R.id.filter).setVisible(currentNavigationItemId == R.id.nav_communities);
+        menu.findItem(R.id.search).setVisible(currentNavigationItemId == R.id.nav_communities || currentNavigationItemId == R.id.nav_patients).collapseActionView();
+        searchView.setQuery("", false);
+
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem item) {
