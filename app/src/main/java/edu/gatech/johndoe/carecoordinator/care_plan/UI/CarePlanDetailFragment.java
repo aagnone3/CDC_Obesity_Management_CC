@@ -292,31 +292,31 @@ public class CarePlanDetailFragment extends Fragment {
         }
 
 
-        Button reviewedButton = (Button) view.findViewById(R.id.buttonreviewed);
+        Button completedButton = (Button) view.findViewById(R.id.button_completed);
         Button erefButton = (Button) view.findViewById(R.id.buttonereferral);
-        reviewedButton.setOnClickListener(new View.OnClickListener() {
+        completedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (patient != null) {
+                if (patient != null && carePlan.getStatus().equals("ACTIVE")) {
                     System.out.println("CarePlan ID " + carePlan.getId());
                     for (CarePlan cp : Utility.carePlan_list) {
                         if (cp.getId().equals(carePlan.getId())) {
                             Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
                             Firebase alanRef = ref.child(carePlan.getId());
-                            cp.setStatus("ACTIVE");
+                            cp.setStatus("COMPLETED");
                             Map<String, Object> cp2 = new HashMap<String, Object>();
                             alanRef.updateChildren(cp2);
-                            cp2.put("status", "ACTIVE");
+                            cp2.put("status", "COMPLETED");
                             alanRef.updateChildren(cp2);
 //                            System.out.println("Updated");
                         }
                     }
                     ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
-//                    contentListFragment.updateCarePlanStatus();
+
                     contentListFragment.getAdapter().notifyDataSetChanged();
                 } else {
-                    System.out.println("null patient");
+                    Toast.makeText(getActivity().getApplicationContext(), "Email the Patient First", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -325,8 +325,7 @@ public class CarePlanDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showPopUp();
-                ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
-                contentListFragment.getAdapter().notifyDataSetChanged();
+
             }
         });
 
@@ -412,19 +411,22 @@ public class CarePlanDetailFragment extends Fragment {
                                         2131624181,
                                         patient);
                                 try {
-                                    startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
-                                    Log.i("Finished email...", "");
                                     for (CarePlan cp : Utility.carePlan_list) {
                                         if (cp.getId().equals(carePlan.getId())) {
                                             Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
                                             Firebase alanRef = ref.child(carePlan.getId());
-                                            cp.setStatus("COMPLETED");
+                                            cp.setStatus("ACTIVE");
                                             Map<String, Object> cp2 = new HashMap<String, Object>();
                                             alanRef.updateChildren(cp2);
-                                            cp2.put("status", "COMPLETED");
+                                            cp2.put("status", "ACTIVE");
                                             alanRef.updateChildren(cp2);
                                         }
                                     }
+                                    ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+                                    contentListFragment.getAdapter().notifyDataSetChanged();
+                                    startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
+                                    Log.i("Finished email...", "");
+
                                     System.out.println("helo");
 
                                 }

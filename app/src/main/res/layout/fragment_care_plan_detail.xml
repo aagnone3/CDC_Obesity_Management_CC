@@ -214,8 +214,8 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reviewed"
-            android:id="@+id/buttonreviewed"
+            android:text="Finished"
+            android:id="@+id/button_completed"
             android:layout_below="@+id/community_suggestion_list"
             android:layout_alignStart="@id/community_suggestion_list"
             android:layout_marginTop="50dp" />
@@ -226,8 +226,8 @@
             android:text="E-Referral"
             android:id="@+id/buttonereferral"
             android:layout_marginStart="36dp"
-            android:layout_toEndOf="@id/buttonreviewed"
-            android:layout_alignTop="@id/buttonreviewed"/>
+            android:layout_toEndOf="@id/button_completed"
+            android:layout_alignTop="@id/button_completed"/>
 
     </RelativeLayout>
 
