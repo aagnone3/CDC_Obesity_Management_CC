@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,10 +166,15 @@ public class CommunityDetailFragment extends Fragment {
 
         try {
             String fullAddress = URLEncoder.encode(community.fullAddress(), "UTF-8");
+            String patientAddresses = new String();
+            for (Patient patient : Utility.patient_list){
+                patientAddresses = patientAddresses + "&markers=color:red|";
+                patientAddresses = patientAddresses + URLEncoder.encode(patient.getFullAddress(), "UTF-8");
+            }
             new Utility.ImageDownloadTask(mapImageView).execute(
                     "https://maps.googleapis.com/maps/api/staticmap?center="
-                    + fullAddress + "&zoom=16&size=500x500&markers=color:blue|"
-                    + fullAddress + "&maptype=roadmap");
+                    + fullAddress + "&size=500x500&markers=color:blue|"
+                    + fullAddress + patientAddresses + "&maptype=roadmap");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
