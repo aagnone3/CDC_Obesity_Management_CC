@@ -54,6 +54,7 @@ public class Patient {
     private TreeMap distanceSortedCommunities = new TreeMap<>();
     private Map<String, ArrayList<String>> suggestedCommunities = new HashMap<>();
     private Random random;
+    private Community workingCommunity;
 
 
     public Patient() {
@@ -331,6 +332,14 @@ public class Patient {
 
     public void setSuggestedCommunities(Map suggestedCommunities) {
         this.suggestedCommunities = suggestedCommunities;
+    }
+
+    public Community getWorkingCommunity() {
+        return workingCommunity;
+    }
+
+    public void setWorkingCommunity(Community workingCommunity) {
+        this.workingCommunity = workingCommunity;
     }
 
     public String getFullAddress() {

@@ -1,11 +1,17 @@
 package edu.gatech.johndoe.carecoordinator.patient.email;
 
+import android.content.Intent;
+
+import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
+import edu.gatech.johndoe.carecoordinator.util.Utility;
 
 /**
  * Handles forming the content for a final referral email with the patient.
  */
 public class FinalReferralEmail extends PatientEmail {
+
+    private Community finalCommunity;
 
     public FinalReferralEmail() {
         this(null);
@@ -17,18 +23,24 @@ public class FinalReferralEmail extends PatientEmail {
         subject = "Final CarePlan from your CDC Care Coordinator!";
         formContent();
         formIntent();
+        patient.setWorkingCommunity(null);
     }
 
     public void formContent() {
+        finalCommunity = patient.getWorkingCommunity();
+
+        finalCommunity.addPatient(patient);
+        finalCommunity.setPatientCount(finalCommunity.getPatientCount() + 1);
+        Utility.saveCommunityResource(finalCommunity);
         //
         StringBuilder s = new StringBuilder("");
         s.append(greeting)
                 .append("We are excited to let you know that we have completed your referral to ")
-                // TODO community resource name
-                .append("<community resource>!\n\n");
+
+                .append(finalCommunity.getName() + "!\n\n");
         // TODO give a bunch of details about the community resource and the referral. Maybe attach a generated document
         s.append("At your convenience, take some time to look over these details, and give ")
-                // TODO community resource name
+                .append(finalCommunity.getName())
                 .append(" a call when you are are ready to get started!");
         s.append(signature);
         content = s.toString();

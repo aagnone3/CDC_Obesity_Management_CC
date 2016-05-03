@@ -59,6 +59,8 @@ public abstract class PatientEmail {
         emailIntent.setType(EMAIL_INTENT_TYPE);
 
         emailIntent.putExtra(Intent.EXTRA_CC, new String[]{CC_RECIPIENT});
+        if (patient.getWorkingCommunity()!=null)
+            emailIntent.putExtra(Intent.EXTRA_CC, new String[]{patient.getWorkingCommunity().getEmailAddress()});
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         emailIntent.putExtra(Intent.EXTRA_TEXT, content);
 

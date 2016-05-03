@@ -167,9 +167,13 @@ public class CommunityDetailFragment extends Fragment {
         try {
             String fullAddress = URLEncoder.encode(community.fullAddress(), "UTF-8");
             String patientAddresses = new String();
-            for (Patient patient : Utility.patient_list){
-                patientAddresses = patientAddresses + "&markers=color:red|";
-                patientAddresses = patientAddresses + URLEncoder.encode(patient.getFullAddress(), "UTF-8");
+            for (String patientID : community.getPatientList()){
+                for (Patient patient : Utility.patient_list){
+                    if (patient.getId().equals(patientID)){
+                        patientAddresses = patientAddresses + "&markers=color:red|";
+                        patientAddresses = patientAddresses + URLEncoder.encode(patient.getFullAddress(), "UTF-8");
+                    }
+                }
             }
             new Utility.ImageDownloadTask(mapImageView).execute(
                     "https://maps.googleapis.com/maps/api/staticmap?center="

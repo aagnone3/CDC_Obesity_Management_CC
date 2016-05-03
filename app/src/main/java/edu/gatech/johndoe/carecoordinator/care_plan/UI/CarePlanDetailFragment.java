@@ -64,6 +64,7 @@ public class CarePlanDetailFragment extends Fragment {
     private ArrayList<String> suggestedCommunities = new ArrayList<>();
     private RadioButton firstR, secondR, thirdR, forthR, fifthR;
     private ArrayList<String> communityList = new ArrayList<String>();
+    private ArrayList<String> communityListIDs = new ArrayList<String>();
 
     /**
      *
@@ -211,6 +212,7 @@ public class CarePlanDetailFragment extends Fragment {
                 for (Community com : Utility.community_list) {
                     if (a.equals(com.getId())) {
                         communityList.add(com.getName());
+                        communityListIDs.add(com.getId());
 //                        System.out.println("Suggested name " + com.getName());
                     }
                 }
@@ -407,12 +409,18 @@ public class CarePlanDetailFragment extends Fragment {
                             Log.e("selected RadioButton->",btn.getText().toString());
                             try {
                                 // activate the final referral email
+                                for (Community community : Utility.community_list){
+                                    if (community.getId().equals(communityListIDs.get(btn.getId()-1))){
+                                        patient.setWorkingCommunity(community);
+                                    }
+                                }
                                 PatientEmail email = PatientEmailFactory.getEmailBody(
                                         2131624181,
                                         patient);
                                 try {
                                     for (CarePlan cp : Utility.carePlan_list) {
                                         if (cp.getId().equals(carePlan.getId())) {
+                                            Utility.activateCarePlan(cp);
                                             Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
                                             Firebase alanRef = ref.child(carePlan.getId());
                                             cp.setStatus("ACTIVE");

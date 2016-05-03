@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class Community {
 
     private int patientCount;
 
-    public List<String> patientList;
+    public List<String> patientList = new ArrayList<>();
 
     public List<Map<String, String>> hours;
 
