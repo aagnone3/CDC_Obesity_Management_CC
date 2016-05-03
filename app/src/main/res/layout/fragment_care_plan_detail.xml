@@ -54,181 +54,187 @@
             android:layout_marginStart="@dimen/image_pad"
             android:src="@drawable/anthony" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/care_plan_type_label"
-            android:layout_below="@id/image_physician"
-            android:layout_marginTop="12dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/care_plan_type" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/care_plan_type"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/care_plan_type_label"
-            android:layout_alignTop="@id/care_plan_type_label"
-            android:layout_marginStart="10dp" />
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:layout_below="@id/image_physician">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/care_plan_type_label"
+                android:layout_marginTop="12dp"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="@string/care_plan_type" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/care_plan_type"
+                android:textSize="20sp"
+                android:layout_toEndOf="@id/care_plan_type_label"
+                android:layout_alignTop="@id/care_plan_type_label"
+                android:layout_marginStart="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/patient_name_label2"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="12dp"
-            android:layout_below="@id/care_plan_type_label"
-            android:text="@string/patient_name" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/patient_name_label2"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_below="@id/care_plan_type_label"
+                android:text="@string/patient_name" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/patient_name2"
-            android:textSize="20sp"
-            android:textColor="#003bfc"
-            android:layout_toEndOf="@id/patient_name_label2"
-            android:layout_alignTop="@id/patient_name_label2"
-            android:layout_marginStart="10dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/patient_name2"
+                android:textSize="20sp"
+                android:textColor="#003bfc"
+                android:layout_toEndOf="@id/patient_name_label2"
+                android:layout_alignTop="@id/patient_name_label2"
+                android:layout_marginStart="10dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/physician_name_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/patient_name2"
-            android:layout_alignStart="@id/patient_name_label2"
-            android:layout_marginTop="12dp"
-            android:text="@string/physician_name" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/physician_name_label"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_below="@id/patient_name2"
+                android:layout_alignStart="@id/patient_name_label2"
+                android:layout_marginTop="12dp"
+                android:text="@string/physician_name" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/physician_name"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/physician_name_label"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/physician_name_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/physician_name"
+                android:textSize="20sp"
+                android:layout_toEndOf="@id/physician_name_label"
+                android:layout_marginStart="10dp"
+                android:layout_alignTop="@id/physician_name_label" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/care_plan_condition_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/physician_name"
-            android:layout_alignStart="@+id/physician_name_label"
-            android:layout_marginTop="12dp"
-            android:text="@string/care_plan_condition_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/care_plan_condition_label"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_below="@id/physician_name"
+                android:layout_alignStart="@+id/physician_name_label"
+                android:layout_marginTop="12dp"
+                android:text="@string/care_plan_condition_label" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/care_plan_condition"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/care_plan_condition_label"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/care_plan_condition_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/care_plan_condition"
+                android:textSize="20sp"
+                android:layout_toEndOf="@id/care_plan_condition_label"
+                android:layout_marginStart="10dp"
+                android:layout_alignTop="@id/care_plan_condition_label" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/care_plan_goal_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/care_plan_condition"
-            android:layout_alignStart="@+id/care_plan_condition_label"
-            android:layout_marginTop="12dp"
-            android:text="@string/care_plan_goal_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/care_plan_goal_label"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_below="@id/care_plan_condition"
+                android:layout_alignStart="@+id/care_plan_condition_label"
+                android:layout_marginTop="12dp"
+                android:text="@string/care_plan_goal_label" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/care_plan_goal"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/care_plan_goal_label"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/care_plan_goal_label"
-            android:text="@string/care_plan_goal_text" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/care_plan_goal"
+                android:textSize="20sp"
+                android:layout_toEndOf="@id/care_plan_goal_label"
+                android:layout_marginStart="10dp"
+                android:layout_alignTop="@id/care_plan_goal_label"
+                android:text="@string/care_plan_goal_text" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:id="@+id/care_plan_period_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/care_plan_goal"
-            android:layout_alignStart="@+id/care_plan_goal_label"
-            android:layout_marginTop="12dp"
-            android:text="@string/care_plan_period_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:id="@+id/care_plan_period_label"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_below="@id/care_plan_goal"
+                android:layout_alignStart="@+id/care_plan_goal_label"
+                android:layout_marginTop="12dp"
+                android:text="@string/care_plan_period_label" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/care_plan_period"
-            android:textSize="20sp"
-            android:layout_toEndOf="@id/care_plan_period_label"
-            android:layout_marginStart="10dp"
-            android:layout_alignTop="@id/care_plan_period_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/care_plan_period"
+                android:textSize="20sp"
+                android:layout_toEndOf="@id/care_plan_period_label"
+                android:layout_marginStart="10dp"
+                android:layout_alignTop="@id/care_plan_period_label" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/care_plan_detail_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/care_plan_period"
-            android:layout_alignStart="@id/care_plan_period_label"
-            android:layout_marginTop="12dp"
-            android:text="@string/details" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/care_plan_detail_label"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_below="@id/care_plan_period"
+                android:layout_alignStart="@id/care_plan_period_label"
+                android:layout_marginTop="12dp"
+                android:text="@string/details" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/care_plan_detail"
-            android:textSize="20sp"
-            android:layout_below="@id/care_plan_detail_label"
-            android:layout_alignStart="@id/care_plan_detail_label" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/care_plan_detail"
+                android:textSize="20sp"
+                android:layout_below="@id/care_plan_detail_label"
+                android:layout_alignStart="@id/care_plan_detail_label" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/community_suggestion_label"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_below="@id/care_plan_detail"
-            android:layout_alignStart="@id/care_plan_detail"
-            android:layout_marginTop="12dp"
-            android:text="@string/suggested_community" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/community_suggestion_label"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_below="@id/care_plan_detail"
+                android:layout_alignStart="@id/care_plan_detail"
+                android:layout_marginTop="12dp"
+                android:text="@string/suggested_community" />
 
-        <android.support.v7.widget.RecyclerView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/community_suggestion_label"
-            android:layout_alignStart="@id/community_suggestion_label"
-            android:layout_marginTop="12dp"
-            android:id="@+id/community_suggestion_list" />
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/community_suggestion_label"
+                android:layout_alignStart="@id/community_suggestion_label"
+                android:layout_marginTop="12dp"
+                android:id="@+id/community_suggestion_list" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Finished"
-            android:id="@+id/button_completed"
-            android:layout_below="@+id/community_suggestion_list"
-            android:layout_alignStart="@id/community_suggestion_list"
-            android:layout_marginTop="50dp" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finished"
+                android:id="@+id/button_completed"
+                android:layout_below="@+id/community_suggestion_list"
+                android:layout_alignStart="@id/community_suggestion_list"
+                android:layout_marginTop="50dp" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="E-Referral"
-            android:id="@+id/buttonereferral"
-            android:layout_marginStart="36dp"
-            android:layout_toEndOf="@id/button_completed"
-            android:layout_alignTop="@id/button_completed"/>
-
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="E-Referral"
+                android:id="@+id/buttonereferral"
+                android:layout_marginStart="36dp"
+                android:layout_toEndOf="@id/button_completed"
+                android:layout_alignTop="@id/button_completed"/>
+        </RelativeLayout>
     </RelativeLayout>
 
 </android.support.v4.widget.NestedScrollView>

@@ -7,7 +7,7 @@
             android:title="@string/email_select_suggestions" />
         <item android:id="@+id/menu_followup"
             android:title="@string/email_select_followup" />
-        <item android:id="@+id/menu_referral"
-            android:title="@string/email_select_referral" />
+        <!--<item android:id="@+id/menu_referral"-->
+            <!--android:title="@string/email_select_referral" />-->
     </group>
 </menu>

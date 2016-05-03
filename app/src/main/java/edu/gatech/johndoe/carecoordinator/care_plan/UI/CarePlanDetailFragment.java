@@ -301,22 +301,26 @@ public class CarePlanDetailFragment extends Fragment {
             public void onClick(View v) {
 
                 if (patient != null && carePlan.getStatus().equals("ACTIVE")) {
-                    System.out.println("CarePlan ID " + carePlan.getId());
-                    for (CarePlan cp : Utility.carePlan_list) {
-                        if (cp.getId().equals(carePlan.getId())) {
-                            Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
-                            Firebase alanRef = ref.child(carePlan.getId());
-                            cp.setStatus("COMPLETED");
-                            Map<String, Object> cp2 = new HashMap<String, Object>();
-                            alanRef.updateChildren(cp2);
-                            cp2.put("status", "COMPLETED");
-                            alanRef.updateChildren(cp2);
-//                            System.out.println("Updated");
+                    if (carePlan.getStatus().equals("COMPLETED")){
+                        Toast.makeText(getActivity().getApplicationContext(), "The care plan is already completed.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        System.out.println("CarePlan ID " + carePlan.getId());
+                        for (CarePlan cp : Utility.carePlan_list) {
+                            if (cp.getId().equals(carePlan.getId())) {
+                                Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                                Firebase alanRef = ref.child(carePlan.getId());
+                                cp.setStatus("COMPLETED");
+                                Map<String, Object> cp2 = new HashMap<String, Object>();
+                                alanRef.updateChildren(cp2);
+                                cp2.put("status", "COMPLETED");
+                                alanRef.updateChildren(cp2);
+                                //                            System.out.println("Updated");
+                            }
                         }
-                    }
-                    ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+                        ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
 
-                    contentListFragment.getAdapter().notifyDataSetChanged();
+                        contentListFragment.getAdapter().notifyDataSetChanged();
+                    }
                 } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Email the Patient First", Toast.LENGTH_SHORT).show();
                 }
@@ -435,7 +439,6 @@ public class CarePlanDetailFragment extends Fragment {
                                     startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
                                     Log.i("Finished email...", "");
 
-                                    System.out.println("helo");
 
                                 }
                                 catch (android.content.ActivityNotFoundException ex) {

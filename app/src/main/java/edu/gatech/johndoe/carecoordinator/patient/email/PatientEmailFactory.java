@@ -21,10 +21,12 @@ public class PatientEmailFactory {
         } else if (selectedMenuId == R.id.menu_followup) {
             // Follow up
             email = new FollowUpEmail(patient);
-        }  else if (selectedMenuId == R.id.menu_referral) {
-            // Final referral
-            email = new FinalReferralEmail(patient);
-        } else {
+        }
+//        else if (selectedMenuId == R.id.menu_referral) {
+//            // Final referral
+//            email = new FinalReferralEmail(patient);
+//        }
+        else {
             // Basic email to be filled by the coordinator
             email = new BasicEmail(patient);
         }
