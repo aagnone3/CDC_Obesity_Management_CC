@@ -39,13 +39,52 @@ public class CarePlanListAdapter extends RecyclerView.Adapter<CarePlanListAdapte
     public static int currentPosition;
     // update
     public CarePlanListAdapter(List<CarePlan> carePlan, int selectedPosition) {
-        Collections.sort(carePlan, new Comparator<CarePlan>() {
+
+        ArrayList<CarePlan> unopened = new ArrayList<>();
+        ArrayList<CarePlan> opened = new ArrayList<>();
+        ArrayList<CarePlan> active = new ArrayList<>();
+        ArrayList<CarePlan> complete = new ArrayList<>();
+
+        for (CarePlan cp: carePlan) {
+            if (cp.getStatus().equals("UNOPENED")) {
+                unopened.add(cp);
+            } else if (cp.getStatus().equals("OPENED")) {
+                opened.add(cp);
+            } else if (cp.getStatus().equals("ACTIVE")) {
+                active.add(cp);
+            } else {
+                complete.add(cp);
+            }
+        }
+        carePlan.clear();
+        Collections.sort(unopened, new Comparator<CarePlan>() {
             @Override
             public int compare(CarePlan lhs, CarePlan rhs) {
-
                 return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
             }
         });
+        Collections.sort(opened, new Comparator<CarePlan>() {
+            @Override
+            public int compare(CarePlan lhs, CarePlan rhs) {
+                return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
+            }
+        });
+        Collections.sort(active, new Comparator<CarePlan>() {
+            @Override
+            public int compare(CarePlan lhs, CarePlan rhs) {
+                return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
+            }
+        });
+        Collections.sort(complete, new Comparator<CarePlan>() {
+            @Override
+            public int compare(CarePlan lhs, CarePlan rhs) {
+                return rhs.getDateOfimport().compareTo(lhs.getDateOfimport());
+            }
+        });
+        carePlan.addAll(complete);
+        carePlan.addAll(active);
+        carePlan.addAll(opened);
+        carePlan.addAll(unopened);
         this.carePlen = carePlan;
         this.filteredCarePlan = new ArrayList<>(carePlan);
         this.selectedPosition = selectedPosition;
