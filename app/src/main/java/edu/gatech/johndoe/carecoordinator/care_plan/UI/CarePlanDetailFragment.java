@@ -145,12 +145,10 @@ public class CarePlanDetailFragment extends Fragment {
             Address location=address.get(0);
             location.getLatitude();
             location.getLongitude();
-            System.out.println(location.getLatitude() + "  " + location.getLongitude());
             patient.setLatitude(location.getLatitude());
             patient.setLongitude(location.getLongitude());
             Utility.sortCommunitiesByDistance(patient);
         } catch (Exception e) {
-            System.out.println("wrong");
         }
 
 //
@@ -202,19 +200,18 @@ public class CarePlanDetailFragment extends Fragment {
         suggestedCommunitiesMap = patient.getSuggestedCommunities();
         communityList = new ArrayList<String>();
         if (!suggestedCommunitiesMap.keySet().isEmpty()) {
-            System.out.println("keyset " + suggestedCommunitiesMap.keySet());
+//            System.out.println("keyset " + suggestedCommunitiesMap.keySet());
             String b = "";
             for (String a : suggestedCommunitiesMap.keySet()) {
                 b = a;
-                System.out.println("yeah " + a);
+
             }
-            System.out.println(suggestedCommunitiesMap.get(b));
             ArrayList<String> c = suggestedCommunitiesMap.get(b);
             for (String a : c) {
                 for (Community com : Utility.community_list) {
                     if (a.equals(com.getId())) {
                         communityList.add(com.getName());
-                        System.out.println("Suggested name " + com.getName());
+//                        System.out.println("Suggested name " + com.getName());
                     }
                 }
             }
@@ -328,6 +325,8 @@ public class CarePlanDetailFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 showPopUp();
+                ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+                contentListFragment.getAdapter().notifyDataSetChanged();
             }
         });
 
@@ -386,38 +385,65 @@ public class CarePlanDetailFragment extends Fragment {
         for(int i=0;i<communityList.size();i++) {
             stringList.add(communityList.get(i));
         }
-        RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio_group);
+        if (!communityList.get(0).equals("No Suggested Community")) {
+            RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio_group);
 
-        for(int i=0;i<stringList.size();i++){
-            RadioButton rb=new RadioButton(getActivity()); // dynamically creating RadioButton and adding to RadioGroup.
-            rb.setText(stringList.get(i));
-            rg.addView(rb);
-        }
+            for(int i=0;i<stringList.size();i++){
+                RadioButton rb=new RadioButton(getActivity()); // dynamically creating RadioButton and adding to RadioGroup.
+                rb.setText(stringList.get(i));
+                rg.addView(rb);
+            }
 
 
-        dialog.show();
-        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            dialog.show();
+            rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
 //                int childCount = group.getChildCount();
-                int childCount = communityList.size();
-                for (int x = 0; x < childCount; x++) {
-                    RadioButton btn = (RadioButton) group.getChildAt(x);
-                    if (btn.getId() == checkedId) {
-                        Log.e("selected RadioButton->",btn.getText().toString());
-                        try {
-                            // activate the final referral email
-                            System.out.println("hello?");
+                    int childCount = communityList.size();
+                    for (int x = 0; x < childCount; x++) {
+                        RadioButton btn = (RadioButton) group.getChildAt(x);
+                        if (btn.getId() == checkedId) {
+                            Log.e("selected RadioButton->",btn.getText().toString());
+                            try {
+                                // activate the final referral email
+                                PatientEmail email = PatientEmailFactory.getEmailBody(
+                                        2131624181,
+                                        patient);
+                                try {
+                                    startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
+                                    Log.i("Finished email...", "");
+                                    for (CarePlan cp : Utility.carePlan_list) {
+                                        if (cp.getId().equals(carePlan.getId())) {
+                                            Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                                            Firebase alanRef = ref.child(carePlan.getId());
+                                            cp.setStatus("COMPLETED");
+                                            Map<String, Object> cp2 = new HashMap<String, Object>();
+                                            alanRef.updateChildren(cp2);
+                                            cp2.put("status", "COMPLETED");
+                                            alanRef.updateChildren(cp2);
+                                        }
+                                    }
+                                    System.out.println("helo");
+
+                                }
+                                catch (android.content.ActivityNotFoundException ex) {
+                                    Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                                }
 //                            Toast.makeText(getActivity().getApplicationContext(), "final referral" + btn.getText(), Toast.LENGTH_LONG);
-                        }
-                        catch (android.content.ActivityNotFoundException ex) {
-                            Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                            }
+                            catch (android.content.ActivityNotFoundException ex) {
+                                Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        } else {
+            Toast.makeText(getActivity().getApplicationContext(), "No Suggested Community", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }
