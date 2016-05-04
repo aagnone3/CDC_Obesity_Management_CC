@@ -141,6 +141,28 @@ public class Community {
     }
 
     @Override
+    public String toString() {
+        StringBuilder str = new StringBuilder();
+        str.append("\n\nCommunity Resource: ")
+                .append(name)
+                .append(" -- ")
+                .append(description)
+                .append("\n\nWhere: ")
+                .append(streetAddress)
+                .append(", ")
+                .append(getCity())
+                .append(", ")
+                .append(getState())
+                .append(", ")
+                .append(getZipcode())
+                .append("\n\nPhone: ")
+                .append(phoneNumber)
+                .append("\n\nHours:\n")
+                .append(hoursAsString());
+        return str.toString();
+    }
+
+    @Override
     public boolean equals(Object o) {
         return o instanceof Community && ((Community) o).getId().equals(id);
     }

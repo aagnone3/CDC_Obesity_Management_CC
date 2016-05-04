@@ -314,6 +314,7 @@ public class CarePlanDetailFragment extends Fragment {
                                 alanRef.updateChildren(cp2);
                                 cp2.put("status", "COMPLETED");
                                 alanRef.updateChildren(cp2);
+                                //Utility.closeCarePlan(cp);
                                 //                            System.out.println("Updated");
                             }
                         }
@@ -416,34 +417,31 @@ public class CarePlanDetailFragment extends Fragment {
                                 for (Community community : Utility.community_list){
                                     if (community.getId().equals(communityListIDs.get(btn.getId()-1))){
                                         patient.setWorkingCommunity(community);
-                                    }
-                                }
-                                PatientEmail email = PatientEmailFactory.getEmailBody(
-                                        2131624181,
-                                        patient);
-                                try {
-                                    for (CarePlan cp : Utility.carePlan_list) {
-                                        if (cp.getId().equals(carePlan.getId())) {
-                                            Utility.activateCarePlan(cp);
-                                            Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
-                                            Firebase alanRef = ref.child(carePlan.getId());
-                                            cp.setStatus("ACTIVE");
-                                            Map<String, Object> cp2 = new HashMap<String, Object>();
-                                            alanRef.updateChildren(cp2);
-                                            cp2.put("status", "ACTIVE");
-                                            alanRef.updateChildren(cp2);
+                                        try {
+                                            for (CarePlan cp : Utility.carePlan_list) {
+                                                if (cp.getId().equals(carePlan.getId())) {
+                                                    Utility.activateCarePlan(cp);
+                                                    Firebase ref = new Firebase("https://cdccoordinator2.firebaseio.com/care_plans");
+                                                    Firebase alanRef = ref.child(carePlan.getId());
+                                                    cp.setStatus("ACTIVE");
+                                                    Map<String, Object> cp2 = new HashMap<String, Object>();
+                                                    alanRef.updateChildren(cp2);
+                                                    cp2.put("status", "ACTIVE");
+                                                    alanRef.updateChildren(cp2);
+                                                }
+                                            }
+                                            ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
+                                            contentListFragment.getAdapter().notifyDataSetChanged();
+                                            PatientEmail email = new FinalReferralEmail(patient, community, carePlan);
+                                            startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
+                                            Log.i("Finished email...", "");
+                                        }
+                                        catch (android.content.ActivityNotFoundException ex) {
+                                            Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
                                         }
                                     }
-                                    ContentListFragment contentListFragment = (ContentListFragment) getActivity().getSupportFragmentManager().findFragmentById(R.id.contentListFragment);
-                                    contentListFragment.getAdapter().notifyDataSetChanged();
-                                    startActivity(Intent.createChooser(email.getEmailIntent(), "Send mail..."));
-                                    Log.i("Finished email...", "");
-
-
                                 }
-                                catch (android.content.ActivityNotFoundException ex) {
-                                    Toast.makeText(getActivity().getApplicationContext(), "There is no email client installed.", Toast.LENGTH_SHORT).show();
-                                }
+
 //                            Toast.makeText(getActivity().getApplicationContext(), "final referral" + btn.getText(), Toast.LENGTH_LONG);
                             }
                             catch (android.content.ActivityNotFoundException ex) {

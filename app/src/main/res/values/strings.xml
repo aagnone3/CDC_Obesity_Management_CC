@@ -22,7 +22,7 @@
     <string name="care_plan_id">Care Plan ID:</string>
     <string name="details">Details:</string>
     <string name="care_plan_type">Plan Type:</string>
-    <string name="suggested_community">Suggested Community</string>
+    <string name="suggested_communities">Suggested Communities</string>
     <string name="clicked">Clicked</string>
     <string name="unclicked">Unclicked</string>
 

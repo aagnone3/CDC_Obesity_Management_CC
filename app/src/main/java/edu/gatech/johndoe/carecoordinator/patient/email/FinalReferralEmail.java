@@ -2,6 +2,7 @@ package edu.gatech.johndoe.carecoordinator.patient.email;
 
 import android.content.Intent;
 
+import edu.gatech.johndoe.carecoordinator.care_plan.CarePlan;
 import edu.gatech.johndoe.carecoordinator.community.Community;
 import edu.gatech.johndoe.carecoordinator.patient.Patient;
 import edu.gatech.johndoe.carecoordinator.util.Utility;
@@ -12,18 +13,20 @@ import edu.gatech.johndoe.carecoordinator.util.Utility;
 public class FinalReferralEmail extends PatientEmail {
 
     private Community finalCommunity;
+    private CarePlan carePlan;
 
     public FinalReferralEmail() {
-        this(null);
+        this(null, null, null);
     }
 
-    public FinalReferralEmail(Patient patient) {
+    public FinalReferralEmail(Patient patient, Community finalCommunity, CarePlan carePlan) {
         super(patient);
-        // TODO insert care coordinator name into subject when login is finalized
-        subject = "Final CarePlan from your CDC Care Coordinator!";
+        this.finalCommunity = finalCommunity;
+        this.carePlan = carePlan;
+        subject = "Finalized Care Plan and E-referral from your CDC Care Coordinator!";
         formContent();
         formIntent();
-        patient.setWorkingCommunity(null);
+        patient.setWorkingCommunity(finalCommunity);
     }
 
     public void formContent() {
@@ -35,14 +38,34 @@ public class FinalReferralEmail extends PatientEmail {
         //
         StringBuilder s = new StringBuilder("");
         s.append(greeting)
-                .append("We are excited to let you know that we have completed your referral to ")
-
+                .append("Dr. ")
+                .append(carePlan.getPhysicianNameLast())
+                .append(" and I are excited to let you know that we have completed your ")
+                .append(carePlan.getType().toLowerCase())
+                .append(" referral to ")
                 .append(finalCommunity.getName() + "!\n\n");
-        // TODO give a bunch of details about the community resource and the referral. Maybe attach a generated document
-        s.append("At your convenience, take some time to look over these details, and give ")
+        s.append("At your convenience, take some time to look over the details below, and give ")
                 .append(finalCommunity.getName())
                 .append(" a call when you are are ready to get started!");
+        s.append(carePlan.formattedString());
+        s.append(finalCommunity);
         s.append(signature);
         content = s.toString();
+    }
+
+    public Community getFinalCommunity() {
+        return finalCommunity;
+    }
+
+    public void setFinalCommunity(Community finalCommunity) {
+        this.finalCommunity = finalCommunity;
+    }
+
+    public CarePlan getCarePlan() {
+        return carePlan;
+    }
+
+    public void setCarePlan(CarePlan carePlan) {
+        this.carePlan = carePlan;
     }
 }

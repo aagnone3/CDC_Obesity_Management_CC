@@ -181,6 +181,10 @@ public class CarePlan {
         return physicianName;
     }
 
+    public String getPhysicianNameLast() {
+        return physicianName.substring(0, physicianName.indexOf(","));
+    }
+
     public void setPhysicianName(String physicianName) {
         this.physicianName = physicianName;
     }
@@ -215,6 +219,17 @@ public class CarePlan {
 
     public void setGoalValue(String goalValue) {
         this.goalValue = goalValue;
+    }
+
+    public String formattedString() {
+        StringBuilder str = new StringBuilder();
+        str.append("\n\nGoal: ")
+                .append(goalType)
+                .append(" of ")
+                .append(goalValue)
+                .append("\n\nDuration: ")
+                .append(period);
+        return str.toString();
     }
 
     @Override

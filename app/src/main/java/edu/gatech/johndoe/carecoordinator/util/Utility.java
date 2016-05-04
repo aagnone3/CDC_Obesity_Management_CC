@@ -102,6 +102,18 @@ public class Utility {
         client.update().resource(fhirCarePlan).execute();
     }
 
+    public static void closeCarePlan(CarePlan localCarePlan) {
+        Bundle results = client
+                .search()
+                .forResource(ca.uhn.fhir.model.dstu2.resource.CarePlan.class)
+                .where(ca.uhn.fhir.model.dstu2.resource.CarePlan.RES_ID.matchesExactly().value(localCarePlan.getFhirId()))
+                .returnBundle(Bundle.class)
+                .execute();
+        ca.uhn.fhir.model.dstu2.resource.CarePlan fhirCarePlan = (ca.uhn.fhir.model.dstu2.resource.CarePlan) results.getEntry().get(0).getResource();
+        fhirCarePlan.setStatus(CarePlanStatusEnum.COMPLETED);
+        client.update().resource(fhirCarePlan).execute();
+    }
+
     public static void proposeCarePlan(CarePlan localCarePlan) {
         Bundle results = client
                 .search()

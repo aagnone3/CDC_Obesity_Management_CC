@@ -207,7 +207,7 @@
                 android:layout_below="@id/care_plan_detail"
                 android:layout_alignStart="@id/care_plan_detail"
                 android:layout_marginTop="12dp"
-                android:text="@string/suggested_community" />
+                android:text="@string/suggested_communities" />
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="wrap_content"
@@ -220,7 +220,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Finished"
+                android:text="Close Plan"
                 android:id="@+id/button_completed"
                 android:layout_below="@+id/community_suggestion_list"
                 android:layout_alignStart="@id/community_suggestion_list"
