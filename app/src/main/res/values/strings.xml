@@ -37,7 +37,7 @@
     <string name="patient_num_care_plans_text">"%1$s Care Plan%2$s"</string>
 
     <string name="search_title">Search</string>
-    <string name="search_hint">Search communities</string>
+    <string name="search_hint">Search</string>
     <string name="sort_title">Sort</string>
     <string name="sort_menu_name">Sort by name</string>
     <string name="sort_menu_popularity">Sort by popularity</string>
